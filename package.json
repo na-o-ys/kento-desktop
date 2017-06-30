@@ -1,0 +1,29 @@
+{
+  "name": "kento-desktop",
+  "version": "1.0.0",
+  "description": "Kento Shogi Desktop",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron build/main",
+    "build": "tsc",
+    "dev": "webpack-dev-server -d --progress --inline --colors"
+  },
+  "author": "na-o-ys",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^8.0.6",
+    "axios": "^0.16.2",
+    "doc-ready": "^1.0.4",
+    "electron": "~1.6.2",
+    "json-kifu-format": "^1.1.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-redux": "^5.0.5",
+    "redux": "^3.7.1",
+    "redux-thunk": "^2.2.0",
+    "ts-loader": "^2.2.1",
+    "typescript": "^2.4.1",
+    "webpack": "^3.0.0",
+    "webpack-dev-server": "^2.5.0"
+  }
+}
