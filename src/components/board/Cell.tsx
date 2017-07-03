@@ -6,11 +6,12 @@ type CellProps = {
     highlight?: boolean,
     count?: number,
     style?: Style,
-    scale?: number
+    scale?: number,
+    onClick?: Function
 }
 
-export const Cell = ({ piece, highlight = false, count = 1, style = {}, scale = 1 }: CellProps) => (
-    <div style={{ ...getOuterStyle(scale), ...style }}>
+export const Cell = ({ piece, highlight = false, count = 1, style = {}, scale = 1, onClick = () => {} }: CellProps) => (
+    <div style={{ ...getOuterStyle(scale), ...style }} onClick={onClick} >
         <span style={getCellStyle({ piece, highlight, scale })}></span>
         {count > 1 ? <Count {...{ count, scale }} /> : null}
     </div>

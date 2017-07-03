@@ -1,5 +1,5 @@
 import * as React from "react"
-import MainBoard from "./board/MainBoard"
+import MainBoard, { OnClickMainBoard } from "./board/MainBoard"
 import Hand from "./board/Hand"
 import VHand from "./board/VHand"
 import { Position } from "../lib/game"
@@ -9,22 +9,24 @@ type BoardProps = {
     position: Position,
     verticalHand?: boolean,
     style?: Style,
-    scale?: number
+    scale?: number,
+    onClickBoard?: OnClickMainBoard,
+    onClickHand?: (piece: string) => void
 }
 
-export const Board = ({ position, verticalHand = true, style = {}, scale = 1 }: BoardProps) => {
+export const Board = ({ position, verticalHand = true, style = {}, scale = 1, onClickBoard = () => {}, onClickHand = () => {} }: BoardProps) => {
     if (verticalHand) return (
         <div style={{ ...vBoardStyle(scale), ...style }}>
-            <VHand color="white" hands={position.white_hand} scale={scale} />
-            <MainBoard cells={position.cells} highlightCell={position.movedCell} scale={scale} />
-            <VHand color="black" hands={position.black_hand} scale={scale} />
+            <VHand color="white" hands={position.white_hand} scale={scale} onClick={onClickHand} />
+            <MainBoard cells={position.cells} highlightCell={position.movedCell} scale={scale} onClick={onClickBoard} />
+            <VHand color="black" hands={position.black_hand} scale={scale} onClick={onClickHand} />
         </div>
     )
     else return (
         <div style={{ ...boardStyle(scale), ...style }}>
-            <WhiteHand hands={position.white_hand} scale={scale} />
-            <MainBoard cells={position.cells} highlightCell={position.movedCell} scale={scale} style={mainBoardStyle} />
-            <BlackHand hands={position.black_hand} scale={scale} />
+            <WhiteHand hands={position.white_hand} scale={scale} onClick={onClickHand} />
+            <MainBoard cells={position.cells} highlightCell={position.movedCell} scale={scale} style={mainBoardStyle} onClick={onClickBoard} />
+            <BlackHand hands={position.black_hand} scale={scale} onClick={onClickHand} />
         </div>
     )
 }
@@ -41,15 +43,15 @@ const vBoardStyle = scale => ({
     width: scale * 410
 })
 
-const WhiteHand = ({ hands, scale }) => (
+const WhiteHand = ({ hands, scale, ...props }) => (
     <div style={handWrapperStyle(scale)}>
-        <Hand color="white" hands={hands} scale={scale} />
+        <Hand color="white" hands={hands} scale={scale} {...props} />
     </div>
 )
 
-const BlackHand = ({ hands, scale }) => (
+const BlackHand = ({ hands, scale, ...props }) => (
     <div style={handWrapperStyle(scale)}>
-        <Hand color="black" hands={hands} scale={scale} style={blackHandStyle} />
+        <Hand color="black" hands={hands} scale={scale} style={blackHandStyle} {...props} />
     </div>
 )
 
