@@ -13,3 +13,5 @@ type SetTurnAction = { type: 'set_turn', turn: number }
 export function setTurn(turn: number): Action {
     return { type: SET_TURN, turn }
 }
+
+export const SELECt_

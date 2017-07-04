@@ -7,15 +7,10 @@ import { Game } from "../lib/game"
 export const Kento = ({ game, turn, control }: { game: Game, turn: number, control: GameControl }) => {
     const position = game.getPosition(turn)
     const comments = game.getComments(turn)
-    // const onClickBoard = (e: React.MouseEvent<HTMLDivElement>) => {
-    //     if (e.clientX - e.currentTarget.offsetLeft < e.currentTarget.offsetWidth / 2) {
-    //         control.setTurn(Math.max(turn - 1, 0))
-    //     } else {
-    //         control.setTurn(Math.min(turn + 1, game.maxTurn))
-    //     }
-    // }
     return (
         <div className="main" style={mainStyle}>
+            <p onClick={() => control.setTurn(Math.max(turn - 1, 0))}>＜</p>
+            <p onClick={() => control.setTurn(Math.min(turn + 1, game.maxTurn))}>＞</p>
             <Board position={position} verticalHand={false} style={boardStyle}
                 onClickBoard={onClickBoard} onClickHand={onClickHand} />
         </div>
