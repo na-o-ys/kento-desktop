@@ -7,6 +7,15 @@ import { Game } from "../lib/game"
 export const Kento = ({ game, turn, control }: { game: Game, turn: number, control: GameControl }) => {
     const position = game.getPosition(turn)
     const comments = game.getComments(turn)
+    const onClickBoard = (x: number, y: number) => {
+        console.log([x, y])
+        // control.clickBoard(x, y, position)
+    }
+    const onClickHand = (piece: string) => {
+        console.log(piece)
+        // control.log()
+    }
+
     return (
         <div className="main" style={mainStyle}>
             <p onClick={() => control.setTurn(Math.max(turn - 1, 0))}>＜</p>
@@ -31,12 +40,4 @@ const mainStyle = {
 
 const boardStyle = {
     margin: baseMargin
-}
-
-function onClickBoard(x: number, y: number) {
-    console.log([x, y])
-}
-
-function onClickHand(piece) {
-    console.log(piece)
 }

@@ -4,48 +4,20 @@ import { setTurn } from "../actions"
 import { Dispatch } from "redux"
 import { Game } from "../lib/game"
 
-interface SelectingMoveFrom {
-    state: 'selectingMoveFrom'
-}
-
-interface SelectingMoveTo {
-    state: 'selectingMoveTo',
-    moveFrom: {
-        x: number,
-        y: number
-    } | 'hand',
-    piece: string
-}
-
-interface SelectingPromote {
-    state: 'selectingPromote',
-    moveFrom: {
-        x: number,
-        y: number
-    } | 'hand',
-    piece: string,
-    moveTo: {
-        x: number,
-        y: number
-    },
-    promote: boolean
-}
-
-export interface MoveInputt {
+export interface MoveInput {
     state: "selectingMoveFrom" | "selectingMoveTo" | "selectingPromote",
-    moveFrom: {
-        x: number,
-        y: number
-    } | 'hand',
-    piece: string,
-    moveTo: {
+    moveFrom?: {
         x: number,
         y: number
     },
-    promote: boolean
+    fromHand?: boolean,
+    piece?: string,
+    moveTo?: {
+        x: number,
+        y: number
+    },
+    promote?: boolean
 }
-
-export type MoveInput = SelectingMoveFrom | SelectingMoveTo | SelectingPromote
 
 export type State = {
     game: Game,

@@ -15,7 +15,8 @@ export type Position = {
     cells: Array<Piece | null>,
     black_hand: Hand,
     white_hand: Hand,
-    movedCell: number
+    movedCell: number,
+    nextColor: string
 }
 
 export class Game {
@@ -65,9 +66,9 @@ export class Game {
 
     private calculatePosition(turn: number): Position {
         this.player.goto(turn)
-        let state = this.player.getState()
-        let move = this.player.getMove()
-        let movedCell = (move && move.to) ? 9 * (move.to.y - 1) + 9 - move.to.x : -1
+        const state = this.player.getState()
+        const move = this.player.getMove()
+        const movedCell = (move && move.to) ? 9 * (move.to.y - 1) + 9 - move.to.x : -1
         let cells: Array<Piece | null> = []
         for (let r = 0; r < 9; r++) for (let f = 0; f < 9; f++) {
             let { color, kind } = state.board[8 - f][r]
@@ -82,7 +83,8 @@ export class Game {
         for (let kind in state.hands[1]) {
             white_hand[pieceKindMap[kind]] = state.hands[1][kind]
         }
-        return { cells, black_hand, white_hand, movedCell }
+        const nextColor = move.color == 0 ? "b" : "w"
+        return { cells, black_hand, white_hand, movedCell, nextColor }
     }
 }
 
