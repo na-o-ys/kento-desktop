@@ -60,7 +60,7 @@ function moveInput(state: MoveInput = emptyMoveInput, action: Action): MoveInput
                     }
                     return emptyMoveInput
                 default:
-                    return state
+                    return emptyMoveInput
             }
         case "click_hand":
             if (isValidMoveFromColor(action.piece, action.position)) {

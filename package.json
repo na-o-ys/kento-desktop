@@ -11,11 +11,13 @@
   "author": "na-o-ys",
   "license": "ISC",
   "devDependencies": {
+    "@types/lodash": "^4.14.68",
     "@types/node": "^8.0.6",
     "axios": "^0.16.2",
     "doc-ready": "^1.0.4",
     "electron": "~1.6.2",
     "json-kifu-format": "^1.1.0",
+    "lodash": "^4.17.4",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.5",

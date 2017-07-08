@@ -11,14 +11,6 @@ export type Hand = {
     P: number
 }
 
-// export type Position = {
-//     cells: Array<Piece | null>,
-//     black_hand: Hand,
-//     white_hand: Hand,
-//     movedCell: number,
-//     nextColor: string
-// }
-
 export class Position {
     constructor(
         readonly cells: Array<Piece | null>,
