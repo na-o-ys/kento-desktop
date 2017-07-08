@@ -16,14 +16,14 @@ type BoardProps = {
 
 export const Board = ({ position, verticalHand = true, style = {}, scale = 1, onClickBoard = () => {}, onClickHand = () => {} }: BoardProps) => {
     if (verticalHand) return (
-        <div style={{ ...vBoardStyle(scale), ...style }}>
+        <div id="board" style={{ ...vBoardStyle(scale), ...style }}>
             <VHand color="white" hands={position.white_hand} scale={scale} onClick={onClickHand} />
             <MainBoard cells={position.cells} highlightCell={position.movedCell} scale={scale} onClick={onClickBoard} />
             <VHand color="black" hands={position.black_hand} scale={scale} onClick={onClickHand} />
         </div>
     )
     else return (
-        <div style={{ ...boardStyle(scale), ...style }}>
+        <div id="board" style={{ ...boardStyle(scale), ...style }}>
             <WhiteHand hands={position.white_hand} scale={scale} onClick={onClickHand} />
             <MainBoard cells={position.cells} highlightCell={position.movedCell} scale={scale} style={mainBoardStyle} onClick={onClickBoard} />
             <BlackHand hands={position.black_hand} scale={scale} onClick={onClickHand} />

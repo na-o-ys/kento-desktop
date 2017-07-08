@@ -1,4 +1,5 @@
 import * as React from "react"
+import Modal from "react-modal"
 import Board from "./Board"
 import Comment from "./Comment"
 import { GameControl } from "../types"
@@ -22,13 +23,10 @@ export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom }: {
 
     return (
         <div className="main" style={mainStyle}>
-            { moveInput.state != "selectingPromote" ?
-                null :
-                <div>
-                    <p onClick={() => control.selectPromote(true, position, moveInput, turn)}>成</p>
-                    <p onClick={() => control.selectPromote(false, position, moveInput, turn)}>不成</p>
-                </div>
-            }
+            <Modal isOpen={moveInput.state == "selectingPromote"} contentLabel="promote" style={promoteModalStyle}>
+                <button onClick={() => control.selectPromote(true, position, moveInput, turn)}>成</button>
+                <button onClick={() => control.selectPromote(false, position, moveInput, turn)}>不成</button>
+            </Modal>
             <Board position={position} verticalHand={false} style={boardStyle}
                 onClickBoard={onClickCell} onClickHand={onClickHand} />
             <Control style={controlStyle} turn={turn} game={game}
@@ -36,6 +34,14 @@ export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom }: {
                 control={control}/>
         </div>
     )
+}
+
+const promoteModalStyle = {
+    content: {
+        width: 100,
+        height: 80,
+        margin: "auto"
+    }
 }
 
 const moveControlStyle = {
@@ -61,7 +67,7 @@ const Control = ({ control, turn, game, showReturnTheGame, returnTheGame, style 
         <div style={moveControlStyle} onClick={() => control.setTurn(Math.max(turn - 1, 0))}>&lt;</div>
         <div style={moveControlStyle} onClick={() => control.setTurn(Math.min(turn + 1, game.maxTurn))}>&gt;</div>
         { showReturnTheGame ?
-            <div style={returnTheGameStyle} onClick={returnTheGame}>棋譜に戻る</div> :
+            <div style={returnTheGameStyle} onClick={() => returnTheGame()}>棋譜に戻る</div> :
             null
         }
     </div>
