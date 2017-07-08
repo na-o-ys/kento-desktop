@@ -3,6 +3,7 @@ import { Game, emptyGame, Position } from "../lib/game"
 import { Action } from "../actions"
 import { MoveInput } from "../components/Kento"
 import { State, emptyMoveInput } from "../container/KentoApp"
+import * as ShogiRule from "../lib/ShogiRule"
 
 function game(state: Game = emptyGame, action: Action): Game {
     switch (action.type) {
@@ -54,16 +55,15 @@ function moveInput(state: MoveInput = emptyMoveInput, action: Action): MoveInput
                     }
                     return emptyMoveInput
                 case "selectingMoveTo":
-                    if (isValidMove(state, action.cell)) {
+                    if (isValidMove(state, action.cell, action.position)) {
                         return { ...state, state: "selectingPromote", moveTo: action.cell }
                     }
-                    return state
+                    return emptyMoveInput
                 default:
                     return state
             }
         case "click_hand":
-            console.log(action)
-            if (isValidMoveFromPiece(action.piece, action.position)) {
+            if (isValidMoveFromColor(action.piece, action.position)) {
                 return {
                     ...emptyMoveInput,
                     state: "selectingMoveTo",
@@ -83,10 +83,10 @@ export const reducers = combineReducers<State>({ game, turn, turnsRead, moveInpu
 // TODO: 合法手の有無判定
 function isValidMoveFrom(cell: Cell, position: Position): boolean {
     const piece = position.getPiece(cell)
-    return isValidMoveFromPiece(position.getPiece(cell), position)
+    return isValidMoveFromColor(position.getPiece(cell), position)
 }
 
-function isValidMoveFromPiece(piece: string, position: Position): boolean {
+function isValidMoveFromColor(piece: string, position: Position): boolean {
     if (!piece) return false
     return (position.nextColor == "b" && piece == piece.toUpperCase()) ||
         (position.nextColor == "w" && piece == piece.toLowerCase())
@@ -94,7 +94,7 @@ function isValidMoveFromPiece(piece: string, position: Position): boolean {
 
 function matchDoMoveCondition(moveInput: MoveInput, clickedCell: Cell, position: Position): boolean {
     if (moveInput.state != "selectingMoveTo") return false
-    return !canPromote(moveInput, clickedCell, position.nextColor) && isValidMove(moveInput, clickedCell)
+    return !canPromote(moveInput, clickedCell, position.nextColor) && isValidMove(moveInput, clickedCell, position)
 }
 
 function canPromote(moveInput: MoveInput, clickedCell: Cell, color: string): boolean {
@@ -105,9 +105,14 @@ function canPromote(moveInput: MoveInput, clickedCell: Cell, color: string): boo
     return (color == "b" && clickedCell.y <= 3) || (color == "w" && clickedCell.y >= 7)
 }
 
-// TODO: 実装
-function isValidMove(moveInput: MoveInput, clickedCell: Cell): boolean {
-    return true
+function isValidMove(moveInput: MoveInput, clickedCell: Cell, position: Position): boolean {
+    if (moveInput.fromHand) {
+        return ShogiRule.getMovablesFromHand(moveInput.piece, position)
+            .includes(clickedCell)
+    } else {
+        return ShogiRule.getMovablesFromCell(moveInput.moveFrom, position)
+            .includes(clickedCell)
+    }
 }
 
 // TODO: 実装
