@@ -9,7 +9,7 @@ function game(state: Game = emptyGame, action: Action): Game {
         case "set_game":
             return action.game
         case "click_cell":
-            if (matchDoMoveCondition(action.moveInput, action.cell)) {
+            if (matchDoMoveCondition(action.moveInput, action.cell, action.position)) {
                 return doMove(state, action.moveInput, action.cell)
             }
             return state
@@ -40,11 +40,17 @@ function turnsRead(state: number = 0, action: Action): number {
 function moveInput(state: MoveInput = emptyMoveInput, action: Action): MoveInput {
     switch (action.type) {
         case "click_cell":
-            if (matchDoMoveCondition(state, action.cell)) return emptyMoveInput
+            if (matchDoMoveCondition(state, action.cell, action.position)) return emptyMoveInput
             switch (state.state) {
                 case "selectingMoveFrom":
+                    const piece = action.position.getPiece(action.cell)
                     if (isValidMoveFrom(action.cell, action.position)) {
-                        return { ...state, state: "selectingMoveTo", moveFrom: action.cell }
+                        return {
+                            ...state,
+                            state: "selectingMoveTo",
+                            moveFrom: action.cell,
+                            piece
+                        }
                     }
                     return emptyMoveInput
                 case "selectingMoveTo":
@@ -56,7 +62,8 @@ function moveInput(state: MoveInput = emptyMoveInput, action: Action): MoveInput
                     return state
             }
         case "click_hand":
-            if (isValidMoveFromHand(action.piece, action.position)) {
+            console.log(action)
+            if (isValidMoveFromPiece(action.piece, action.position)) {
                 return {
                     ...emptyMoveInput,
                     state: "selectingMoveTo",
@@ -73,35 +80,44 @@ function moveInput(state: MoveInput = emptyMoveInput, action: Action): MoveInput
 // TODO: React の型バグ
 export const reducers = combineReducers<State>({ game, turn, turnsRead, moveInput } as any)
 
-
-// TODO: 実装
-function isValidMoveFrom(cell: { x: number, y: number }, position: Position): boolean {
-    return true
+// TODO: 合法手の有無判定
+function isValidMoveFrom(cell: Cell, position: Position): boolean {
+    const piece = position.getPiece(cell)
+    return isValidMoveFromPiece(position.getPiece(cell), position)
 }
 
-// TODO: 実装
-function isValidMoveFromHand(piece: string, position: Position): boolean {
-    return true
+function isValidMoveFromPiece(piece: string, position: Position): boolean {
+    if (!piece) return false
+    return (position.nextColor == "b" && piece == piece.toUpperCase()) ||
+        (position.nextColor == "w" && piece == piece.toLowerCase())
 }
 
-function matchDoMoveCondition(moveInput: MoveInput, clickedCell: { x: number, y: number }): boolean {
+function matchDoMoveCondition(moveInput: MoveInput, clickedCell: Cell, position: Position): boolean {
     if (moveInput.state != "selectingMoveTo") return false
-    return !canPromote(moveInput, clickedCell) && isValidMove(moveInput, clickedCell)
+    return !canPromote(moveInput, clickedCell, position.nextColor) && isValidMove(moveInput, clickedCell)
+}
+
+function canPromote(moveInput: MoveInput, clickedCell: Cell, color: string): boolean {
+    const { piece } = moveInput
+    const canPromotePiece = ["l", "n", "s", "b", "r", "p"]
+        .includes(moveInput.piece.toLowerCase())
+    if (!canPromotePiece) return false
+    return (color == "b" && clickedCell.y <= 3) || (color == "w" && clickedCell.y >= 7)
 }
 
 // TODO: 実装
-function canPromote(moveInput: MoveInput, clickedCell: { x: number, y: number }): boolean {
-    return false
-}
-
-// TODO: 実装
-function isValidMove(moveInput: MoveInput, clickedCell: { x: number, y: number }): boolean {
+function isValidMove(moveInput: MoveInput, clickedCell: Cell): boolean {
     return true
 }
 
 // TODO: 実装
-function doMove(game: Game, moveInput: MoveInput, clickedCell: { x: number, y: number }): Game {
+function doMove(game: Game, moveInput: MoveInput, clickedCell: Cell): Game {
     console.log("doMove")
     console.log(clickedCell)
     return game
+}
+
+interface Cell {
+    x: number
+    y: number
 }

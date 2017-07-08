@@ -12,7 +12,7 @@ export const Kento = ({ game, turn, control, moveInput }: { game: Game, turn: nu
         control.clickCell({ x, y }, position, moveInput)
     }
     const onClickHand = (piece: string) => {
-        control.clickHand(piece, moveInput)
+        control.clickHand(piece, position, moveInput)
     }
 
     return (

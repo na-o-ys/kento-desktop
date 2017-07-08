@@ -2,7 +2,7 @@
 export interface GameControl {
     setTurn(turn: number): void,
     clickCell(cell, position, moveInput): void,
-    clickHand(piece, moveInput): void
+    clickHand(piece, position, moveInput): void
 }
 
 export type Style = { [key: string]: string | number }
