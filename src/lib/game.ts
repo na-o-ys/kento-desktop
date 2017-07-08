@@ -179,7 +179,6 @@ function zeroHand(): Hand {
     }
 }
 
-
 function toSfenString(move: JKFPlayer.MoveFormat): string {
     if (!move.move) return ""
     let fromTxt = "", toTxt = ""

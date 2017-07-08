@@ -21,7 +21,8 @@ function mapStateToProps(state: State) {
     return {
         game: state.game,
         turn: state.turn,
-        moveInput: state.moveInput
+        moveInput: state.moveInput,
+        theGame: state.theGame
     }
 }
 
@@ -34,6 +35,9 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
             },
             clickHand(piece, position: Position, moveInput, turn: number) {
                 dispatch(actions.clickHand(piece, position, moveInput, turn))
+            },
+            returnTheGame(theGame: Game) {
+                dispatch(actions.returnTheGame(theGame))
             }
         }
     }

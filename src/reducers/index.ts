@@ -14,9 +14,15 @@ function game(state: Game = emptyGame, action: Action): Game {
                 return doMove(state, action.position, { ...action.moveInput, moveTo: action.cell }, action.turn)
             }
             return state
+        case "return_the_game":
+            return action.theGame
         default:
             return state
     }
+}
+
+function theGame(state: Game = emptyGame, action: Action): Game {
+    return state
 }
 
 function turn(state: number = 0, action: Action): number {
@@ -83,7 +89,7 @@ function moveInput(state: MoveInput = emptyMoveInput, action: Action): MoveInput
 }
 
 // TODO: React の型バグ
-export const reducers = combineReducers<State>({ game, turn, turnsRead, moveInput } as any)
+export const reducers = combineReducers<State>({ game, turn, turnsRead, moveInput, theGame } as any)
 
 // TODO: 合法手の有無判定
 function isValidMoveFrom(cell: Cell, position: Position): boolean {
@@ -120,17 +126,13 @@ function isValidMove(moveInput: MoveInput, clickedCell: Cell, position: Position
     }
 }
 
-// TODO: 実装
 function doMove(game: Game, position: Position, moveInput: MoveInput, turn: number): Game {
+    // TODO: 実装
     // if (isCurrentGameMove(game, moveInput)) {
     //     return game
     // }
     const { kifu } = game
     const newGame = game.branch(turn)
-    // console.log(turn - 1)
-    // console.log(newGame.getPosition(turn - 1).cells)
-    // console.log(turn)
-    // console.log(newGame.getPosition(turn).cells)
     newGame.appendMove({
         color: position.nextColor == "b" ? 0 : 1,
         from: moveInput.moveFrom,

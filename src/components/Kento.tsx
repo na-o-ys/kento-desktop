@@ -4,12 +4,10 @@ import Comment from "./Comment"
 import { GameControl } from "../types"
 import { Game } from "../lib/game"
 
-export const Kento = ({ game, turn, control, moveInput }: { game: Game, turn: number, moveInput: MoveInput, control: GameControl }) => {
+export const Kento = ({ game, turn, control, moveInput, theGame }: { game: Game, turn: number, moveInput: MoveInput, theGame: Game, control: GameControl }) => {
     console.log(moveInput)
     console.log(game)
-    console.log(turn)
     const position = game.getPosition(turn)
-    console.log(position)
     const comments = game.getComments(turn)
     const onClickCell = (x: number, y: number) => {
         control.clickCell({ x, y }, position, moveInput, turn)
@@ -22,6 +20,7 @@ export const Kento = ({ game, turn, control, moveInput }: { game: Game, turn: nu
         <div className="main" style={mainStyle}>
             <p onClick={() => control.setTurn(Math.max(turn - 1, 0))}>＜</p>
             <p onClick={() => control.setTurn(Math.min(turn + 1, game.maxTurn))}>＞</p>
+            <p onClick={() => control.returnTheGame(theGame)}>棋譜に戻る</p>
             <Board position={position} verticalHand={false} style={boardStyle}
                 onClickBoard={onClickCell} onClickHand={onClickHand} />
         </div>
