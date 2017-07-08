@@ -25,6 +25,20 @@ function theGame(state: Game = emptyGame, action: Action): Game {
     return state
 }
 
+function branchFrom(state: number = -1, action: Action): number {
+    switch (action.type) {
+        case "click_cell":
+            if (state == -1 && matchDoMoveCondition(action.moveInput, action.cell, action.position)) {
+                return action.turn
+            }
+            return state
+        case "return_the_game":
+            return -1
+        default:
+            return state
+    }
+}
+
 function turn(state: number = 0, action: Action): number {
     switch (action.type) {
         case "set_turn":
@@ -35,6 +49,8 @@ function turn(state: number = 0, action: Action): number {
                 return state + 1
             }
             return state
+        case "return_the_game":
+            return action.branchFrom
         default:
             return state
     }
@@ -83,15 +99,17 @@ function moveInput(state: MoveInput = emptyMoveInput, action: Action): MoveInput
                 }
             }
             return emptyMoveInput
+        case "set_turn":
+        case "return_the_game":
+            return emptyMoveInput
         default:
             return state
     }
 }
 
 // TODO: React の型バグ
-export const reducers = combineReducers<State>({ game, turn, turnsRead, moveInput, theGame } as any)
+export const reducers = combineReducers<State>({ game, turn, turnsRead, moveInput, theGame, branchFrom } as any)
 
-// TODO: 合法手の有無判定
 function isValidMoveFrom(cell: Cell, position: Position): boolean {
     const piece = position.getPiece(cell)
     return isValidMoveFromColor(position.getPiece(cell), position)

@@ -27,7 +27,7 @@ export function clickHand(piece: string, position: Position, moveInput: MoveInpu
     return { type: "click_hand", piece, position, moveInput, turn }
 }
 
-type ReturnTheGame = { type: "return_the_game", theGame: Game }
-export function returnTheGame(theGame: Game) {
-    return { type: "return_the_game", theGame }
+type ReturnTheGame = { type: "return_the_game", theGame: Game, branchFrom: number }
+export function returnTheGame(theGame: Game, branchFrom: number) {
+    return { type: "return_the_game", theGame, branchFrom }
 }

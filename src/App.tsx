@@ -40,7 +40,7 @@ function initializeRender(game: Game, turn: number) {
             turnsRead: game.maxTurn,
             moveInput: { state: 'selectingMoveFrom' },
             theGame: game,
-            isBranch: false
+            branchFrom: -1
         }
     )
     ReactDOM.render(

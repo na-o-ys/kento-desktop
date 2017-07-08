@@ -14,7 +14,7 @@ export type State = {
     turnsRead: number,
     moveInput: MoveInput,
     theGame: Game,
-    isBranch: boolean
+    branchFrom: number
 }
 
 function mapStateToProps(state: State) {
@@ -22,7 +22,8 @@ function mapStateToProps(state: State) {
         game: state.game,
         turn: state.turn,
         moveInput: state.moveInput,
-        theGame: state.theGame
+        theGame: state.theGame,
+        branchFrom: state.branchFrom
     }
 }
 
@@ -36,8 +37,8 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
             clickHand(piece, position: Position, moveInput, turn: number) {
                 dispatch(actions.clickHand(piece, position, moveInput, turn))
             },
-            returnTheGame(theGame: Game) {
-                dispatch(actions.returnTheGame(theGame))
+            returnTheGame(theGame: Game, branchFrom: number) {
+                dispatch(actions.returnTheGame(theGame, branchFrom))
             }
         }
     }
