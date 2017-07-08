@@ -70,9 +70,11 @@ function getMovablesL(cell: Cell, position: Position, color: string): Movables {
 }
 
 function getMovablesN(cell: Cell, position: Position, color: string): Movables {
-    const dir = (color == "b") ? -2 : 2
-    const cells = [{ x: cell.x - 1, y: cell.y + dir }, { x: cell.x - 1, y: cell.y + dir}]
-        .filter(c => canMove(cell, position, color))
+    const cells = [
+        { x: cell.x - 1, y: cell.y + dir(color) * 2 },
+        { x: cell.x + 1, y: cell.y + dir(color) * 2}
+    ]
+        .filter(c => canMove(c, position, color))
     return new Movables(cells)
 }
 

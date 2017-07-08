@@ -78,6 +78,7 @@ function moveInput(state: MoveInput = emptyMoveInput, action: Action): MoveInput
             if (matchDoMoveCondition(state, action.cell, action.position)) return emptyMoveInput
             switch (state.state) {
                 case "selectingMoveFrom":
+                    console.log(ShogiRule.getMovablesFromCell(action.cell, action.position))
                     const piece = action.position.getPiece(action.cell)
                     if (isValidMoveFrom(action.cell, action.position)) {
                         return {
