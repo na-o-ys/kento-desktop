@@ -83,7 +83,7 @@ export class Game {
         for (let kind in state.hands[1]) {
             white_hand[pieceKindMap[kind]] = state.hands[1][kind]
         }
-        const nextColor = move.color == 0 ? "b" : "w"
+        const nextColor = state.color == 0 ? "b" : "w"
         return { cells, black_hand, white_hand, movedCell, nextColor }
     }
 }

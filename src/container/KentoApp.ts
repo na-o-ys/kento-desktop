@@ -1,22 +1,11 @@
 import { connect } from "react-redux"
-import { Kento } from "../components/Kento"
-import { setTurn } from "../actions"
+import { Kento, MoveInput } from "../components/Kento"
+import * as actions from "../actions"
 import { Dispatch } from "redux"
-import { Game } from "../lib/game"
+import { Game, Position } from "../lib/game"
 
-export interface MoveInput {
-    state: "selectingMoveFrom" | "selectingMoveTo" | "selectingPromote",
-    moveFrom?: {
-        x: number,
-        y: number
-    },
-    fromHand?: boolean,
-    piece?: string,
-    moveTo?: {
-        x: number,
-        y: number
-    },
-    promote?: boolean
+export const emptyMoveInput: MoveInput = {
+    state: "selectingMoveFrom"
 }
 
 export type State = {
@@ -37,7 +26,9 @@ function mapStateToProps(state: State) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
     return {
         control: {
-            setTurn(turn) { dispatch(setTurn(turn)) }
+            setTurn(turn) { dispatch(actions.setTurn(turn)) },
+            clickCell(cell, position: Position, moveInput: MoveInput) { dispatch(actions.clickCell(cell, position, moveInput)) },
+            clickHand(piece, position: Position, moveInput) { dispatch(actions.clickHand(piece, position, moveInput)) }
         }
     }
 }

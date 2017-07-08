@@ -1,5 +1,5 @@
 import { Game, Position } from "../lib/game"
-import { MoveInput } from "../container/KentoApp"
+import { MoveInput } from "../components/Kento"
 
 export type Action = SetGameAction | SetTurnAction | ClickCellAction | ClickHandAction
 
@@ -22,7 +22,7 @@ export function clickCell(cell: cell, position: Position, moveInput: MoveInput) 
     return { type: "click_cell", cell, position, moveInput }
 }
 
-type ClickHandAction = { type: "click_hand", piece: string, moveInput: MoveInput }
-export function clickHand(piece: string, moveInput: MoveInput) {
-    return { type: "click_hand", piece, moveInput }
+type ClickHandAction = { type: "click_hand", piece: string, position: Position, moveInput: MoveInput }
+export function clickHand(piece: string, position: Position, moveInput: MoveInput) {
+    return { type: "click_hand", piece, position, moveInput }
 }

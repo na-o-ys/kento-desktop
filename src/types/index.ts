@@ -1,5 +1,8 @@
+// TODO: 型
 export interface GameControl {
-    setTurn(turn: number): void
+    setTurn(turn: number): void,
+    clickCell(cell, position, moveInput): void,
+    clickHand(piece, moveInput): void
 }
 
 export type Style = { [key: string]: string | number }
