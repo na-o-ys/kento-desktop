@@ -25,6 +25,13 @@ export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom }: {
                 null :
                 <p onClick={() => control.returnTheGame(theGame, branchFrom)}>棋譜に戻る</p>
             }
+            { moveInput.state != "selectingPromote" ?
+                null :
+                <div>
+                    <p onClick={() => control.selectPromote(true, position, moveInput, turn)}>成</p>
+                    <p onClick={() => control.selectPromote(false, position, moveInput, turn)}>不成</p>
+                </div>
+            }
             <Board position={position} verticalHand={false} style={boardStyle}
                 onClickBoard={onClickCell} onClickHand={onClickHand} />
         </div>

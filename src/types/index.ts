@@ -3,7 +3,8 @@ export interface GameControl {
     setTurn(turn: number): void,
     clickCell(cell, position, moveInput, turn): void,
     clickHand(piece, position, moveInput, turn): void,
-    returnTheGame(theGame: any, branchFrom: number): void
+    returnTheGame(theGame: any, branchFrom: number): void,
+    selectPromote(promote: boolean, position, moveInput, turn): void
 }
 
 export type Style = { [key: string]: string | number }

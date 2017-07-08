@@ -14,6 +14,8 @@ function game(state: Game = emptyGame, action: Action): Game {
                 return doMove(state, action.position, { ...action.moveInput, moveTo: action.cell }, action.turn)
             }
             return state
+        case "select_promote":
+            return doMove(state, action.position, { ...action.moveInput, promote: action.promote }, action.turn)
         case "return_the_game":
             return action.theGame
         default:
@@ -32,6 +34,9 @@ function branchFrom(state: number = -1, action: Action): number {
                 return action.turn
             }
             return state
+        case "select_promote":
+            if (state == -1) return action.turn
+            return state
         case "return_the_game":
             return -1
         default:
@@ -49,6 +54,8 @@ function turn(state: number = 0, action: Action): number {
                 return state + 1
             }
             return state
+        case "select_promote":
+            return state + 1
         case "return_the_game":
             return action.branchFrom
         default:
@@ -101,6 +108,7 @@ function moveInput(state: MoveInput = emptyMoveInput, action: Action): MoveInput
             return emptyMoveInput
         case "set_turn":
         case "return_the_game":
+        case "select_promote":
             return emptyMoveInput
         default:
             return state

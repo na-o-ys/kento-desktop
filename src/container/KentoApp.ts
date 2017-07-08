@@ -34,11 +34,14 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
             clickCell(cell, position: Position, moveInput: MoveInput, turn: number) {
                 dispatch(actions.clickCell(cell, position, moveInput, turn))
             },
-            clickHand(piece, position: Position, moveInput, turn: number) {
+            clickHand(piece, position: Position, moveInput: MoveInput, turn: number) {
                 dispatch(actions.clickHand(piece, position, moveInput, turn))
             },
             returnTheGame(theGame: Game, branchFrom: number) {
                 dispatch(actions.returnTheGame(theGame, branchFrom))
+            },
+            selectPromote(promote: boolean, position: Position, moveInput: MoveInput, turn: number) {
+                dispatch(actions.selectPromote(promote, position, moveInput, turn))
             }
         }
     }

@@ -6,6 +6,7 @@ interface Cell {
     y: number
 }
 
+// TODO: 王手考慮
 export function getMovablesFromCell(cell: Cell, position: Position): Movables {
     const piece = position.getPiece(cell)
     if (!piece) throw "pieceがnull"
@@ -40,7 +41,6 @@ export function getMovablesFromCell(cell: Cell, position: Position): Movables {
     return new Movables([])
 }
 
-// TODO: 実装
 export function getMovablesFromHand(piece: string, position: Position): Movables {
     switch (piece.toLowerCase()) {
         case "n":
