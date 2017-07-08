@@ -6,13 +6,16 @@ import { Game } from "../lib/game"
 
 export const Kento = ({ game, turn, control, moveInput }: { game: Game, turn: number, moveInput: MoveInput, control: GameControl }) => {
     console.log(moveInput)
+    console.log(game)
+    console.log(turn)
     const position = game.getPosition(turn)
+    console.log(position)
     const comments = game.getComments(turn)
     const onClickCell = (x: number, y: number) => {
-        control.clickCell({ x, y }, position, moveInput)
+        control.clickCell({ x, y }, position, moveInput, turn)
     }
     const onClickHand = (piece: string) => {
-        control.clickHand(piece, position, moveInput)
+        control.clickHand(piece, position, moveInput, turn)
     }
 
     return (

@@ -12,7 +12,9 @@ export type State = {
     game: Game,
     turn: number,
     turnsRead: number,
-    moveInput: MoveInput
+    moveInput: MoveInput,
+    theGame: Game,
+    isBranch: boolean
 }
 
 function mapStateToProps(state: State) {
@@ -27,8 +29,12 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
     return {
         control: {
             setTurn(turn) { dispatch(actions.setTurn(turn)) },
-            clickCell(cell, position: Position, moveInput: MoveInput) { dispatch(actions.clickCell(cell, position, moveInput)) },
-            clickHand(piece, position: Position, moveInput) { dispatch(actions.clickHand(piece, position, moveInput)) }
+            clickCell(cell, position: Position, moveInput: MoveInput, turn: number) {
+                dispatch(actions.clickCell(cell, position, moveInput, turn))
+            },
+            clickHand(piece, position: Position, moveInput, turn: number) {
+                dispatch(actions.clickHand(piece, position, moveInput, turn))
+            }
         }
     }
 }

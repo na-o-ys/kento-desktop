@@ -34,7 +34,14 @@ export function registerGame(subscribe: (x: GameListener) => void, turn: number)
 function initializeRender(game: Game, turn: number) {
     let store = createStore<State>(
         reducers,
-        { game, turn, turnsRead: game.maxTurn, moveInput: { state: 'selectingMoveFrom' } }
+        {
+            game,
+            turn,
+            turnsRead: game.maxTurn,
+            moveInput: { state: 'selectingMoveFrom' },
+            theGame: game,
+            isBranch: false
+        }
     )
     ReactDOM.render(
         <App store={store} />,

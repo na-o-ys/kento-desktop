@@ -1,4 +1,40 @@
 import JKFPlayer = require("json-kifu-format")
+import { JsonKifuFormat } from "../types"
+import * as _ from "lodash"
+
+const pieceKindMap: { [id: string]: Piece } = {
+    "OU": "K",
+    "HI": "R",
+    "KA": "B",
+    "KI": "G",
+    "GI": "S",
+    "KE": "N",
+    "KY": "L",
+    "FU": "P",
+    "RY": "+R",
+    "UM": "+B",
+    "NG": "+S",
+    "NK": "+N",
+    "NY": "+L",
+    "TO": "+P"
+}
+
+const revPieceKindMap: { [id: string]: Piece } = {
+    "K": "OU",
+    "R": "HI",
+    "B": "KA",
+    "G": "KI",
+    "S": "GI",
+    "N": "KE",
+    "L": "KY",
+    "P": "FU",
+    "+R": "RY",
+    "+B": "UM",
+    "+S": "NG",
+    "+N": "NK",
+    "+L": "NY",
+    "+P": "TO"
+}
 
 export type Hand = {
     K: number,
@@ -31,12 +67,16 @@ export class Game {
     _jpKifu: string[]
     constructor(player: JKFPlayer) {
         this.player = player
-        this.positions = Array.from(Array(this.maxTurn).keys())
+        this.positions = Array.from(Array(this.maxTurn + 1).keys())
             .map(turn => this.calculatePosition(turn))
     }
 
     static parseText(text): Game {
         return new Game(JKFPlayer.parse(text))
+    }
+
+    static fromKifu(kifu: JsonKifuFormat.JSONKifuFormat): Game {
+        return new Game(new JKFPlayer(kifu))
     }
 
     get maxTurn(): number {
@@ -46,6 +86,10 @@ export class Game {
     get jpKifu(): string[] {
         if (this._jpKifu) return this._jpKifu
         return this._jpKifu = this.player.getReadableKifuState().map(move => (move.kifu))
+    }
+
+    get kifu(): JsonKifuFormat.JSONKifuFormat {
+        return this.player.kifu
     }
 
     getPosition(turn: number): Position {
@@ -68,6 +112,20 @@ export class Game {
 
     getHeader() {
         return this.player.kifu.header
+    }
+
+    branch(turn: number): Game {
+        let branch = _.cloneDeep({ ...this.kifu, moves: this.kifu.moves.slice(0, turn + 1) })
+        return Game.fromKifu(branch)
+    }
+
+    appendMove(move: JsonKifuFormat.MoveMoveFormat) {
+        move.piece = revPieceKindMap[move.piece.toUpperCase()]
+        if (!this.player.inputMove(move)) {
+            throw "cannot move"
+        }
+        this.positions = Array.from(Array(this.maxTurn + 1).keys())
+            .map(turn => this.calculatePosition(turn))
     }
 
     private calculatePosition(turn: number): Position {
@@ -101,22 +159,6 @@ export const emptyGame = Game.parseText("")
 //              "k" | "r" | "b" | "g" | "s" | "n" | "l" | "p" |
 //              "+r" | "+b" | "+s" | "+n" | "+l" | "+p"
 export type Piece = string
-let pieceKindMap: { [id: string]: Piece } = {
-    "OU": "K",
-    "HI": "R",
-    "KA": "B",
-    "KI": "G",
-    "GI": "S",
-    "KE": "N",
-    "KY": "L",
-    "FU": "P",
-    "RY": "+R",
-    "UM": "+B",
-    "NG": "+S",
-    "NK": "+N",
-    "NY": "+L",
-    "TO": "+P"
-}
 
 function boardCellToPiece(b: { color: boolean, kind: string }): Piece {
     let piece = pieceKindMap[b.kind]

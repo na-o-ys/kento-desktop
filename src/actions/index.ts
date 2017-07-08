@@ -17,12 +17,12 @@ interface cell {
     x: number,
     y: number
 }
-type ClickCellAction = { type: "click_cell", cell: cell, position: Position, moveInput: MoveInput }
-export function clickCell(cell: cell, position: Position, moveInput: MoveInput) {
-    return { type: "click_cell", cell, position, moveInput }
+type ClickCellAction = { type: "click_cell", cell: cell, position: Position, moveInput: MoveInput, turn: number }
+export function clickCell(cell: cell, position: Position, moveInput: MoveInput, turn: number) {
+    return { type: "click_cell", cell, position, moveInput, turn }
 }
 
-type ClickHandAction = { type: "click_hand", piece: string, position: Position, moveInput: MoveInput }
-export function clickHand(piece: string, position: Position, moveInput: MoveInput) {
-    return { type: "click_hand", piece, position, moveInput }
+type ClickHandAction = { type: "click_hand", piece: string, position: Position, moveInput: MoveInput, turn: number }
+export function clickHand(piece: string, position: Position, moveInput: MoveInput, turn: number) {
+    return { type: "click_hand", piece, position, moveInput, turn }
 }

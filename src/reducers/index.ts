@@ -11,7 +11,7 @@ function game(state: Game = emptyGame, action: Action): Game {
             return action.game
         case "click_cell":
             if (matchDoMoveCondition(action.moveInput, action.cell, action.position)) {
-                return doMove(state, action.moveInput, action.cell)
+                return doMove(state, action.position, { ...action.moveInput, moveTo: action.cell }, action.turn)
             }
             return state
         default:
@@ -24,6 +24,11 @@ function turn(state: number = 0, action: Action): number {
         case "set_turn":
             history.replaceState(null, "", `#${action.turn}`)
             return action.turn
+        case "click_cell":
+            if (matchDoMoveCondition(action.moveInput, action.cell, action.position)) {
+                return state + 1
+            }
+            return state
         default:
             return state
     }
@@ -116,10 +121,25 @@ function isValidMove(moveInput: MoveInput, clickedCell: Cell, position: Position
 }
 
 // TODO: 実装
-function doMove(game: Game, moveInput: MoveInput, clickedCell: Cell): Game {
+function doMove(game: Game, position: Position, moveInput: MoveInput, turn: number): Game {
+    // if (isCurrentGameMove(game, moveInput)) {
+    //     return game
+    // }
+    const { kifu } = game
+    const newGame = game.branch(turn)
+    // console.log(turn - 1)
+    // console.log(newGame.getPosition(turn - 1).cells)
+    // console.log(turn)
+    // console.log(newGame.getPosition(turn).cells)
+    newGame.appendMove({
+        color: position.nextColor == "b" ? 0 : 1,
+        from: moveInput.moveFrom,
+        to: moveInput.moveTo,
+        piece: moveInput.piece,
+        promote: moveInput.promote
+    })
     console.log("doMove")
-    console.log(clickedCell)
-    return game
+    return newGame
 }
 
 interface Cell {

@@ -1,14 +1,14 @@
 // TODO: 型
 export interface GameControl {
     setTurn(turn: number): void,
-    clickCell(cell, position, moveInput): void,
-    clickHand(piece, position, moveInput): void
+    clickCell(cell, position, moveInput, turn): void,
+    clickHand(piece, position, moveInput, turn): void
 }
 
 export type Style = { [key: string]: string | number }
 
 export namespace JsonKifuFormat {
-    export type Color = boolean;
+    export type Color = number; // black: 0, white: 1
 
     export interface PlaceFormat {
         x: number;
@@ -38,7 +38,7 @@ export namespace JsonKifuFormat {
         hands: { [index: string]: number }[];
     }
 
-    interface MoveMoveFormat {
+    export interface MoveMoveFormat {
         color: Color;
         from?: PlaceFormat;
         to?: PlaceFormat;
@@ -49,7 +49,7 @@ export namespace JsonKifuFormat {
         relative?: string;
     }
 
-    interface JSONKifuFormat {
+    export interface JSONKifuFormat {
         header: { [index: string]: string; };
         initial?: {
             preset: string;
