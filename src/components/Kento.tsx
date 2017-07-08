@@ -16,15 +16,12 @@ export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom }: {
     const onClickHand = (piece: string) => {
         control.clickHand(piece, position, moveInput, turn)
     }
+    const returnTheGame = () => {
+        control.returnTheGame(theGame, branchFrom)
+    }
 
     return (
         <div className="main" style={mainStyle}>
-            <p onClick={() => control.setTurn(Math.max(turn - 1, 0))}>＜</p>
-            <p onClick={() => control.setTurn(Math.min(turn + 1, game.maxTurn))}>＞</p>
-            { branchFrom == -1 ?
-                null :
-                <p onClick={() => control.returnTheGame(theGame, branchFrom)}>棋譜に戻る</p>
-            }
             { moveInput.state != "selectingPromote" ?
                 null :
                 <div>
@@ -34,9 +31,41 @@ export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom }: {
             }
             <Board position={position} verticalHand={false} style={boardStyle}
                 onClickBoard={onClickCell} onClickHand={onClickHand} />
+            <Control style={controlStyle} turn={turn} game={game}
+                showReturnTheGame={branchFrom != -1} returnTheGame={returnTheGame}
+                control={control}/>
         </div>
     )
 }
+
+const moveControlStyle = {
+    float: "left",
+    width: 30,
+    textAlign: "center"
+}
+const returnTheGameStyle = {
+    float: "right",
+    width: 100,
+    textAlign: "center"
+}
+type ControlProps = {
+    control: GameControl,
+    turn: number,
+    game: Game,
+    style: any,
+    showReturnTheGame: boolean,
+    returnTheGame: Function   
+}
+const Control = ({ control, turn, game, showReturnTheGame, returnTheGame, style = {} }: ControlProps) => (
+    <div style={style}>
+        <div style={moveControlStyle} onClick={() => control.setTurn(Math.max(turn - 1, 0))}>&lt;</div>
+        <div style={moveControlStyle} onClick={() => control.setTurn(Math.min(turn + 1, game.maxTurn))}>&gt;</div>
+        { showReturnTheGame ?
+            <div style={returnTheGameStyle} onClick={returnTheGame}>棋譜に戻る</div> :
+            null
+        }
+    </div>
+)
 
 const boardScale = 1.0
 const baseMargin = 10
@@ -52,6 +81,11 @@ const mainStyle = {
 
 const boardStyle = {
     margin: baseMargin
+}
+
+const controlStyle = {
+    margin: baseMargin,
+    height: 30
 }
 
 export interface MoveInput {
