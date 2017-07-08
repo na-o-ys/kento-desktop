@@ -78,7 +78,6 @@ function moveInput(state: MoveInput = emptyMoveInput, action: Action): MoveInput
             if (matchDoMoveCondition(state, action.cell, action.position)) return emptyMoveInput
             switch (state.state) {
                 case "selectingMoveFrom":
-                    console.log(ShogiRule.getMovablesFromCell(action.cell, action.position))
                     const piece = action.position.getPiece(action.cell)
                     if (isValidMoveFrom(action.cell, action.position)) {
                         return {
@@ -132,15 +131,17 @@ function isValidMoveFromColor(piece: string, position: Position): boolean {
 
 function matchDoMoveCondition(moveInput: MoveInput, clickedCell: Cell, position: Position): boolean {
     if (moveInput.state != "selectingMoveTo") return false
-    return !canPromote(moveInput, clickedCell, position.nextColor) && isValidMove(moveInput, clickedCell, position)
+    return !canPromote(moveInput, clickedCell, position.nextColor) &&
+        isValidMove(moveInput, clickedCell, position)
 }
 
 function canPromote(moveInput: MoveInput, clickedCell: Cell, color: string): boolean {
     const { piece } = moveInput
     const canPromotePiece = ["l", "n", "s", "b", "r", "p"]
         .includes(moveInput.piece.toLowerCase())
-    if (!canPromotePiece) return false
-    return (color == "b" && clickedCell.y <= 3) || (color == "w" && clickedCell.y >= 7)
+    if (moveInput.fromHand || !canPromotePiece) return false
+    const isPromoteArea = (y: number) => ((color == "b" && y <= 3) || (color == "w" && y >= 7))
+    return isPromoteArea(moveInput.moveFrom.y) || isPromoteArea(clickedCell.y)
 }
 
 function isValidMove(moveInput: MoveInput, clickedCell: Cell, position: Position): boolean {
