@@ -4,7 +4,7 @@ import { AiInfo } from "../lib/Ai"
 interface AiProps {
     aiInfo: AiInfo
 }
-export const Ai = ({ aiInfo }: AiProps) => (
+export const AiResult = ({ aiInfo }: AiProps) => (
     <div>
         <dl>
             <dt>スコア</dt>

@@ -8,11 +8,13 @@ import { setGame } from "./actions"
 import { Game } from "./lib/game"
 import { Store } from "redux"
 import { State } from "./container/KentoApp"
-import { emptyAiInfo } from "./lib/Ai"
+import { emptyAiInfo, Ai } from "./lib/Ai"
 
-const App = ({ store }) => (
+export type StoreType = Store<State>
+
+const App = ({ store, ai }) => (
     <Provider store={store}>
-        <KentoApp />
+        <KentoApp ai={ai} />
     </Provider>
 )
 
@@ -46,8 +48,9 @@ function initializeRender(game: Game, turn: number) {
             positionChanged: true
         }
     )
+    const ai = new Ai(store)
     ReactDOM.render(
-        <App store={store} />,
+        <App store={store} ai={ai}/>,
         document.getElementById("main-board")
     )
     return store

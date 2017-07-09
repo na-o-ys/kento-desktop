@@ -20,7 +20,7 @@ export type State = {
     aiInfo: AiInfo
 }
 
-function mapStateToProps(state: State) {
+function mapStateToProps(state: State, ownProps) {
     return {
         game: state.game,
         turn: state.turn,
@@ -28,7 +28,8 @@ function mapStateToProps(state: State) {
         theGame: state.theGame,
         branchFrom: state.branchFrom,
         positionChanged: state.positionChanged,
-        aiInfo: state.aiInfo
+        aiInfo: state.aiInfo,
+        ai: ownProps.ai
     }
 }
 

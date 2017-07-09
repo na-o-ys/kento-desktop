@@ -3,8 +3,8 @@ import Modal from "react-modal"
 import Board from "./Board"
 import { GameControl } from "../types"
 import { Game } from "../lib/game"
-import { Ai } from "./Ai"
-import { AiInfo } from "../lib/Ai"
+import { AiResult } from "./Ai"
+import { AiInfo, Ai } from "../lib/Ai"
 
 interface KentoProps {
     game: Game
@@ -14,13 +14,17 @@ interface KentoProps {
     branchFrom: number
     control: GameControl
     aiInfo: AiInfo,
-    positionChanged: boolean
+    positionChanged: boolean,
+    ai: Ai
 }
-export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom, aiInfo, positionChanged }: KentoProps) => {
+export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom, aiInfo, positionChanged, ai }: KentoProps) => {
     // console.log(moveInput)
     // console.log(game)
     // console.log(branchFrom)
     // console.log(positionChanged)
+    if (positionChanged) {
+        ai.start(game.getSfen(turn))
+    }
     const position = game.getPosition(turn)
     const comments = game.getComments(turn)
     const onClickCell = (x: number, y: number) => {
@@ -44,7 +48,7 @@ export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom, aiI
             <Control style={controlStyle} turn={turn} game={game}
                 showReturnTheGame={branchFrom != -1} returnTheGame={returnTheGame}
                 control={control}/>
-            <Ai aiInfo={aiInfo} />
+            <AiResult aiInfo={aiInfo} />
         </div>
     )
 }

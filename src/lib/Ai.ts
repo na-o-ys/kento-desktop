@@ -1,3 +1,4 @@
+import { StoreType } from "../App"
 export interface AiInfo {
     pv: string[]
     depth: number
@@ -12,4 +13,11 @@ export const emptyAiInfo: AiInfo = {
     nodes: 0,
     nps: 0,
     score_cp: 0
+}
+
+export class Ai {
+    constructor(readonly store: StoreType) {}
+    start(sfen: string) {
+        console.log(`ai started: ${sfen}`)
+    }
 }
