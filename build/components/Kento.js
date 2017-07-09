@@ -3,10 +3,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_modal_1 = require("react-modal");
 const Board_1 = require("./Board");
-exports.Kento = ({ game, turn, control, moveInput, theGame, branchFrom }) => {
-    console.log(moveInput);
-    console.log(game);
-    console.log(branchFrom);
+const Ai_1 = require("./Ai");
+exports.Kento = ({ game, turn, control, moveInput, theGame, branchFrom, aiInfo, positionChanged, ai }) => {
+    // console.log(moveInput)
+    // console.log(game)
+    // console.log(branchFrom)
+    // console.log(positionChanged)
+    if (positionChanged) {
+        ai.start(game.getSfen(turn));
+    }
     const position = game.getPosition(turn);
     const comments = game.getComments(turn);
     const onClickCell = (x, y) => {
@@ -23,7 +28,8 @@ exports.Kento = ({ game, turn, control, moveInput, theGame, branchFrom }) => {
             React.createElement("button", { onClick: () => control.selectPromote(true, position, moveInput, turn) }, "\u6210"),
             React.createElement("button", { onClick: () => control.selectPromote(false, position, moveInput, turn) }, "\u4E0D\u6210")),
         React.createElement(Board_1.default, { position: position, verticalHand: false, style: boardStyle, onClickBoard: onClickCell, onClickHand: onClickHand }),
-        React.createElement(Control, { style: controlStyle, turn: turn, game: game, showReturnTheGame: branchFrom != -1, returnTheGame: returnTheGame, control: control })));
+        React.createElement(Control, { style: controlStyle, turn: turn, game: game, showReturnTheGame: branchFrom != -1, returnTheGame: returnTheGame, control: control }),
+        React.createElement(Ai_1.AiResult, { aiInfo: aiInfo })));
 };
 const promoteModalStyle = {
     content: {
@@ -43,8 +49,8 @@ const returnTheGameStyle = {
     textAlign: "center"
 };
 const Control = ({ control, turn, game, showReturnTheGame, returnTheGame, style = {} }) => (React.createElement("div", { style: style },
-    React.createElement("div", { style: moveControlStyle, onClick: () => control.setTurn(Math.max(turn - 1, 0)) }, "<"),
-    React.createElement("div", { style: moveControlStyle, onClick: () => control.setTurn(Math.min(turn + 1, game.maxTurn)) }, ">"),
+    React.createElement("div", { style: moveControlStyle, onClick: () => control.setTurn(Math.max(turn - 1, 0), turn) }, "<"),
+    React.createElement("div", { style: moveControlStyle, onClick: () => control.setTurn(Math.min(turn + 1, game.maxTurn), turn) }, ">"),
     showReturnTheGame ?
         React.createElement("div", { style: returnTheGameStyle, onClick: () => returnTheGame() }, "\u68CB\u8B5C\u306B\u623B\u308B") :
         null));

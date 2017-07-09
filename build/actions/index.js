@@ -4,8 +4,8 @@ function setGame(game) {
     return { type: "set_game", game };
 }
 exports.setGame = setGame;
-function setTurn(turn) {
-    return { type: "set_turn", turn };
+function setTurn(turn, currentTurn) {
+    return { type: "set_turn", turn, currentTurn };
 }
 exports.setTurn = setTurn;
 function clickCell(cell, position, moveInput, turn) {

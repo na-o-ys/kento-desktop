@@ -6,19 +6,22 @@ const actions = require("../actions");
 exports.emptyMoveInput = {
     state: "selectingMoveFrom"
 };
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
     return {
         game: state.game,
         turn: state.turn,
         moveInput: state.moveInput,
         theGame: state.theGame,
-        branchFrom: state.branchFrom
+        branchFrom: state.branchFrom,
+        positionChanged: state.positionChanged,
+        aiInfo: state.aiInfo,
+        ai: ownProps.ai
     };
 }
 function mapDispatchToProps(dispatch) {
     return {
         control: {
-            setTurn(turn) { dispatch(actions.setTurn(turn)); },
+            setTurn(turn, currentTurn) { dispatch(actions.setTurn(turn, currentTurn)); },
             clickCell(cell, position, moveInput, turn) {
                 dispatch(actions.clickCell(cell, position, moveInput, turn));
             },

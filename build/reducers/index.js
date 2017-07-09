@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const redux_1 = require("redux");
 const game_1 = require("../lib/game");
 const KentoApp_1 = require("../container/KentoApp");
+const Ai_1 = require("../lib/Ai");
 const ShogiRule = require("../lib/ShogiRule");
 function game(state = game_1.emptyGame, action) {
     switch (action.type) {
@@ -100,8 +101,34 @@ function moveInput(state = KentoApp_1.emptyMoveInput, action) {
             return state;
     }
 }
+function aiInfo(state = Ai_1.emptyAiInfo, action) {
+    switch (action.type) {
+        case "update_ai_info":
+            return action.info;
+        default:
+            return state;
+    }
+}
+function positionChanged(state = false, action) {
+    switch (action.type) {
+        case "click_cell":
+            if (matchDoMoveCondition(action.moveInput, action.cell, action.position)) {
+                return true;
+            }
+            return false;
+        case "select_promote":
+            return true;
+        case "return_the_game":
+            return true;
+        case "set_turn":
+            return action.turn != action.currentTurn;
+        default:
+            return false;
+    }
+}
 // TODO: React の型バグ
-exports.reducers = redux_1.combineReducers({ game, turn, turnsRead, moveInput, theGame, branchFrom });
+exports.reducers = redux_1.combineReducers({ game, turn, turnsRead, moveInput,
+    theGame, branchFrom, aiInfo, positionChanged });
 function isValidMoveFrom(cell, position) {
     const piece = position.getPiece(cell);
     return isValidMoveFromColor(position.getPiece(cell), position);
@@ -151,7 +178,6 @@ function doMove(game, position, moveInput, turn) {
         piece: moveInput.piece,
         promote: moveInput.promote
     });
-    console.log("doMove");
     return newGame;
 }
 //# sourceMappingURL=index.js.map

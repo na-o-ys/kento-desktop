@@ -7,8 +7,9 @@ const react_redux_1 = require("react-redux");
 const KentoApp_1 = require("./container/KentoApp");
 const reducers_1 = require("./reducers");
 const actions_1 = require("./actions");
-const App = ({ store }) => (React.createElement(react_redux_1.Provider, { store: store },
-    React.createElement(KentoApp_1.default, null)));
+const Ai_1 = require("./lib/Ai");
+const App = ({ store, ai }) => (React.createElement(react_redux_1.Provider, { store: store },
+    React.createElement(KentoApp_1.default, { ai: ai })));
 function startGame(game, turn) {
     return initializeRender(game, turn);
 }
@@ -32,9 +33,12 @@ function initializeRender(game, turn) {
         turnsRead: game.maxTurn,
         moveInput: { state: 'selectingMoveFrom' },
         theGame: game,
-        branchFrom: -1
+        branchFrom: -1,
+        aiInfo: Ai_1.emptyAiInfo,
+        positionChanged: true
     });
-    ReactDOM.render(React.createElement(App, { store: store }), document.getElementById("main-board"));
+    const ai = new Ai_1.Ai(store);
+    ReactDOM.render(React.createElement(App, { store: store, ai: ai }), document.getElementById("main-board"));
     return store;
 }
 //# sourceMappingURL=App.js.map
