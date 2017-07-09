@@ -22,9 +22,6 @@ export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom, aiI
     // console.log(game)
     // console.log(branchFrom)
     // console.log(positionChanged)
-    if (positionChanged) {
-        ai.start(game.getSfen(turn))
-    }
     const position = game.getPosition(turn)
     const comments = game.getComments(turn)
     const onClickCell = (x: number, y: number) => {
@@ -36,6 +33,9 @@ export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom, aiI
     const returnTheGame = () => {
         control.returnTheGame(theGame, branchFrom)
     }
+    if (positionChanged) {
+        ai.start(game.getSfen(turn), position.nextColor)
+    }
 
     return (
         <div className="main" style={mainStyle}>
@@ -43,12 +43,16 @@ export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom, aiI
                 <button onClick={() => control.selectPromote(true, position, moveInput, turn)}>成</button>
                 <button onClick={() => control.selectPromote(false, position, moveInput, turn)}>不成</button>
             </Modal>
-            <Board position={position} verticalHand={false} style={boardStyle}
-                onClickBoard={onClickCell} onClickHand={onClickHand} />
-            <Control style={controlStyle} turn={turn} game={game}
-                showReturnTheGame={branchFrom != -1} returnTheGame={returnTheGame}
-                control={control}/>
-            <AiResult aiInfo={aiInfo} />
+            <div style={{float: "left"}}>
+                <Board position={position} verticalHand={false} style={boardStyle}
+                    onClickBoard={onClickCell} onClickHand={onClickHand} />
+                <Control style={controlStyle} turn={turn} game={game}
+                    showReturnTheGame={branchFrom != -1} returnTheGame={returnTheGame}
+                    control={control}/>
+            </div>
+            <div style={{float: "left"}}>
+                <AiResult aiInfo={aiInfo} style={{width: aiWidth}}/>
+            </div>
         </div>
     )
 }
@@ -93,13 +97,15 @@ const Control = ({ control, turn, game, showReturnTheGame, returnTheGame, style 
 const boardScale = 1.0
 const baseMargin = 10
 const boardWidth = 500 * boardScale + baseMargin * 2
+const aiWidth = 140
 
 const mainStyle = {
     marginTop: 30,
     marginBottom: 30,
     marginLeft: "auto",
     marginRight: "auto",
-    width: boardWidth, // + aiWidth
+    width: boardWidth + aiWidth + baseMargin,
+    height: 514
 }
 
 const boardStyle = {

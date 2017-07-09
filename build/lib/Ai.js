@@ -15,7 +15,7 @@ class Ai {
     constructor(store) {
         this.store = store;
     }
-    start(sfen) {
+    start(sfen, color) {
         console.log(`ai started: ${sfen}`);
         if (this.aiProcess) {
             console.log("kill");
@@ -28,8 +28,17 @@ class Ai {
             const [cmd, ...words] = line.split(" ");
             console.log(line);
             if (cmd == "info") {
-                this.store.dispatch(AiAction.updateAiInfo(this.parseInfo(words)));
-                console.log(this.parseInfo(words));
+                const info = this.parseInfo(words);
+                if (color == "w") {
+                    if (info.score_cp) {
+                        info.score_cp *= -1;
+                    }
+                    if (info.score_mate) {
+                        info.score_mate *= -1;
+                    }
+                }
+                this.store.dispatch(AiAction.updateAiInfo(info));
+                console.log(info);
             }
             if (cmd == "bestmove") {
                 console.log(words[0]);

@@ -3,9 +3,10 @@ import { AiInfo } from "../lib/Ai"
 
 interface AiProps {
     aiInfo: AiInfo
+    style: any
 }
-export const AiResult = ({ aiInfo }: AiProps) => (
-    <div>
+export const AiResult = ({ aiInfo, style }: AiProps) => (
+    <div style={style}>
         <dl>
             { aiInfo.score_cp == null ?
                 null :

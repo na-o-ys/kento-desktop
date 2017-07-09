@@ -24,7 +24,7 @@ const Byoyomi = 10000
 export class Ai {
     aiProcess: any
     constructor(readonly store: StoreType) {}
-    start(sfen: string) {
+    start(sfen: string, color: string) {
         console.log(`ai started: ${sfen}`)
         if (this.aiProcess) {
             console.log("kill")
@@ -38,10 +38,19 @@ export class Ai {
             console.log(line)
 
             if (cmd == "info") {
+                const info = this.parseInfo(words)
+                if (color == "w") {
+                    if (info.score_cp) {
+                        info.score_cp *= -1
+                    }
+                    if (info.score_mate) {
+                        info.score_mate *= -1
+                    }
+                }
                 this.store.dispatch(AiAction.updateAiInfo(
-                    this.parseInfo(words)
+                    info
                 ))
-                console.log(this.parseInfo(words))
+                console.log(info)
             }
             if (cmd == "bestmove") {
                 console.log(words[0])

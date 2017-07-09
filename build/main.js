@@ -6,7 +6,7 @@ const path = require("path");
 const url = require("url");
 let windows = {};
 function initWindows() {
-    const window = new electron_1.BrowserWindow({ width: 580, height: 555, frame: false });
+    const window = new electron_1.BrowserWindow({ width: 730, height: 575, frame: false });
     window.loadURL(url.format({
         pathname: path.join(__dirname, "../index.html"),
         protocol: "file:",

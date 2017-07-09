@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
-exports.AiResult = ({ aiInfo }) => (React.createElement("div", null,
+exports.AiResult = ({ aiInfo, style }) => (React.createElement("div", { style: style },
     React.createElement("dl", null,
         aiInfo.score_cp == null ?
             null :

@@ -6,7 +6,7 @@ import * as url from "url"
 let windows: { main?: Electron.BrowserWindow } = {}
 
 function initWindows() {
-    const window = new BrowserWindow({ width: 580, height: 555, frame: false })
+    const window = new BrowserWindow({ width: 730, height: 575, frame: false })
     window.loadURL(url.format({
         pathname: path.join(__dirname, "../index.html"),
         protocol: "file:",
