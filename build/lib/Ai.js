@@ -2,12 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const child_process_1 = require("child_process");
 const split = require("split");
+const AiAction = require("../actions/ai");
+const _ = require("lodash");
 exports.emptyAiInfo = {
     pv: [],
     depth: 0,
     nodes: 0,
-    nps: 0,
-    score_cp: 0
+    nps: 0
 };
 const Byoyomi = 10000;
 class Ai {
@@ -26,14 +27,15 @@ class Ai {
             const line = data.toString();
             const [cmd, ...words] = line.split(" ");
             console.log(line);
-            if (cmd == "info")
+            if (cmd == "info") {
+                this.store.dispatch(AiAction.updateAiInfo(this.parseInfo(words)));
                 console.log(this.parseInfo(words));
+            }
             if (cmd == "bestmove") {
                 console.log(words[0]);
                 this.aiProcess.kill("SIGKILL");
             }
         });
-        console.log(this.aiProcess);
     }
     generateCommand(byoyomi, position) {
         return `usi
@@ -46,7 +48,7 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
 `;
     }
     parseInfo(words) {
-        let result = { "pv": [], "raw_string": ["info", ...words].join(" ") };
+        let result = _.cloneDeep(exports.emptyAiInfo);
         let command = null;
         words.forEach(word => {
             switch (word) {
@@ -70,7 +72,7 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
                     command = word;
                     return;
                 case "pv":
-                    result["pv"].push(word);
+                    result.pv.push(word);
                     return;
                 default:
                     result[command] = parseInt(word);

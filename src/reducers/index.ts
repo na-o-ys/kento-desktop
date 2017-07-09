@@ -118,8 +118,19 @@ function moveInput(state: MoveInput = emptyMoveInput, action: Action): MoveInput
 
 function aiInfo(state: AiInfo = emptyAiInfo, action: Action) {
     switch (action.type) {
+        case "click_cell":
+            if (matchDoMoveCondition(action.moveInput, action.cell, action.position)) {
+                return emptyAiInfo
+            }
+            return state
+        case "select_promote":
+            return emptyAiInfo
+        case "return_the_game":
+            return emptyAiInfo
         case "update_ai_info":
             return action.info
+        case "set_turn":
+            return (action.turn != action.currentTurn) ? emptyAiInfo : state
         default:
             return state
     }

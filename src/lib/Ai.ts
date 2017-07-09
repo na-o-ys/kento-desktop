@@ -1,21 +1,23 @@
 import { StoreType } from "../App"
 import { spawn } from "child_process"
 import split = require("split")
+import * as AiAction from "../actions/ai"
+import * as _ from "lodash"
 
 export interface AiInfo {
     pv: string[]
     depth: number
     nodes: number
     nps: number
-    score_cp: number
+    score_cp?: number
+    score_mate?: number
 }
 
 export const emptyAiInfo: AiInfo = {
     pv: [],
     depth: 0,
     nodes: 0,
-    nps: 0,
-    score_cp: 0
+    nps: 0
 }
 
 const Byoyomi = 10000
@@ -35,13 +37,17 @@ export class Ai {
             const [cmd, ...words] = line.split(" ")
             console.log(line)
 
-            if (cmd == "info") console.log(this.parseInfo(words))
+            if (cmd == "info") {
+                this.store.dispatch(AiAction.updateAiInfo(
+                    this.parseInfo(words)
+                ))
+                console.log(this.parseInfo(words))
+            }
             if (cmd == "bestmove") {
                 console.log(words[0])
                 this.aiProcess.kill("SIGKILL")
             }
         })
-        console.log(this.aiProcess)
     }
 
     private generateCommand(byoyomi: number, position) {
@@ -55,8 +61,8 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
 `
     }
 
-    private parseInfo(words: string[]) {
-        let result = { "pv": [], "raw_string": ["info", ...words].join(" ") }
+    private parseInfo(words: string[]): AiInfo {
+        let result = _.cloneDeep(emptyAiInfo)
         let command = null
         words.forEach(word => {
             switch(word) {
@@ -80,7 +86,7 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
                 command = word
                 return
             case "pv":
-                result["pv"].push(word)
+                result.pv.push(word)
                 return
             default:
                 result[command] = parseInt(word)

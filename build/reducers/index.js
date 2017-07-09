@@ -103,8 +103,19 @@ function moveInput(state = KentoApp_1.emptyMoveInput, action) {
 }
 function aiInfo(state = Ai_1.emptyAiInfo, action) {
     switch (action.type) {
+        case "click_cell":
+            if (matchDoMoveCondition(action.moveInput, action.cell, action.position)) {
+                return Ai_1.emptyAiInfo;
+            }
+            return state;
+        case "select_promote":
+            return Ai_1.emptyAiInfo;
+        case "return_the_game":
+            return Ai_1.emptyAiInfo;
         case "update_ai_info":
             return action.info;
+        case "set_turn":
+            return (action.turn != action.currentTurn) ? Ai_1.emptyAiInfo : state;
         default:
             return state;
     }

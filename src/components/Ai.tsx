@@ -7,8 +7,20 @@ interface AiProps {
 export const AiResult = ({ aiInfo }: AiProps) => (
     <div>
         <dl>
-            <dt>スコア</dt>
-            <dd>{ aiInfo.score_cp }</dd>
+            { aiInfo.score_cp == null ?
+                null :
+                <div>
+                    <dt>スコア</dt>
+                    <dd>{ aiInfo.score_cp }</dd>
+                </div>
+            }
+            { aiInfo.score_mate == null ?
+                null :
+                <div>
+                    <dt>詰み</dt>
+                    <dd>{ aiInfo.score_mate }</dd>
+                </div>
+            }
         </dl>
         <ul>
             { aiInfo.pv.map((move, idx) => (
