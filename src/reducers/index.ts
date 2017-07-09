@@ -3,6 +3,7 @@ import { Game, emptyGame, Position } from "../lib/game"
 import { Action } from "../actions"
 import { MoveInput } from "../components/Kento"
 import { State, emptyMoveInput } from "../container/KentoApp"
+import { AiInfo, emptyAiInfo } from "../lib/Ai"
 import * as ShogiRule from "../lib/ShogiRule"
 
 function game(state: Game = emptyGame, action: Action): Game {
@@ -115,8 +116,18 @@ function moveInput(state: MoveInput = emptyMoveInput, action: Action): MoveInput
     }
 }
 
+function aiInfo(state: AiInfo = emptyAiInfo, action: Action) {
+    switch (action.type) {
+        case "update_ai_info":
+            return action.info
+        default:
+            return state
+    }
+}
+
 // TODO: React の型バグ
-export const reducers = combineReducers<State>({ game, turn, turnsRead, moveInput, theGame, branchFrom } as any)
+export const reducers = combineReducers<State>({ game, turn, turnsRead, moveInput,
+    theGame, branchFrom, aiInfo } as any)
 
 function isValidMoveFrom(cell: Cell, position: Position): boolean {
     const piece = position.getPiece(cell)

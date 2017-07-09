@@ -3,8 +3,19 @@ import Modal from "react-modal"
 import Board from "./Board"
 import { GameControl } from "../types"
 import { Game } from "../lib/game"
+import { Ai } from "./Ai"
+import { AiInfo } from "../lib/Ai"
 
-export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom }: { game: Game, turn: number, moveInput: MoveInput, theGame: Game, branchFrom: number, control: GameControl }) => {
+interface KentoProps {
+    game: Game
+    turn: number
+    moveInput: MoveInput
+    theGame: Game
+    branchFrom: number
+    control: GameControl
+    aiInfo: AiInfo
+}
+export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom, aiInfo }: KentoProps) => {
     console.log(moveInput)
     console.log(game)
     console.log(branchFrom)
@@ -31,6 +42,7 @@ export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom }: {
             <Control style={controlStyle} turn={turn} game={game}
                 showReturnTheGame={branchFrom != -1} returnTheGame={returnTheGame}
                 control={control}/>
+            <Ai aiInfo={aiInfo} />
         </div>
     )
 }

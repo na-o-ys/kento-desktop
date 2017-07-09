@@ -8,6 +8,7 @@ import { setGame } from "./actions"
 import { Game } from "./lib/game"
 import { Store } from "redux"
 import { State } from "./container/KentoApp"
+import { emptyAiInfo } from "./lib/Ai"
 
 const App = ({ store }) => (
     <Provider store={store}>
@@ -40,7 +41,8 @@ function initializeRender(game: Game, turn: number) {
             turnsRead: game.maxTurn,
             moveInput: { state: 'selectingMoveFrom' },
             theGame: game,
-            branchFrom: -1
+            branchFrom: -1,
+            aiInfo: emptyAiInfo
         }
     )
     ReactDOM.render(

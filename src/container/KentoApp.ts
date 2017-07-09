@@ -3,6 +3,7 @@ import { Kento, MoveInput } from "../components/Kento"
 import * as actions from "../actions"
 import { Dispatch } from "redux"
 import { Game, Position } from "../lib/game"
+import { AiInfo } from "../lib/Ai"
 
 export const emptyMoveInput: MoveInput = {
     state: "selectingMoveFrom"
@@ -14,7 +15,8 @@ export type State = {
     turnsRead: number,
     moveInput: MoveInput,
     theGame: Game,
-    branchFrom: number
+    branchFrom: number,
+    aiInfo: AiInfo
 }
 
 function mapStateToProps(state: State) {
@@ -23,7 +25,8 @@ function mapStateToProps(state: State) {
         turn: state.turn,
         moveInput: state.moveInput,
         theGame: state.theGame,
-        branchFrom: state.branchFrom
+        branchFrom: state.branchFrom,
+        aiInfo: state.aiInfo
     }
 }
 

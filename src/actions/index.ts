@@ -1,7 +1,9 @@
 import { Game, Position } from "../lib/game"
 import { MoveInput } from "../components/Kento"
+import * as AiAction from "./ai"
 
-export type Action = SetGameAction | SetTurnAction | ClickCellAction | ClickHandAction | ReturnTheGame | SelectPromote
+export type Action = SetGameAction | SetTurnAction | ClickCellAction |
+    ClickHandAction | ReturnTheGame | SelectPromote | AiAction.UpdateInfoAction
 
 type SetGameAction = { type: "set_game", game: Game }
 export function setGame(game: Game): Action {
