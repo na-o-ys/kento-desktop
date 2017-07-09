@@ -7,7 +7,7 @@ type CellProps = {
     count?: number,
     style?: Style,
     scale?: number,
-    onClick?: Function
+    onClick?: () => void
 }
 
 export const Cell = ({ piece, highlight = false, count = 1, style = {}, scale = 1, onClick = () => {} }: CellProps) => (

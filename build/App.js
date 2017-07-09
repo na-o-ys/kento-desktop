@@ -26,18 +26,15 @@ function registerGame(subscribe, turn) {
 }
 exports.registerGame = registerGame;
 function initializeRender(game, turn) {
-    let store = redux_1.createStore(reducers_1.reducers, { game, turn, turnsRead: game.maxTurn });
+    let store = redux_1.createStore(reducers_1.reducers, {
+        game,
+        turn,
+        turnsRead: game.maxTurn,
+        moveInput: { state: 'selectingMoveFrom' },
+        theGame: game,
+        branchFrom: -1
+    });
     ReactDOM.render(React.createElement(App, { store: store }), document.getElementById("main-board"));
     return store;
 }
-// const style = {
-//   height: 100,
-//   width: 100,
-//   margin: 20,
-//   textAlign: 'center',
-//   display: 'inline-block',
-// }
-// const Board = () => (
-//   <Paper style={style} zDepth={1} />
-// )
 //# sourceMappingURL=App.js.map

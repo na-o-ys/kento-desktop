@@ -41,6 +41,7 @@ export function getMovablesFromCell(cell: Cell, position: Position): Movables {
     return new Movables([])
 }
 
+// TODO: 二歩の解消
 export function getMovablesFromHand(piece: string, position: Position): Movables {
     switch (piece.toLowerCase()) {
         case "n":

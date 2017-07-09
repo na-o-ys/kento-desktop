@@ -1,7 +1,6 @@
 import * as React from "react"
 import Modal from "react-modal"
 import Board from "./Board"
-import Comment from "./Comment"
 import { GameControl } from "../types"
 import { Game } from "../lib/game"
 
@@ -82,16 +81,18 @@ const mainStyle = {
     marginBottom: 30,
     marginLeft: "auto",
     marginRight: "auto",
-    width: boardWidth // + aiWidth
+    width: boardWidth, // + aiWidth
 }
 
 const boardStyle = {
-    margin: baseMargin
+    margin: baseMargin,
+    "-webkit-app-region": "no-drag"
 }
 
 const controlStyle = {
     margin: baseMargin,
-    height: 30
+    height: 30,
+    "-webkit-app-region": "no-drag"
 }
 
 export interface MoveInput {
