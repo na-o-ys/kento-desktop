@@ -16,6 +16,7 @@ export type State = {
     moveInput: MoveInput,
     theGame: Game,
     branchFrom: number,
+    positionChanged: boolean,
     aiInfo: AiInfo
 }
 
@@ -26,6 +27,7 @@ function mapStateToProps(state: State) {
         moveInput: state.moveInput,
         theGame: state.theGame,
         branchFrom: state.branchFrom,
+        positionChanged: state.positionChanged,
         aiInfo: state.aiInfo
     }
 }
@@ -33,7 +35,7 @@ function mapStateToProps(state: State) {
 function mapDispatchToProps(dispatch: Dispatch<any>) {
     return {
         control: {
-            setTurn(turn) { dispatch(actions.setTurn(turn)) },
+            setTurn(turn, currentTurn) { dispatch(actions.setTurn(turn, currentTurn)) },
             clickCell(cell, position: Position, moveInput: MoveInput, turn: number) {
                 dispatch(actions.clickCell(cell, position, moveInput, turn))
             },

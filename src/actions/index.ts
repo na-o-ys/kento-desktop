@@ -10,9 +10,9 @@ export function setGame(game: Game): Action {
     return { type: "set_game", game }
 }
 
-type SetTurnAction = { type: "set_turn", turn: number }
-export function setTurn(turn: number): Action {
-    return { type: "set_turn", turn }
+type SetTurnAction = { type: "set_turn", turn: number, currentTurn: number }
+export function setTurn(turn: number, currentTurn): Action {
+    return { type: "set_turn", turn, currentTurn }
 }
 
 interface cell {

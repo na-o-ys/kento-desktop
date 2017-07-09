@@ -13,12 +13,14 @@ interface KentoProps {
     theGame: Game
     branchFrom: number
     control: GameControl
-    aiInfo: AiInfo
+    aiInfo: AiInfo,
+    positionChanged: boolean
 }
-export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom, aiInfo }: KentoProps) => {
-    console.log(moveInput)
-    console.log(game)
-    console.log(branchFrom)
+export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom, aiInfo, positionChanged }: KentoProps) => {
+    // console.log(moveInput)
+    // console.log(game)
+    // console.log(branchFrom)
+    // console.log(positionChanged)
     const position = game.getPosition(turn)
     const comments = game.getComments(turn)
     const onClickCell = (x: number, y: number) => {
@@ -75,8 +77,8 @@ type ControlProps = {
 }
 const Control = ({ control, turn, game, showReturnTheGame, returnTheGame, style = {} }: ControlProps) => (
     <div style={style}>
-        <div style={moveControlStyle} onClick={() => control.setTurn(Math.max(turn - 1, 0))}>&lt;</div>
-        <div style={moveControlStyle} onClick={() => control.setTurn(Math.min(turn + 1, game.maxTurn))}>&gt;</div>
+        <div style={moveControlStyle} onClick={() => control.setTurn(Math.max(turn - 1, 0), turn)}>&lt;</div>
+        <div style={moveControlStyle} onClick={() => control.setTurn(Math.min(turn + 1, game.maxTurn), turn)}>&gt;</div>
         { showReturnTheGame ?
             <div style={returnTheGameStyle} onClick={() => returnTheGame()}>棋譜に戻る</div> :
             null

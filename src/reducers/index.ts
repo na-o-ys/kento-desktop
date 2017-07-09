@@ -125,9 +125,27 @@ function aiInfo(state: AiInfo = emptyAiInfo, action: Action) {
     }
 }
 
+function positionChanged(state: boolean = false, action: Action) {
+    switch (action.type) {
+        case "click_cell":
+            if (matchDoMoveCondition(action.moveInput, action.cell, action.position)) {
+                return true
+            }
+            return false
+        case "select_promote":
+            return true
+        case "return_the_game":
+            return true
+        case "set_turn":
+            return action.turn != action.currentTurn
+        default:
+            return false
+    }
+}
+
 // TODO: React の型バグ
 export const reducers = combineReducers<State>({ game, turn, turnsRead, moveInput,
-    theGame, branchFrom, aiInfo } as any)
+    theGame, branchFrom, aiInfo, positionChanged } as any)
 
 function isValidMoveFrom(cell: Cell, position: Position): boolean {
     const piece = position.getPiece(cell)
@@ -179,7 +197,6 @@ function doMove(game: Game, position: Position, moveInput: MoveInput, turn: numb
         piece: moveInput.piece,
         promote: moveInput.promote
     })
-    console.log("doMove")
     return newGame
 }
 

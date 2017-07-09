@@ -42,7 +42,8 @@ function initializeRender(game: Game, turn: number) {
             moveInput: { state: 'selectingMoveFrom' },
             theGame: game,
             branchFrom: -1,
-            aiInfo: emptyAiInfo
+            aiInfo: emptyAiInfo,
+            positionChanged: true
         }
     )
     ReactDOM.render(
