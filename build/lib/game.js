@@ -1,14 +1,63 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const JKFPlayer = require("json-kifu-format");
+const _ = require("lodash");
+const pieceKindMap = {
+    "OU": "K",
+    "HI": "R",
+    "KA": "B",
+    "KI": "G",
+    "GI": "S",
+    "KE": "N",
+    "KY": "L",
+    "FU": "P",
+    "RY": "+R",
+    "UM": "+B",
+    "NG": "+S",
+    "NK": "+N",
+    "NY": "+L",
+    "TO": "+P"
+};
+const revPieceKindMap = {
+    "K": "OU",
+    "R": "HI",
+    "B": "KA",
+    "G": "KI",
+    "S": "GI",
+    "N": "KE",
+    "L": "KY",
+    "P": "FU",
+    "+R": "RY",
+    "+B": "UM",
+    "+S": "NG",
+    "+N": "NK",
+    "+L": "NY",
+    "+P": "TO"
+};
+class Position {
+    constructor(cells, black_hand, white_hand, movedCell, nextColor) {
+        this.cells = cells;
+        this.black_hand = black_hand;
+        this.white_hand = white_hand;
+        this.movedCell = movedCell;
+        this.nextColor = nextColor;
+    }
+    getPiece(cell) {
+        return this.cells[(cell.y - 1) * 9 + 9 - cell.x];
+    }
+}
+exports.Position = Position;
 class Game {
     constructor(player) {
         this.player = player;
-        this.positions = Array.from(Array(this.maxTurn).keys())
+        this.positions = Array.from(Array(this.maxTurn + 1).keys())
             .map(turn => this.calculatePosition(turn));
     }
     static parseText(text) {
         return new Game(JKFPlayer.parse(text));
+    }
+    static fromKifu(kifu) {
+        return new Game(new JKFPlayer(kifu));
     }
     get maxTurn() {
         return this.player.getMaxTesuu();
@@ -16,7 +65,10 @@ class Game {
     get jpKifu() {
         if (this._jpKifu)
             return this._jpKifu;
-        return this._jpKifu = this.player.getReadableKifuState().map(move => (move.kifu));
+        return this._jpKifu = this.player.getReadableKifuState().map(move => move.kifu.replace("☖", "△").replace("☗", "▲"));
+    }
+    get kifu() {
+        return this.player.kifu;
     }
     getPosition(turn) {
         return this.positions[turn];
@@ -36,11 +88,22 @@ class Game {
     getHeader() {
         return this.player.kifu.header;
     }
+    branch(turn) {
+        let branch = _.cloneDeep(Object.assign({}, this.kifu, { moves: this.kifu.moves.slice(0, turn + 1) }));
+        return Game.fromKifu(branch);
+    }
+    appendMove(move) {
+        move.piece = revPieceKindMap[move.piece.toUpperCase()];
+        if (!this.player.inputMove(move)) {
+            throw "cannot move";
+        }
+        this.positions.push(this.calculatePosition(this.maxTurn));
+    }
     calculatePosition(turn) {
         this.player.goto(turn);
-        let state = this.player.getState();
-        let move = this.player.getMove();
-        let movedCell = (move && move.to) ? 9 * (move.to.y - 1) + 9 - move.to.x : -1;
+        const state = this.player.getState();
+        const move = this.player.getMove();
+        const movedCell = (move && move.to) ? 9 * (move.to.y - 1) + 9 - move.to.x : -1;
         let cells = [];
         for (let r = 0; r < 9; r++)
             for (let f = 0; f < 9; f++) {
@@ -58,27 +121,12 @@ class Game {
         for (let kind in state.hands[1]) {
             white_hand[pieceKindMap[kind]] = state.hands[1][kind];
         }
-        return { cells, black_hand, white_hand, movedCell };
+        const nextColor = state.color == 0 ? "b" : "w";
+        return new Position(cells, black_hand, white_hand, movedCell, nextColor);
     }
 }
 exports.Game = Game;
 exports.emptyGame = Game.parseText("");
-let pieceKindMap = {
-    "OU": "K",
-    "HI": "R",
-    "KA": "B",
-    "KI": "G",
-    "GI": "S",
-    "KE": "N",
-    "KY": "L",
-    "FU": "P",
-    "RY": "+R",
-    "UM": "+B",
-    "NG": "+S",
-    "NK": "+N",
-    "NY": "+L",
-    "TO": "+P"
-};
 function boardCellToPiece(b) {
     let piece = pieceKindMap[b.kind];
     if (b.color)

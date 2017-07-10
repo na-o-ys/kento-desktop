@@ -4,7 +4,7 @@ const docReady = require("doc-ready");
 const axios_1 = require("axios");
 const App_1 = require("./App");
 const game_1 = require("./lib/game");
-injectHeaders();
+// injectHeaders()
 docReady(() => {
     const kifuElem = document.getElementById('kifu');
     if ('kifu' in kifuElem.dataset) {

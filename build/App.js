@@ -7,8 +7,9 @@ const react_redux_1 = require("react-redux");
 const KentoApp_1 = require("./container/KentoApp");
 const reducers_1 = require("./reducers");
 const actions_1 = require("./actions");
-const App = ({ store }) => (React.createElement(react_redux_1.Provider, { store: store },
-    React.createElement(KentoApp_1.default, null)));
+const Ai_1 = require("./lib/Ai");
+const App = ({ store, ai }) => (React.createElement(react_redux_1.Provider, { store: store },
+    React.createElement(KentoApp_1.default, { ai: ai })));
 function startGame(game, turn) {
     return initializeRender(game, turn);
 }
@@ -26,18 +27,18 @@ function registerGame(subscribe, turn) {
 }
 exports.registerGame = registerGame;
 function initializeRender(game, turn) {
-    let store = redux_1.createStore(reducers_1.reducers, { game, turn, turnsRead: game.maxTurn });
-    ReactDOM.render(React.createElement(App, { store: store }), document.getElementById("main-board"));
+    let store = redux_1.createStore(reducers_1.reducers, {
+        game,
+        turn,
+        turnsRead: game.maxTurn,
+        moveInput: { state: 'selectingMoveFrom' },
+        theGame: game,
+        branchFrom: -1,
+        aiInfo: Ai_1.emptyAiInfo,
+        positionChanged: true
+    });
+    const ai = new Ai_1.Ai(store);
+    ReactDOM.render(React.createElement(App, { store: store, ai: ai }), document.getElementById("main-board"));
     return store;
 }
-// const style = {
-//   height: 100,
-//   width: 100,
-//   margin: 20,
-//   textAlign: 'center',
-//   display: 'inline-block',
-// }
-// const Board = () => (
-//   <Paper style={style} zDepth={1} />
-// )
 //# sourceMappingURL=App.js.map

@@ -1,20 +1,29 @@
 "use strict";
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+            t[p[i]] = s[p[i]];
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const MainBoard_1 = require("./board/MainBoard");
 const Hand_1 = require("./board/Hand");
 const VHand_1 = require("./board/VHand");
-exports.Board = ({ position, verticalHand = true, style = {}, scale = 1 }) => {
+exports.Board = ({ position, verticalHand = true, style = {}, scale = 1, onClickBoard = () => { }, onClickHand = () => { } }) => {
     if (verticalHand)
-        return (React.createElement("div", { style: Object.assign({}, vBoardStyle(scale), style) },
-            React.createElement(VHand_1.default, { color: "white", hands: position.white_hand, scale: scale }),
-            React.createElement(MainBoard_1.default, { cells: position.cells, highlightCell: position.movedCell, scale: scale }),
-            React.createElement(VHand_1.default, { color: "black", hands: position.black_hand, scale: scale })));
+        return (React.createElement("div", { id: "board", style: Object.assign({}, vBoardStyle(scale), style) },
+            React.createElement(VHand_1.default, { color: "white", hands: position.white_hand, scale: scale, onClick: onClickHand }),
+            React.createElement(MainBoard_1.default, { cells: position.cells, highlightCell: position.movedCell, scale: scale, onClick: onClickBoard }),
+            React.createElement(VHand_1.default, { color: "black", hands: position.black_hand, scale: scale, onClick: onClickHand })));
     else
-        return (React.createElement("div", { style: Object.assign({}, boardStyle(scale), style) },
-            React.createElement(WhiteHand, { hands: position.white_hand, scale: scale }),
-            React.createElement(MainBoard_1.default, { cells: position.cells, highlightCell: position.movedCell, scale: scale, style: mainBoardStyle }),
-            React.createElement(BlackHand, { hands: position.black_hand, scale: scale })));
+        return (React.createElement("div", { id: "board", style: Object.assign({}, boardStyle(scale), style) },
+            React.createElement(WhiteHand, { hands: position.white_hand, scale: scale, onClick: onClickHand }),
+            React.createElement(MainBoard_1.default, { cells: position.cells, highlightCell: position.movedCell, scale: scale, style: mainBoardStyle, onClick: onClickBoard }),
+            React.createElement(BlackHand, { hands: position.black_hand, scale: scale, onClick: onClickHand })));
 };
 exports.default = exports.Board;
 const boardStyle = scale => ({
@@ -25,10 +34,16 @@ const vBoardStyle = scale => ({
     height: scale * 500,
     width: scale * 410
 });
-const WhiteHand = ({ hands, scale }) => (React.createElement("div", { style: handWrapperStyle(scale) },
-    React.createElement(Hand_1.default, { color: "white", hands: hands, scale: scale })));
-const BlackHand = ({ hands, scale }) => (React.createElement("div", { style: handWrapperStyle(scale) },
-    React.createElement(Hand_1.default, { color: "black", hands: hands, scale: scale, style: blackHandStyle })));
+const WhiteHand = (_a) => {
+    var { hands, scale } = _a, props = __rest(_a, ["hands", "scale"]);
+    return (React.createElement("div", { style: handWrapperStyle(scale) },
+        React.createElement(Hand_1.default, Object.assign({ color: "white", hands: hands, scale: scale }, props))));
+};
+const BlackHand = (_a) => {
+    var { hands, scale } = _a, props = __rest(_a, ["hands", "scale"]);
+    return (React.createElement("div", { style: handWrapperStyle(scale) },
+        React.createElement(Hand_1.default, Object.assign({ color: "black", hands: hands, scale: scale, style: blackHandStyle }, props))));
+};
 const blackHandStyle = {
     bottom: 0,
     position: "absolute"

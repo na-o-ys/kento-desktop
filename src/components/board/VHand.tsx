@@ -8,10 +8,11 @@ type VHandProps = {
     hands: Hands,
     color: string,
     style?: Style,
-    scale?: number
+    scale?: number,
+    onClick?: Function
 }
 
-export const VHand = ({ hands, color, style = {}, scale = 1 }: VHandProps) => {
+export const VHand = ({ hands, color, style = {}, scale = 1, onClick = () => {} }: VHandProps) => {
     const pieces = pieceDisplayOrder[color]
         .filter(piece => hands[piece] > 0)
         .map(piece => ({
@@ -21,7 +22,7 @@ export const VHand = ({ hands, color, style = {}, scale = 1 }: VHandProps) => {
     return (
         <div style={{ ...getHandStyle(scale), ...style }}>
             {pieces.map(hand => (
-                <Cell key={hand.piece} piece={hand.piece} count={hand.count} scale={scale} style={getCellStyle(color)} />
+                <Cell key={hand.piece} piece={hand.piece} count={hand.count} scale={scale} style={getCellStyle(color)} onClick={() => onClick(hand.piece)} />
             ))}
         </div>
     )

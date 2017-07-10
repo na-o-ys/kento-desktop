@@ -8,10 +8,13 @@ import { setGame } from "./actions"
 import { Game } from "./lib/game"
 import { Store } from "redux"
 import { State } from "./container/KentoApp"
+import { emptyAiInfo, Ai } from "./lib/Ai"
 
-const App = ({ store }) => (
+export type StoreType = Store<State>
+
+const App = ({ store, ai }) => (
     <Provider store={store}>
-        <KentoApp />
+        <KentoApp ai={ai} />
     </Provider>
 )
 
@@ -34,21 +37,21 @@ export function registerGame(subscribe: (x: GameListener) => void, turn: number)
 function initializeRender(game: Game, turn: number) {
     let store = createStore<State>(
         reducers,
-        { game, turn, turnsRead: game.maxTurn }
+        {
+            game,
+            turn,
+            turnsRead: game.maxTurn,
+            moveInput: { state: 'selectingMoveFrom' },
+            theGame: game,
+            branchFrom: -1,
+            aiInfo: emptyAiInfo,
+            positionChanged: true
+        }
     )
+    const ai = new Ai(store)
     ReactDOM.render(
-        <App store={store} />,
+        <App store={store} ai={ai}/>,
         document.getElementById("main-board")
     )
     return store
 }
-// const style = {
-//   height: 100,
-//   width: 100,
-//   margin: 20,
-//   textAlign: 'center',
-//   display: 'inline-block',
-// }
-// const Board = () => (
-//   <Paper style={style} zDepth={1} />
-// )
