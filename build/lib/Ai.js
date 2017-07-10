@@ -6,19 +6,22 @@ const AiAction = require("../actions/ai");
 const _ = require("lodash");
 exports.emptyAiInfo = {
     pv: [],
+    pvJp: [],
     depth: 0,
     nodes: 0,
     nps: 0
 };
-const Byoyomi = 10000;
+const Byoyomi = 30000;
 class Ai {
     constructor(store) {
         this.store = store;
     }
-    start(sfen, color) {
+    start(game, turn) {
+        const position = game.getPosition(turn);
+        const color = position.nextColor;
+        const sfen = game.getSfen(turn);
         console.log(`ai started: ${sfen}`);
         if (this.aiProcess) {
-            console.log("kill");
             this.aiProcess.kill("SIGKILL");
         }
         this.aiProcess = child_process_1.spawn("./release", [], { cwd: "/Users/Nao/projects/Gikou/bin" });
@@ -28,7 +31,7 @@ class Ai {
             const [cmd, ...words] = line.split(" ");
             console.log(line);
             if (cmd == "info") {
-                const info = this.parseInfo(words);
+                const info = this.parseInfo(words, game, turn);
                 if (color == "w") {
                     if (info.score_cp) {
                         info.score_cp *= -1;
@@ -56,7 +59,7 @@ position ${position}
 go btime 0 wtime 0 byoyomi ${byoyomi}
 `;
     }
-    parseInfo(words) {
+    parseInfo(words, game, turn) {
         let result = _.cloneDeep(exports.emptyAiInfo);
         let command = null;
         words.forEach(word => {
@@ -88,19 +91,56 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
                     command = null;
             }
         });
+        const newGame = game.branch(turn);
+        for (const sfen of result.pv) {
+            const crrTurn = newGame.maxTurn;
+            const crrPosition = newGame.getPosition(crrTurn);
+            const crrColor = crrPosition.nextColor;
+            const move = this.parseSfen(sfen, crrPosition);
+            // console.log(crrPosition.getPiece(move.from))
+            newGame.appendMove({
+                color: crrColor == "b" ? 0 : 1,
+                from: move.from,
+                to: move.to,
+                piece: move.piece || crrPosition.getPiece(move.from),
+                promote: move.promote
+            });
+        }
+        result.pvJp = newGame.jpKifu.slice(turn + 1);
         return result;
     }
-    selectBestPv(infoList) {
-        return infoList.reduce((bestinfo, info) => {
-            const depth = bestinfo["depth"] || 0;
-            const seldepth = bestinfo["seldepth"] || 0;
-            const curr_depth = info["depth"] || 0;
-            const curr_seldepth = info["seldepth"] || 0;
-            if (depth < curr_depth || (depth == curr_depth && seldepth < curr_seldepth)) {
-                return info;
-            }
-            return bestinfo;
-        });
+    parseSfen(sfen, position) {
+        const fromHand = sfen[1] == "*";
+        const from = fromHand ? null : {
+            x: sfen.charCodeAt(0) - "0".charCodeAt(0),
+            y: sfen.charCodeAt(1) - "a".charCodeAt(0) + 1
+        };
+        const to = {
+            x: sfen.charCodeAt(2) - "0".charCodeAt(0),
+            y: sfen.charCodeAt(3) - "a".charCodeAt(0) + 1
+        };
+        const piece = fromHand ? sfen[0] : position.getPiece(from);
+        const moveInput = {
+            from,
+            to,
+            fromHand,
+            piece,
+            promote: null
+        };
+        if (!fromHand && this.canPromote(moveInput, position.nextColor)) {
+            moveInput.promote = sfen[4] == "+";
+        }
+        return moveInput;
+    }
+    // TODO: ルールが散らばっている
+    canPromote(moveInput, color) {
+        const { piece } = moveInput;
+        const canPromotePiece = ["l", "n", "s", "b", "r", "p"]
+            .includes(moveInput.piece.toLowerCase());
+        if (moveInput.fromHand || !canPromotePiece)
+            return false;
+        const isPromoteArea = (y) => ((color == "b" && y <= 3) || (color == "w" && y >= 7));
+        return isPromoteArea(moveInput.from.y) || isPromoteArea(moveInput.to.y);
     }
 }
 exports.Ai = Ai;

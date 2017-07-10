@@ -24,7 +24,7 @@ export const AiResult = ({ aiInfo, style }: AiProps) => (
             }
         </dl>
         <ul>
-            { aiInfo.pv.map((move, idx) => (
+            { aiInfo.pvJp.map((move, idx) => (
                 <li key={idx}>{move}</li>
             )) }
         </ul>

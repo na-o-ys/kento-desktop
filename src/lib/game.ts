@@ -85,7 +85,9 @@ export class Game {
 
     get jpKifu(): string[] {
         if (this._jpKifu) return this._jpKifu
-        return this._jpKifu = this.player.getReadableKifuState().map(move => (move.kifu))
+        return this._jpKifu = this.player.getReadableKifuState().map(move =>
+            move.kifu.replace("☖", "△").replace("☗", "▲")
+        )
     }
 
     get kifu(): JsonKifuFormat.JSONKifuFormat {
@@ -124,8 +126,7 @@ export class Game {
         if (!this.player.inputMove(move)) {
             throw "cannot move"
         }
-        this.positions = Array.from(Array(this.maxTurn + 1).keys())
-            .map(turn => this.calculatePosition(turn))
+        this.positions.push(this.calculatePosition(this.maxTurn))
     }
 
     private calculatePosition(turn: number): Position {

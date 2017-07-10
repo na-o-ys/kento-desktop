@@ -13,5 +13,5 @@ exports.AiResult = ({ aiInfo, style }) => (React.createElement("div", { style: s
             React.createElement("div", null,
                 React.createElement("dt", null, "\u8A70\u307F"),
                 React.createElement("dd", null, aiInfo.score_mate))),
-    React.createElement("ul", null, aiInfo.pv.map((move, idx) => (React.createElement("li", { key: idx }, move))))));
+    React.createElement("ul", null, aiInfo.pvJp.map((move, idx) => (React.createElement("li", { key: idx }, move))))));
 //# sourceMappingURL=Ai.js.map

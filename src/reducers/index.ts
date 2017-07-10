@@ -175,6 +175,7 @@ function matchDoMoveCondition(moveInput: MoveInput, clickedCell: Cell, position:
         isValidMove(moveInput, clickedCell, position)
 }
 
+// TODO: ルールが散らばっている
 function canPromote(moveInput: MoveInput, clickedCell: Cell, color: string): boolean {
     const { piece } = moveInput
     const canPromotePiece = ["l", "n", "s", "b", "r", "p"]

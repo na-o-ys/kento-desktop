@@ -10,7 +10,6 @@ exports.Kento = ({ game, turn, control, moveInput, theGame, branchFrom, aiInfo, 
     // console.log(branchFrom)
     // console.log(positionChanged)
     const position = game.getPosition(turn);
-    const comments = game.getComments(turn);
     const onClickCell = (x, y) => {
         control.clickCell({ x, y }, position, moveInput, turn);
     };
@@ -21,7 +20,7 @@ exports.Kento = ({ game, turn, control, moveInput, theGame, branchFrom, aiInfo, 
         control.returnTheGame(theGame, branchFrom);
     };
     if (positionChanged) {
-        ai.start(game.getSfen(turn), position.nextColor);
+        ai.start(game, turn);
     }
     return (React.createElement("div", { className: "main", style: mainStyle },
         React.createElement(react_modal_1.default, { isOpen: moveInput.state == "selectingPromote", contentLabel: "promote", style: promoteModalStyle },

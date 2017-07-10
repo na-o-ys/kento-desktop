@@ -65,7 +65,7 @@ class Game {
     get jpKifu() {
         if (this._jpKifu)
             return this._jpKifu;
-        return this._jpKifu = this.player.getReadableKifuState().map(move => (move.kifu));
+        return this._jpKifu = this.player.getReadableKifuState().map(move => move.kifu.replace("☖", "△").replace("☗", "▲"));
     }
     get kifu() {
         return this.player.kifu;
@@ -97,8 +97,7 @@ class Game {
         if (!this.player.inputMove(move)) {
             throw "cannot move";
         }
-        this.positions = Array.from(Array(this.maxTurn + 1).keys())
-            .map(turn => this.calculatePosition(turn));
+        this.positions.push(this.calculatePosition(this.maxTurn));
     }
     calculatePosition(turn) {
         this.player.goto(turn);

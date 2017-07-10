@@ -23,7 +23,6 @@ export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom, aiI
     // console.log(branchFrom)
     // console.log(positionChanged)
     const position = game.getPosition(turn)
-    const comments = game.getComments(turn)
     const onClickCell = (x: number, y: number) => {
         control.clickCell({ x, y }, position, moveInput, turn)
     }
@@ -34,7 +33,7 @@ export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom, aiI
         control.returnTheGame(theGame, branchFrom)
     }
     if (positionChanged) {
-        ai.start(game.getSfen(turn), position.nextColor)
+        ai.start(game, turn)
     }
 
     return (
