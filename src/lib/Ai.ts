@@ -36,7 +36,7 @@ export class Ai {
         if (this.aiProcess) {
             this.aiProcess.kill("SIGKILL")
         }
-        this.aiProcess = spawn("./release", [], { cwd: "/Users/Nao/projects/Gikou/bin" })
+        this.aiProcess = spawn("./YaneuraOu-20170711-sse42", [], { cwd: "/Users/naoyoshi/projects/shogi-ai/relmo8-YaneuraOu-sse42" })
         this.aiProcess.stdin.write(this.generateCommand(Byoyomi, `startpos moves ${sfen}`))
         this.aiProcess.stdout.pipe(split()).on('data', data => {
             const line: string = data.toString()
@@ -68,7 +68,9 @@ export class Ai {
     private generateCommand(byoyomi: number, position) {
         return `usi
 setoption name USI_Ponder value false
-setoption name USI_Hash value 1024
+setoption name USI_Hash value 2048
+setoption name ConsiderationMode value true
+setoption name Threads value 4
 isready
 usinewgame
 position ${position}
