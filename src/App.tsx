@@ -9,6 +9,7 @@ import { Game } from "./lib/game"
 import { Store } from "redux"
 import { State } from "./container/KentoApp"
 import { emptyAiInfo, Ai } from "./lib/Ai"
+import { emptyMoveInput } from "./components/Kento"
 
 export type StoreType = Store<State>
 
@@ -41,7 +42,7 @@ function initializeRender(game: Game, turn: number) {
             game,
             turn,
             turnsRead: game.maxTurn,
-            moveInput: { state: 'selectingMoveFrom' },
+            moveInput: emptyMoveInput,
             theGame: game,
             branchFrom: -1,
             aiInfo: emptyAiInfo,

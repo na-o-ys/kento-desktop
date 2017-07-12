@@ -1,22 +1,18 @@
 import { connect } from "react-redux"
-import { Kento, MoveInput } from "../components/Kento"
+import { Kento, MoveInput, GameControl } from "../components/Kento"
 import * as actions from "../actions"
 import { Dispatch } from "redux"
-import { Game, Position } from "../lib/game"
+import { Game, Position, Cell } from "../lib/game"
 import { AiInfo } from "../lib/Ai"
 
-export const emptyMoveInput: MoveInput = {
-    state: "selectingMoveFrom"
-}
-
-export type State = {
-    game: Game,
-    turn: number,
-    turnsRead: number,
-    moveInput: MoveInput,
-    theGame: Game,
-    branchFrom: number,
-    positionChanged: boolean,
+export interface State {
+    game: Game
+    turn: number
+    turnsRead: number
+    moveInput: MoveInput
+    theGame: Game
+    branchFrom: number
+    positionChanged: boolean
     aiInfo: AiInfo
 }
 
@@ -33,21 +29,29 @@ function mapStateToProps(state: State, ownProps) {
     }
 }
 
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<0>): { control: GameControl } {
     return {
         control: {
-            setTurn(turn, currentTurn) { dispatch(actions.setTurn(turn, currentTurn)) },
-            clickCell(cell, position: Position, moveInput: MoveInput, turn: number) {
-                dispatch(actions.clickCell(cell, position, moveInput, turn))
+            setTurn(turn, currentTurn) {
+                dispatch(actions.setTurn(turn, currentTurn))
             },
-            clickHand(piece, position: Position, moveInput: MoveInput, turn: number) {
-                dispatch(actions.clickHand(piece, position, moveInput, turn))
+            setMoveFrom(cell: Cell, piece: string) {
+                dispatch(actions.setMoveFrom(cell, piece))
+            },
+            setMoveFromHand(piece: string) {
+                dispatch(actions.setMoveFromHand(piece))
+            },
+            setMoveTo(cell: Cell) {
+                dispatch(actions.setMoveTo(cell))
+            },
+            setPromote(promote: boolean) {
+                dispatch(actions.setPromote(promote))
             },
             returnTheGame(theGame: Game, branchFrom: number) {
                 dispatch(actions.returnTheGame(theGame, branchFrom))
             },
-            selectPromote(promote: boolean, position: Position, moveInput: MoveInput, turn: number) {
-                dispatch(actions.selectPromote(promote, position, moveInput, turn))
+            doMove(moveInput: MoveInput, position: Position) {
+                dispatch(actions.doMove(moveInput, position))
             }
         }
     }

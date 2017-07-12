@@ -65,6 +65,15 @@ export function getMovablesFromHand(piece: string, position: Position): Movables
     return new Movables([])
 }
 
+export function canPromote(from: Cell, to: Cell, position: Position): boolean {
+    const piece = position.getPiece(from)
+    const canPromotePiece = ["l", "n", "s", "b", "r", "p"]
+        .includes(piece.toLowerCase())
+    if (!canPromotePiece) return false
+    const isPromoteArea = (y: number) => ((position.nextColor == "b" && y <= 3) || (position.nextColor == "w" && y >= 7))
+    return isPromoteArea(from.y) || isPromoteArea(to.y)
+}
+
 function getMovablesL(cell: Cell, position: Position, color: string): Movables {
     const movables = getStraightMovables(cell, position, color, { x: 0, y: dir(color) })
     return new Movables(movables)

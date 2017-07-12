@@ -47,16 +47,22 @@ export type Hand = {
     P: number
 }
 
+export interface Cell {
+    x: number
+    y: number
+}
+
 export class Position {
     constructor(
         readonly cells: Array<Piece | null>,
         readonly black_hand: Hand,
         readonly white_hand: Hand,
         readonly movedCell: number,
-        readonly nextColor: string
+        readonly nextColor: string,
+        readonly turn: number
     ) {}
 
-    getPiece(cell: { x: number, y: number }): string | null {
+    getPiece(cell: Cell): string | null {
         return this.cells[(cell.y - 1) * 9 + 9 - cell.x]
     }
 }
@@ -149,7 +155,7 @@ export class Game {
             white_hand[pieceKindMap[kind]] = state.hands[1][kind]
         }
         const nextColor = state.color == 0 ? "b" : "w"
-        return new Position(cells, black_hand, white_hand, movedCell, nextColor)
+        return new Position(cells, black_hand, white_hand, movedCell, nextColor, turn)
     }
 }
 

@@ -31,10 +31,6 @@
   version "15.0.35"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-15.0.35.tgz#4672923cd502d03e1480d03816ebc5a719fb86da"
 
-"@types/react@^15.0.37":
-  version "15.0.37"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-15.0.37.tgz#e6391cdd4ffce7050b8a290b23611a61f2411da5"
-
 "@types/split@^0.3.28":
   version "0.3.28"
   resolved "https://registry.yarnpkg.com/@types/split/-/split-0.3.28.tgz#66d0361dbd9715b093d6b27a4c9985daadccc9ec"

@@ -1,10 +1,20 @@
 import * as React from "react"
 import Modal from "react-modal"
 import Board from "./Board"
-import { GameControl } from "../types"
-import { Game } from "../lib/game"
+import { Game, Position, Cell } from "../lib/game"
 import { AiResult } from "./Ai"
 import { AiInfo, Ai } from "../lib/Ai"
+import * as ShogiRule from "../lib/ShogiRule"
+
+export interface GameControl {
+    setTurn(turn: number, currentTurn: number): void
+    setMoveFrom(cell: Cell, piece: string): void
+    setMoveFromHand(piece: string)
+    setMoveTo(cell: Cell): void
+    setPromote(promote: boolean): void
+    returnTheGame(theGame: any, branchFrom: number): void
+    doMove(moveInput: MoveInput, position: Position): void
+}
 
 interface KentoProps {
     game: Game
@@ -13,47 +23,97 @@ interface KentoProps {
     theGame: Game
     branchFrom: number
     control: GameControl
-    aiInfo: AiInfo,
-    positionChanged: boolean,
+    aiInfo: AiInfo
+    positionChanged: boolean
     ai: Ai
 }
-export const Kento = ({ game, turn, control, moveInput, theGame, branchFrom, aiInfo, positionChanged, ai }: KentoProps) => {
-    // console.log(moveInput)
-    // console.log(game)
-    // console.log(branchFrom)
-    // console.log(positionChanged)
-    const position = game.getPosition(turn)
-    const onClickCell = (x: number, y: number) => {
-        control.clickCell({ x, y }, position, moveInput, turn)
-    }
-    const onClickHand = (piece: string) => {
-        control.clickHand(piece, position, moveInput, turn)
-    }
-    const returnTheGame = () => {
-        control.returnTheGame(theGame, branchFrom)
-    }
-    if (positionChanged) {
-        ai.start(game, turn)
-    }
 
-    return (
-        <div className="main" style={mainStyle}>
-            <Modal isOpen={moveInput.state == "selectingPromote"} contentLabel="promote" style={promoteModalStyle}>
-                <button onClick={() => control.selectPromote(true, position, moveInput, turn)}>成</button>
-                <button onClick={() => control.selectPromote(false, position, moveInput, turn)}>不成</button>
-            </Modal>
-            <div style={{float: "left"}}>
-                <Board position={position} verticalHand={false} style={boardStyle}
-                    onClickBoard={onClickCell} onClickHand={onClickHand} />
-                <Control style={controlStyle} turn={turn} game={game}
-                    showReturnTheGame={branchFrom != -1} returnTheGame={returnTheGame}
-                    control={control}/>
+export class Kento extends React.Component<KentoProps> {
+    componentWillReceiveProps(nextProps) {
+        const position = nextProps.game.getPosition(nextProps.turn)
+        if (isReady(nextProps.moveInput, position)) {
+            nextProps.control.doMove(nextProps.moveInput, position)
+            return null
+        }
+    }
+    render() {
+        const {
+            game,
+            turn,
+            control,
+            moveInput,
+            theGame,
+            branchFrom,
+            aiInfo,
+            positionChanged,
+            ai
+        } = this.props
+        // console.log(moveInput)
+        // console.log(game)
+        // console.log(branchFrom)
+        // console.log(positionChanged)
+        const position = game.getPosition(turn)
+        const onClickCell = (x: number, y: number) => {
+            const piece = position.getPiece({ x, y })
+            // 自駒
+            if (piece && (piece.toUpperCase() == piece) == (position.nextColor == "b")) {
+                control.setMoveFrom({ x, y }, piece)
+                return
+            }
+            // 相手駒 or 空白
+            if (moveInput.piece) {
+                const movables = moveInput.from ?
+                    ShogiRule.getMovablesFromCell(moveInput.from, position) :
+                    ShogiRule.getMovablesFromHand(moveInput.piece, position)
+                if (movables.includes({ x, y })) {
+                    control.setMoveTo({ x, y })
+                }
+            }
+        }
+        const onClickHand = (piece: string) => {
+            if ((piece.toUpperCase() == piece) == (position.nextColor == "b")) {
+                control.setMoveFromHand(piece)
+            }
+        }
+        const returnTheGame = () => {
+            control.returnTheGame(theGame, branchFrom)
+        }
+        if (positionChanged) {
+            ai.start(game, turn)
+        }
+        const askPromote = moveInput.to &&
+            moveInput.promote == null &&
+            ShogiRule.canPromote(moveInput.from, moveInput.to, position)
+
+        return (
+            <div className="main" style={mainStyle}>
+                <Modal isOpen={askPromote} contentLabel="promote" style={promoteModalStyle}>
+                    <button onClick={() => control.setPromote(true)}>成</button>
+                    <button onClick={() => control.setPromote(false)}>不成</button>
+                </Modal>
+                <div style={{float: "left"}}>
+                    <Board position={position} verticalHand={false} style={boardStyle}
+                        onClickBoard={onClickCell} onClickHand={onClickHand} />
+                    <Control style={controlStyle} turn={turn} game={game}
+                        showReturnTheGame={branchFrom != -1} returnTheGame={returnTheGame}
+                        control={control}/>
+                </div>
+                <div style={{float: "left"}}>
+                    <AiResult aiInfo={aiInfo} style={{width: aiWidth}}/>
+                </div>
             </div>
-            <div style={{float: "left"}}>
-                <AiResult aiInfo={aiInfo} style={{width: aiWidth}}/>
-            </div>
-        </div>
-    )
+        )
+    }
+}
+
+function isReady(moveInput: MoveInput, position: Position) {
+    const { from, to, fromHand, promote } = moveInput
+    return to &&
+        (
+            fromHand ||
+            promote != null ||
+            from && !ShogiRule.canPromote(from, to, position)
+        )
 }
 
 const promoteModalStyle = {
@@ -80,7 +140,7 @@ type ControlProps = {
     game: Game,
     style: any,
     showReturnTheGame: boolean,
-    returnTheGame: Function   
+    returnTheGame: Function
 }
 const Control = ({ control, turn, game, showReturnTheGame, returnTheGame, style = {} }: ControlProps) => (
     <div style={style}>
@@ -119,20 +179,11 @@ const controlStyle = {
 }
 
 export interface MoveInput {
-    state: "selectingMoveFrom" | "selectingMoveTo" | "selectingPromote",
-    moveFrom?: {
-        x: number,
-        y: number
-    },
-    fromHand?: boolean,
-    piece?: string,
-    moveTo?: {
-        x: number,
-        y: number
-    },
+    from?: Cell
+    to?: Cell
+    fromHand?: boolean
+    piece?: string
     promote?: boolean
 }
 
-export const emptyMoveInput: MoveInput = {
-    state: "selectingMoveFrom"
-}
+export const emptyMoveInput: MoveInput = { promote: null }

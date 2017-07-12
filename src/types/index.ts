@@ -1,12 +1,3 @@
-// TODO: 型
-export interface GameControl {
-    setTurn(turn: number, currentTurn: number): void,
-    clickCell(cell, position, moveInput, turn): void,
-    clickHand(piece, position, moveInput, turn): void,
-    returnTheGame(theGame: any, branchFrom: number): void,
-    selectPromote(promote: boolean, position, moveInput, turn): void
-}
-
 export type Style = { [key: string]: string | number }
 
 export namespace JsonKifuFormat {
