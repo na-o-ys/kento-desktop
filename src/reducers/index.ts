@@ -6,14 +6,14 @@ import { State } from "../container/KentoApp"
 import { AiInfo, emptyAiInfo } from "../lib/Ai"
 import * as ShogiRule from "../lib/ShogiRule"
 
-function game(state: Game = emptyGame, action: Action): Game {
+function game(state: Game = emptyGame, theGame: Game, action: Action): Game {
     switch (action.type) {
         case "set_game":
             return action.game
         case "do_move":
             return doMove(state, action.position, action.moveInput )
         case "return_the_game":
-            return action.theGame
+            return theGame
         default:
             return state
     }
@@ -37,15 +37,16 @@ function branchFrom(state: number = -1, action: Action): number {
     }
 }
 
-function turn(state: number = 0, action: Action): number {
+function turn(state: number = 0, maxTurn: number, branchFrom, action: Action): number {
     switch (action.type) {
         case "set_turn":
-            history.replaceState(null, "", `#${action.turn}`)
-            return action.turn
+            const nextTurn = Math.max(Math.min(action.turn, maxTurn), 0)
+            history.replaceState(null, "", `#${nextTurn}`)
+            return nextTurn
         case "do_move":
             return state + 1
         case "return_the_game":
-            return action.branchFrom
+            return branchFrom
         default:
             return state
     }
@@ -93,7 +94,7 @@ function moveInput(state: MoveInput = emptyMoveInput, action: Action): MoveInput
     }
 }
 
-function aiInfo(state: AiInfo = emptyAiInfo, action: Action) {
+function aiInfo(state: AiInfo = emptyAiInfo, currentTurn: number, action: Action) {
     switch (action.type) {
         case "do_move":
             return emptyAiInfo
@@ -102,29 +103,37 @@ function aiInfo(state: AiInfo = emptyAiInfo, action: Action) {
         case "update_ai_info":
             return action.info
         case "set_turn":
-            return (action.turn != action.currentTurn) ? emptyAiInfo : state
+            return (action.turn != currentTurn) ? emptyAiInfo : state
         default:
             return state
     }
 }
 
-function positionChanged(state: boolean = false, action: Action) {
+function positionChanged(state: boolean = false, currentTurn: number, action: Action) {
     switch (action.type) {
         case "do_move":
             return true
         case "return_the_game":
             return true
         case "set_turn":
-            return action.turn != action.currentTurn
+            return action.turn != currentTurn
         default:
             return false
     }
 }
 
-// TODO: React の型バグ
-export const reducers = combineReducers<State>({ game, turn, turnsRead, moveInput,
-    theGame, branchFrom, aiInfo, positionChanged } as any)
-
+export function reducers(state: State, action: Action) {
+    return {
+        game: game(state.game, state.theGame, action),
+        theGame: theGame(state.theGame, action),
+        turn: turn(state.turn, state.game.maxTurn, state.branchFrom, action),
+        turnsRead: turnsRead(state.turnsRead, action),
+        moveInput: moveInput(state.moveInput, action),
+        branchFrom: branchFrom(state.branchFrom, action),
+        positionChanged: positionChanged(state.positionChanged, state.turn, action),
+        aiInfo: aiInfo(state.aiInfo, state.turn, action),
+    }
+}
 
 function doMove(game: Game, position: Position, moveInput: MoveInput): Game {
     // TODO: 実装

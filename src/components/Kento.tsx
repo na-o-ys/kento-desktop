@@ -7,20 +7,18 @@ import { AiInfo, Ai } from "../lib/Ai"
 import * as ShogiRule from "../lib/ShogiRule"
 
 export interface GameControl {
-    setTurn(turn: number, currentTurn: number): void
+    setTurn(turn: number): void
     setMoveFrom(cell: Cell, piece: string): void
     setMoveFromHand(piece: string)
     setMoveTo(cell: Cell): void
     setPromote(promote: boolean): void
-    returnTheGame(theGame: any, branchFrom: number): void
+    returnTheGame(): void
     doMove(moveInput: MoveInput, position: Position): void
 }
 
 interface KentoProps {
-    game: Game
-    turn: number
+    position: Position
     moveInput: MoveInput
-    theGame: Game
     branchFrom: number
     control: GameControl
     aiInfo: AiInfo
@@ -30,19 +28,16 @@ interface KentoProps {
 
 export class Kento extends React.Component<KentoProps> {
     componentWillReceiveProps(nextProps) {
-        const position = nextProps.game.getPosition(nextProps.turn)
-        if (isReady(nextProps.moveInput, position)) {
-            nextProps.control.doMove(nextProps.moveInput, position)
+        if (isReady(nextProps.moveInput, nextProps.position)) {
+            nextProps.control.doMove(nextProps.moveInput, nextProps.position)
             return null
         }
     }
     render() {
         const {
-            game,
-            turn,
+            position,
             control,
             moveInput,
-            theGame,
             branchFrom,
             aiInfo,
             positionChanged,
@@ -52,7 +47,6 @@ export class Kento extends React.Component<KentoProps> {
         // console.log(game)
         // console.log(branchFrom)
         // console.log(positionChanged)
-        const position = game.getPosition(turn)
         const onClickCell = (x: number, y: number) => {
             const piece = position.getPiece({ x, y })
             // 自駒
@@ -75,15 +69,12 @@ export class Kento extends React.Component<KentoProps> {
                 control.setMoveFromHand(piece)
             }
         }
-        const returnTheGame = () => {
-            control.returnTheGame(theGame, branchFrom)
-        }
         if (positionChanged) {
-            ai.start(game, turn)
+            ai.start(position)
         }
         const askPromote = moveInput.to &&
             moveInput.promote == null &&
-            ShogiRule.canPromote(moveInput.from, moveInput.to, position)
+            moveInput.from && ShogiRule.canPromote(moveInput.from, moveInput.to, position)
 
         return (
             <div className="main" style={mainStyle}>
@@ -94,8 +85,8 @@ export class Kento extends React.Component<KentoProps> {
                 <div style={{float: "left"}}>
                     <Board position={position} verticalHand={false} style={boardStyle}
                         onClickBoard={onClickCell} onClickHand={onClickHand} />
-                    <Control style={controlStyle} turn={turn} game={game}
-                        showReturnTheGame={branchFrom != -1} returnTheGame={returnTheGame}
+                    <Control style={controlStyle} turn={position.turn}
+                        showReturnTheGame={branchFrom != -1} returnTheGame={control.returnTheGame}
                         control={control}/>
                 </div>
                 <div style={{float: "left"}}>
@@ -137,15 +128,14 @@ const returnTheGameStyle = {
 type ControlProps = {
     control: GameControl,
     turn: number,
-    game: Game,
     style: any,
     showReturnTheGame: boolean,
     returnTheGame: Function
 }
-const Control = ({ control, turn, game, showReturnTheGame, returnTheGame, style = {} }: ControlProps) => (
+const Control = ({ control, turn, showReturnTheGame, returnTheGame, style = {} }: ControlProps) => (
     <div style={style}>
-        <div style={moveControlStyle} onClick={() => control.setTurn(Math.max(turn - 1, 0), turn)}>&lt;</div>
-        <div style={moveControlStyle} onClick={() => control.setTurn(Math.min(turn + 1, game.maxTurn), turn)}>&gt;</div>
+        <div style={moveControlStyle} onClick={() => control.setTurn(turn - 1)}>&lt;</div>
+        <div style={moveControlStyle} onClick={() => control.setTurn(turn + 1)}>&gt;</div>
         { showReturnTheGame ?
             <div style={returnTheGameStyle} onClick={() => returnTheGame()}>棋譜に戻る</div> :
             null

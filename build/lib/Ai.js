@@ -16,10 +16,9 @@ class Ai {
     constructor(store) {
         this.store = store;
     }
-    start(game, turn) {
-        const position = game.getPosition(turn);
+    start(position) {
         const color = position.nextColor;
-        const sfen = game.getSfen(turn);
+        const sfen = position.sfen;
         console.log(`ai started: ${sfen}`);
         if (this.aiProcess) {
             this.aiProcess.kill("SIGKILL");

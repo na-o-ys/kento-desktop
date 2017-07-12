@@ -12,12 +12,12 @@ export function setGame(game: Game): Action {
     return { type: "set_game", game }
 }
 
-type SetTurnAction = { type: "set_turn", turn: number, currentTurn: number }
-export function setTurn(turn: number, currentTurn): Action {
-    return { type: "set_turn", turn, currentTurn }
+type SetTurnAction = { type: "set_turn", turn: number }
+export function setTurn(turn: number): Action {
+    return { type: "set_turn", turn }
 }
 
-type ReturnTheGame = { type: "return_the_game", theGame: Game, branchFrom: number }
-export function returnTheGame(theGame: Game, branchFrom: number) {
-    return { type: "return_the_game", theGame, branchFrom }
+type ReturnTheGame = { type: "return_the_game" }
+export function returnTheGame() {
+    return { type: "return_the_game" }
 }

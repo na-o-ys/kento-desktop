@@ -1,23 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const redux_1 = require("redux");
 const game_1 = require("../lib/game");
-const KentoApp_1 = require("../container/KentoApp");
+const Kento_1 = require("../components/Kento");
 const Ai_1 = require("../lib/Ai");
-const ShogiRule = require("../lib/ShogiRule");
-function game(state = game_1.emptyGame, action) {
+function game(state = game_1.emptyGame, theGame, action) {
     switch (action.type) {
         case "set_game":
             return action.game;
-        case "click_cell":
-            if (matchDoMoveCondition(action.moveInput, action.cell, action.position)) {
-                return doMove(state, action.position, Object.assign({}, action.moveInput, { moveTo: action.cell }), action.turn);
-            }
-            return state;
-        case "select_promote":
-            return doMove(state, action.position, Object.assign({}, action.moveInput, { promote: action.promote }), action.turn);
+        case "do_move":
+            return doMove(state, action.position, action.moveInput);
         case "return_the_game":
-            return action.theGame;
+            return theGame;
         default:
             return state;
     }
@@ -27,14 +20,10 @@ function theGame(state = game_1.emptyGame, action) {
 }
 function branchFrom(state = -1, action) {
     switch (action.type) {
-        case "click_cell":
-            if (state == -1 && matchDoMoveCondition(action.moveInput, action.cell, action.position)) {
-                return action.turn;
+        case "do_move":
+            if (state == -1) {
+                return action.position.turn;
             }
-            return state;
-        case "select_promote":
-            if (state == -1)
-                return action.turn;
             return state;
         case "return_the_game":
             return -1;
@@ -42,20 +31,16 @@ function branchFrom(state = -1, action) {
             return state;
     }
 }
-function turn(state = 0, action) {
+function turn(state = 0, maxTurn, branchFrom, action) {
     switch (action.type) {
         case "set_turn":
-            history.replaceState(null, "", `#${action.turn}`);
-            return action.turn;
-        case "click_cell":
-            if (matchDoMoveCondition(action.moveInput, action.cell, action.position)) {
-                return state + 1;
-            }
-            return state;
-        case "select_promote":
+            const nextTurn = Math.max(Math.min(action.turn, maxTurn), 0);
+            history.replaceState(null, "", `#${nextTurn}`);
+            return nextTurn;
+        case "do_move":
             return state + 1;
         case "return_the_game":
-            return action.branchFrom;
+            return branchFrom;
         default:
             return state;
     }
@@ -68,125 +53,74 @@ function turnsRead(state = 0, action) {
             return state;
     }
 }
-function moveInput(state = KentoApp_1.emptyMoveInput, action) {
+function moveInput(state = Kento_1.emptyMoveInput, action) {
     switch (action.type) {
-        case "click_cell":
-            if (matchDoMoveCondition(state, action.cell, action.position))
-                return KentoApp_1.emptyMoveInput;
-            switch (state.state) {
-                case "selectingMoveFrom":
-                    const piece = action.position.getPiece(action.cell);
-                    if (isValidMoveFrom(action.cell, action.position)) {
-                        return Object.assign({}, state, { state: "selectingMoveTo", moveFrom: action.cell, piece });
-                    }
-                    return KentoApp_1.emptyMoveInput;
-                case "selectingMoveTo":
-                    if (isValidMove(state, action.cell, action.position)) {
-                        return Object.assign({}, state, { state: "selectingPromote", moveTo: action.cell });
-                    }
-                    return KentoApp_1.emptyMoveInput;
-                default:
-                    return KentoApp_1.emptyMoveInput;
-            }
-        case "click_hand":
-            if (isValidMoveFromColor(action.piece, action.position)) {
-                return Object.assign({}, KentoApp_1.emptyMoveInput, { state: "selectingMoveTo", fromHand: true, piece: action.piece });
-            }
-            return KentoApp_1.emptyMoveInput;
+        case "set_move_from":
+            return Object.assign({}, Kento_1.emptyMoveInput, { from: action.cell, piece: action.piece });
+        case "set_move_from_hand":
+            return Object.assign({}, Kento_1.emptyMoveInput, { fromHand: true, piece: action.piece });
+        case "set_move_to":
+            return Object.assign({}, state, { to: action.cell });
+        case "set_promote":
+            return Object.assign({}, state, { promote: action.promote });
         case "set_turn":
         case "return_the_game":
-        case "select_promote":
-            return KentoApp_1.emptyMoveInput;
+        case "do_move":
+            return Kento_1.emptyMoveInput;
         default:
             return state;
     }
 }
-function aiInfo(state = Ai_1.emptyAiInfo, action) {
+function aiInfo(state = Ai_1.emptyAiInfo, currentTurn, action) {
     switch (action.type) {
-        case "click_cell":
-            if (matchDoMoveCondition(action.moveInput, action.cell, action.position)) {
-                return Ai_1.emptyAiInfo;
-            }
-            return state;
-        case "select_promote":
+        case "do_move":
             return Ai_1.emptyAiInfo;
         case "return_the_game":
             return Ai_1.emptyAiInfo;
         case "update_ai_info":
             return action.info;
         case "set_turn":
-            return (action.turn != action.currentTurn) ? Ai_1.emptyAiInfo : state;
+            return (action.turn != currentTurn) ? Ai_1.emptyAiInfo : state;
         default:
             return state;
     }
 }
-function positionChanged(state = false, action) {
+function positionChanged(state = false, currentTurn, action) {
     switch (action.type) {
-        case "click_cell":
-            if (matchDoMoveCondition(action.moveInput, action.cell, action.position)) {
-                return true;
-            }
-            return false;
-        case "select_promote":
+        case "do_move":
             return true;
         case "return_the_game":
             return true;
         case "set_turn":
-            return action.turn != action.currentTurn;
+            return action.turn != currentTurn;
         default:
             return false;
     }
 }
-// TODO: React の型バグ
-exports.reducers = redux_1.combineReducers({ game, turn, turnsRead, moveInput,
-    theGame, branchFrom, aiInfo, positionChanged });
-function isValidMoveFrom(cell, position) {
-    const piece = position.getPiece(cell);
-    return isValidMoveFromColor(position.getPiece(cell), position);
+function reducers(state, action) {
+    return {
+        game: game(state.game, state.theGame, action),
+        theGame: theGame(state.theGame, action),
+        turn: turn(state.turn, state.game.maxTurn, state.branchFrom, action),
+        turnsRead: turnsRead(state.turnsRead, action),
+        moveInput: moveInput(state.moveInput, action),
+        branchFrom: branchFrom(state.branchFrom, action),
+        positionChanged: positionChanged(state.positionChanged, state.turn, action),
+        aiInfo: aiInfo(state.aiInfo, state.turn, action),
+    };
 }
-function isValidMoveFromColor(piece, position) {
-    if (!piece)
-        return false;
-    return (position.nextColor == "b" && piece == piece.toUpperCase()) ||
-        (position.nextColor == "w" && piece == piece.toLowerCase());
-}
-function matchDoMoveCondition(moveInput, clickedCell, position) {
-    if (moveInput.state != "selectingMoveTo")
-        return false;
-    return !canPromote(moveInput, clickedCell, position.nextColor) &&
-        isValidMove(moveInput, clickedCell, position);
-}
-// TODO: ルールが散らばっている
-function canPromote(moveInput, clickedCell, color) {
-    const { piece } = moveInput;
-    const canPromotePiece = ["l", "n", "s", "b", "r", "p"]
-        .includes(moveInput.piece.toLowerCase());
-    if (moveInput.fromHand || !canPromotePiece)
-        return false;
-    const isPromoteArea = (y) => ((color == "b" && y <= 3) || (color == "w" && y >= 7));
-    return isPromoteArea(moveInput.moveFrom.y) || isPromoteArea(clickedCell.y);
-}
-function isValidMove(moveInput, clickedCell, position) {
-    if (moveInput.fromHand) {
-        return ShogiRule.getMovablesFromHand(moveInput.piece, position)
-            .includes(clickedCell);
-    }
-    else {
-        return ShogiRule.getMovablesFromCell(moveInput.moveFrom, position)
-            .includes(clickedCell);
-    }
-}
-function doMove(game, position, moveInput, turn) {
+exports.reducers = reducers;
+function doMove(game, position, moveInput) {
     // TODO: 実装
     // if (isCurrentGameMove(game, moveInput)) {
     //     return game
     // }
     const { kifu } = game;
-    const newGame = game.branch(turn);
+    const newGame = game.branch(position.turn);
     newGame.appendMove({
         color: position.nextColor == "b" ? 0 : 1,
-        from: moveInput.moveFrom,
-        to: moveInput.moveTo,
+        from: moveInput.from,
+        to: moveInput.to,
         piece: moveInput.piece,
         promote: moveInput.promote
     });

@@ -3,13 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_redux_1 = require("react-redux");
 const Kento_1 = require("../components/Kento");
 const actions = require("../actions");
-exports.emptyMoveInput = {
-    state: "selectingMoveFrom"
-};
 function mapStateToProps(state, ownProps) {
     return {
-        game: state.game,
-        turn: state.turn,
+        position: state.game.getPosition(state.turn),
         moveInput: state.moveInput,
         theGame: state.theGame,
         branchFrom: state.branchFrom,
@@ -21,18 +17,26 @@ function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch) {
     return {
         control: {
-            setTurn(turn, currentTurn) { dispatch(actions.setTurn(turn, currentTurn)); },
-            clickCell(cell, position, moveInput, turn) {
-                dispatch(actions.clickCell(cell, position, moveInput, turn));
+            setTurn(turn) {
+                dispatch(actions.setTurn(turn));
             },
-            clickHand(piece, position, moveInput, turn) {
-                dispatch(actions.clickHand(piece, position, moveInput, turn));
+            setMoveFrom(cell, piece) {
+                dispatch(actions.setMoveFrom(cell, piece));
             },
-            returnTheGame(theGame, branchFrom) {
-                dispatch(actions.returnTheGame(theGame, branchFrom));
+            setMoveFromHand(piece) {
+                dispatch(actions.setMoveFromHand(piece));
             },
-            selectPromote(promote, position, moveInput, turn) {
-                dispatch(actions.selectPromote(promote, position, moveInput, turn));
+            setMoveTo(cell) {
+                dispatch(actions.setMoveTo(cell));
+            },
+            setPromote(promote) {
+                dispatch(actions.setPromote(promote));
+            },
+            returnTheGame() {
+                dispatch(actions.returnTheGame());
+            },
+            doMove(moveInput, position) {
+                dispatch(actions.doMove(moveInput, position));
             }
         }
     };

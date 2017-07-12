@@ -35,12 +35,13 @@ const revPieceKindMap = {
     "+P": "TO"
 };
 class Position {
-    constructor(cells, black_hand, white_hand, movedCell, nextColor) {
+    constructor(cells, black_hand, white_hand, movedCell, nextColor, turn) {
         this.cells = cells;
         this.black_hand = black_hand;
         this.white_hand = white_hand;
         this.movedCell = movedCell;
         this.nextColor = nextColor;
+        this.turn = turn;
     }
     getPiece(cell) {
         return this.cells[(cell.y - 1) * 9 + 9 - cell.x];
@@ -122,7 +123,7 @@ class Game {
             white_hand[pieceKindMap[kind]] = state.hands[1][kind];
         }
         const nextColor = state.color == 0 ? "b" : "w";
-        return new Position(cells, black_hand, white_hand, movedCell, nextColor);
+        return new Position(cells, black_hand, white_hand, movedCell, nextColor, turn);
     }
 }
 exports.Game = Game;

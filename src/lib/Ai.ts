@@ -1,5 +1,5 @@
 import { StoreType } from "../App"
-// import { spawn } from "child_process"
+import { spawn } from "child_process"
 import split = require("split")
 import * as AiAction from "../actions/ai"
 import * as _ from "lodash"
@@ -28,41 +28,40 @@ const Byoyomi = 30000
 export class Ai {
     aiProcess: any
     constructor(readonly store: StoreType) {}
-    start(game: Game, turn: number) {
-        // const position = game.getPosition(turn)
-        // const color = position.nextColor
-        // const sfen = game.getSfen(turn)
-        // console.log(`ai started: ${sfen}`)
-        // if (this.aiProcess) {
-        //     this.aiProcess.kill("SIGKILL")
-        // }
-        // this.aiProcess = spawn("./YaneuraOu-20170711-sse42", [], { cwd: "/Users/naoyoshi/projects/shogi-ai/relmo8-YaneuraOu-sse42" })
-        // this.aiProcess.stdin.write(this.generateCommand(Byoyomi, `startpos moves ${sfen}`))
-        // this.aiProcess.stdout.pipe(split()).on('data', data => {
-        //     const line: string = data.toString()
-        //     const [cmd, ...words] = line.split(" ")
-        //     console.log(line)
+    start(position: Position) {
+        const color = position.nextColor
+        const sfen = position.sfen
+        console.log(`ai started: ${sfen}`)
+        if (this.aiProcess) {
+            this.aiProcess.kill("SIGKILL")
+        }
+        this.aiProcess = spawn("./YaneuraOu-20170711-sse42", [], { cwd: "/Users/naoyoshi/projects/shogi-ai/relmo8-YaneuraOu-sse42" })
+        this.aiProcess.stdin.write(this.generateCommand(Byoyomi, `startpos moves ${sfen}`))
+        this.aiProcess.stdout.pipe(split()).on('data', data => {
+            const line: string = data.toString()
+            const [cmd, ...words] = line.split(" ")
+            console.log(line)
 
-        //     if (cmd == "info") {
-        //         const info = this.parseInfo(words, game, turn)
-        //         if (color == "w") {
-        //             if (info.score_cp) {
-        //                 info.score_cp *= -1
-        //             }
-        //             if (info.score_mate) {
-        //                 info.score_mate *= -1
-        //             }
-        //         }
-        //         this.store.dispatch(AiAction.updateAiInfo(
-        //             info
-        //         ))
-        //         console.log(info)
-        //     }
-        //     if (cmd == "bestmove") {
-        //         console.log(words[0])
-        //         this.aiProcess.kill("SIGKILL")
-        //     }
-        // })
+            if (cmd == "info") {
+                const info = this.parseInfo(words, game, turn)
+                if (color == "w") {
+                    if (info.score_cp) {
+                        info.score_cp *= -1
+                    }
+                    if (info.score_mate) {
+                        info.score_mate *= -1
+                    }
+                }
+                this.store.dispatch(AiAction.updateAiInfo(
+                    info
+                ))
+                console.log(info)
+            }
+            if (cmd == "bestmove") {
+                console.log(words[0])
+                this.aiProcess.kill("SIGKILL")
+            }
+        })
     }
 
     private generateCommand(byoyomi: number, position) {

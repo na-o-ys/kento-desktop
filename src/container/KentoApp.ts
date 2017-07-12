@@ -18,8 +18,7 @@ export interface State {
 
 function mapStateToProps(state: State, ownProps) {
     return {
-        game: state.game,
-        turn: state.turn,
+        position: state.game.getPosition(state.turn),
         moveInput: state.moveInput,
         theGame: state.theGame,
         branchFrom: state.branchFrom,
@@ -32,8 +31,8 @@ function mapStateToProps(state: State, ownProps) {
 function mapDispatchToProps(dispatch: Dispatch<0>): { control: GameControl } {
     return {
         control: {
-            setTurn(turn, currentTurn) {
-                dispatch(actions.setTurn(turn, currentTurn))
+            setTurn(turn) {
+                dispatch(actions.setTurn(turn))
             },
             setMoveFrom(cell: Cell, piece: string) {
                 dispatch(actions.setMoveFrom(cell, piece))
@@ -47,8 +46,8 @@ function mapDispatchToProps(dispatch: Dispatch<0>): { control: GameControl } {
             setPromote(promote: boolean) {
                 dispatch(actions.setPromote(promote))
             },
-            returnTheGame(theGame: Game, branchFrom: number) {
-                dispatch(actions.returnTheGame(theGame, branchFrom))
+            returnTheGame() {
+                dispatch(actions.returnTheGame())
             },
             doMove(moveInput: MoveInput, position: Position) {
                 dispatch(actions.doMove(moveInput, position))

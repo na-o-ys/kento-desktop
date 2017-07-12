@@ -59,7 +59,8 @@ export class Position {
         readonly white_hand: Hand,
         readonly movedCell: number,
         readonly nextColor: string,
-        readonly turn: number
+        readonly turn: number,
+        readonly sfen: string
     ) {}
 
     getPiece(cell: Cell): string | null {
@@ -155,7 +156,8 @@ export class Game {
             white_hand[pieceKindMap[kind]] = state.hands[1][kind]
         }
         const nextColor = state.color == 0 ? "b" : "w"
-        return new Position(cells, black_hand, white_hand, movedCell, nextColor, turn)
+        const sfen = this.getSfen(turn)
+        return new Position(cells, black_hand, white_hand, movedCell, nextColor, turn, sfen)
     }
 }
 

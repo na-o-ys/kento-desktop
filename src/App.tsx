@@ -37,7 +37,7 @@ export function registerGame(subscribe: (x: GameListener) => void, turn: number)
 
 function initializeRender(game: Game, turn: number) {
     let store = createStore<State>(
-        reducers,
+        reducers as any, // Redux の型バグ
         {
             game,
             turn,

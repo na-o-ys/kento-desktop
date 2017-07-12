@@ -61,6 +61,16 @@ function getMovablesFromHand(piece, position) {
     return new Movables([]);
 }
 exports.getMovablesFromHand = getMovablesFromHand;
+function canPromote(from, to, position) {
+    const piece = position.getPiece(from);
+    const canPromotePiece = ["l", "n", "s", "b", "r", "p"]
+        .includes(piece.toLowerCase());
+    if (!canPromotePiece)
+        return false;
+    const isPromoteArea = (y) => ((position.nextColor == "b" && y <= 3) || (position.nextColor == "w" && y >= 7));
+    return isPromoteArea(from.y) || isPromoteArea(to.y);
+}
+exports.canPromote = canPromote;
 function getMovablesL(cell, position, color) {
     const movables = getStraightMovables(cell, position, color, { x: 0, y: dir(color) });
     return new Movables(movables);

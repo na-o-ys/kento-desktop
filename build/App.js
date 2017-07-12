@@ -8,6 +8,7 @@ const KentoApp_1 = require("./container/KentoApp");
 const reducers_1 = require("./reducers");
 const actions_1 = require("./actions");
 const Ai_1 = require("./lib/Ai");
+const Kento_1 = require("./components/Kento");
 const App = ({ store, ai }) => (React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(KentoApp_1.default, { ai: ai })));
 function startGame(game, turn) {
@@ -27,11 +28,12 @@ function registerGame(subscribe, turn) {
 }
 exports.registerGame = registerGame;
 function initializeRender(game, turn) {
-    let store = redux_1.createStore(reducers_1.reducers, {
+    let store = redux_1.createStore(reducers_1.reducers, // Redux の型バグ
+    {
         game,
         turn,
         turnsRead: game.maxTurn,
-        moveInput: { state: 'selectingMoveFrom' },
+        moveInput: Kento_1.emptyMoveInput,
         theGame: game,
         branchFrom: -1,
         aiInfo: Ai_1.emptyAiInfo,
