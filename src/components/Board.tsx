@@ -2,31 +2,59 @@ import * as React from "react"
 import MainBoard, { OnClickMainBoard } from "./board/MainBoard"
 import Hand from "./board/Hand"
 import VHand from "./board/VHand"
-import { Position } from "../lib/Kifu"
+import { Position, Cell } from "../lib/Kifu"
 import { Style } from "../types"
 
-type BoardProps = {
-    position: Position,
-    verticalHand?: boolean,
-    style?: Style,
-    scale?: number,
-    onClickBoard?: OnClickMainBoard,
+interface BoardProps {
+    position: Position
+    verticalHand?: boolean
+    style?: Style
+    scale?: number
+    onClickBoard?: OnClickMainBoard
     onClickHand?: (piece: string) => void
+    highlightCell?: Cell
+    highlightHand?: string
 }
 
-export const Board = ({ position, verticalHand = true, style = {}, scale = 1, onClickBoard = () => {}, onClickHand = () => {} }: BoardProps) => {
+export const Board = ({
+    position,
+    verticalHand = true,
+    style = {},
+    scale = 1,
+    onClickBoard = () => {},
+    onClickHand = () => {},
+    highlightCell = undefined,
+    highlightHand = undefined
+}: BoardProps) => {
+    let blackHighlightHand = undefined
+    let whiteHighlightHand = undefined
+    if (highlightHand) {
+        highlightCell = undefined
+        if (highlightHand == highlightHand.toUpperCase()) {
+            blackHighlightHand = highlightHand
+        } else {
+            whiteHighlightHand = highlightHand.toLowerCase()
+        }
+    } else {
+        highlightCell = highlightCell || position.lastMove.to
+    }
+
     if (verticalHand) return (
         <div id="board" style={{ ...vBoardStyle(scale), ...style }}>
-            <VHand color="white" hand={position.whiteHand} scale={scale} onClick={onClickHand} />
-            <MainBoard cells={position.cells} highlightCell={position.lastMove.to} scale={scale} onClick={onClickBoard} />
-            <VHand color="black" hand={position.blackHand} scale={scale} onClick={onClickHand} />
+            <VHand color="white" hand={position.whiteHand} scale={scale} onClick={onClickHand}
+                highlight={whiteHighlightHand} />
+            <MainBoard cells={position.cells} highlightCell={highlightCell} scale={scale} onClick={onClickBoard} />
+            <VHand color="black" hand={position.blackHand} scale={scale} onClick={onClickHand}
+                highlight={blackHighlightHand} />
         </div>
     )
     else return (
         <div id="board" style={{ ...boardStyle(scale), ...style }}>
-            <WhiteHand hands={position.whiteHand} scale={scale} onClick={onClickHand} />
-            <MainBoard cells={position.cells} highlightCell={position.lastMove.to} scale={scale} style={mainBoardStyle} onClick={onClickBoard} />
-            <BlackHand hands={position.blackHand} scale={scale} onClick={onClickHand} />
+            <WhiteHand hands={position.whiteHand} scale={scale} onClick={onClickHand}
+                highlight={whiteHighlightHand} />
+            <MainBoard cells={position.cells} highlightCell={highlightCell} scale={scale} style={mainBoardStyle} onClick={onClickBoard} />
+            <BlackHand hands={position.blackHand} scale={scale} onClick={onClickHand}
+                highlight={blackHighlightHand} />
         </div>
     )
 }

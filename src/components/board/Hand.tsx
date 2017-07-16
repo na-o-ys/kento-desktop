@@ -4,15 +4,16 @@ import { Style } from "../../types"
 
 type Hands = { [key: string]: number }
 
-type HandProps = {
-    hands: Hands,
-    color: "black" | "white",
-    style?: Style,
-    scale?: number,
+interface HandProps {
+    hands: Hands
+    color: "black" | "white"
+    style?: Style
+    scale?: number
     onClick?: Function
+    highlight?: string
 }
 
-export const Hand = ({ hands, color, style = {}, scale = 1, onClick = () => {} }: HandProps) => {
+export const Hand = ({ hands, color, style = {}, scale = 1, onClick = () => {}, highlight }: HandProps) => {
     const pieces = pieceDisplayOrder[color]
         .filter(piece => hands[piece] > 0)
         .map(piece => ({
@@ -22,7 +23,9 @@ export const Hand = ({ hands, color, style = {}, scale = 1, onClick = () => {} }
     return (
         <div style={{ ...getHandStyle(scale), ...style }}>
             {pieces.map(hand => (
-                <Cell key={hand.piece} piece={hand.piece} count={hand.count} scale={scale} onClick={() => onClick(hand.piece)} />
+                <Cell key={hand.piece} piece={hand.piece} count={hand.count} scale={scale}
+                    onClick={() => onClick(hand.piece)}
+                    highlight={hand.piece == highlight} />
             ))}
         </div>
     )

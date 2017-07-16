@@ -4,15 +4,16 @@ import { Style } from "../../types"
 
 type Hands = { [key: string]: number }
 
-type VHandProps = {
-    hand: Hands,
-    color: "black" | "white",
-    style?: Style,
-    scale?: number,
+interface VHandProps {
+    hand: Hands
+    color: "black" | "white"
+    style?: Style
+    scale?: number
     onClick?: Function
+    highlight?: string
 }
 
-export const VHand = ({ hand, color, style = {}, scale = 1, onClick = () => {} }: VHandProps) => {
+export const VHand = ({ hand, color, style = {}, scale = 1, onClick = () => {}, highlight }: VHandProps) => {
     const pieces = pieceDisplayOrder[color]
         .filter(piece => hand[piece] > 0)
         .map(piece => ({
@@ -22,7 +23,9 @@ export const VHand = ({ hand, color, style = {}, scale = 1, onClick = () => {} }
     return (
         <div style={{ ...getHandStyle(scale), ...style }}>
             {pieces.map(hand => (
-                <Cell key={hand.piece} piece={hand.piece} count={hand.count} scale={scale} style={getCellStyle(color)} onClick={() => onClick(hand.piece)} />
+                <Cell key={hand.piece} piece={hand.piece} count={hand.count} scale={scale}
+                    style={getCellStyle(color)} onClick={() => onClick(hand.piece)}
+                    highlight={hand.piece == highlight}/>
             ))}
         </div>
     )

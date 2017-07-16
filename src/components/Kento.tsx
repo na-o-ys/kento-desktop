@@ -92,7 +92,9 @@ export class Kento extends React.Component<KentoProps> {
                 </Modal>
                 <div style={{float: "left"}}>
                     <Board position={position} verticalHand={false} style={boardStyle}
-                        onClickBoard={onClickCell} onClickHand={onClickHand} />
+                        onClickBoard={onClickCell} onClickHand={onClickHand}
+                        highlightCell={moveInput.from}
+                        highlightHand={moveInput.fromHand ? moveInput.piece : undefined}/>
                     <Control style={controlStyle} turn={position.turn}
                         showReturnTheGame={branchFrom != -1} returnTheGame={control.returnTheGame}
                         control={control}/>
