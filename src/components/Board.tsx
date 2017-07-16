@@ -33,23 +33,23 @@ export const Board = ({ position, verticalHand = true, style = {}, scale = 1, on
 
 export default Board
 
-const boardStyle = scale => ({
+const boardStyle = (scale: number) => ({
     height: scale * 454,
     width: scale * 500
 })
 
-const vBoardStyle = scale => ({
+const vBoardStyle = (scale: number) => ({
     height: scale * 500,
     width: scale * 410
 })
 
-const WhiteHand = ({ hands, scale, ...props }) => (
+const WhiteHand = ({ hands, scale, ...props }: any) => (
     <div style={handWrapperStyle(scale)}>
         <Hand color="white" hands={hands} scale={scale} {...props} />
     </div>
 )
 
-const BlackHand = ({ hands, scale, ...props }) => (
+const BlackHand = ({ hands, scale, ...props }: any) => (
     <div style={handWrapperStyle(scale)}>
         <Hand color="black" hands={hands} scale={scale} style={blackHandStyle} {...props} />
     </div>
@@ -64,7 +64,7 @@ const mainBoardStyle = {
     float: "left"
 }
 
-const handWrapperStyle: (number) => React.CSSProperties = scale => ({
+const handWrapperStyle: (scale: number) => React.CSSProperties = scale => ({
     position: "relative",
     float: "left",
     height: scale * 454,

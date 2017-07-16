@@ -1,10 +1,5 @@
-import { Position } from "./Kifu"
+import { Position, Cell } from "./Kifu"
 import * as _ from "lodash"
-
-interface Cell {
-    x: number
-    y: number
-}
 
 // TODO: 王手考慮
 export function getMovablesFromCell(cell: Cell, position: Position): Movables {
@@ -67,6 +62,7 @@ export function getMovablesFromHand(piece: string, position: Position): Movables
 
 export function canPromote(from: Cell, to: Cell, position: Position): boolean {
     const piece = position.getPiece(from)
+    if (!piece) return false
     const canPromotePiece = ["l", "n", "s", "b", "r", "p"]
         .includes(piece.toLowerCase())
     if (!canPromotePiece) return false
@@ -188,7 +184,7 @@ function getCanPutHandCells(rankBound: number, position: Position): Cell[] {
     return movables
 }
 
-function getStraightMovables(cell: Cell, position: Position, color: string, dir): Cell[] {
+function getStraightMovables(cell: Cell, position: Position, color: string, dir: Cell): Cell[] {
     let movables: Cell[] = []
     let i = 1
     while (true) {
@@ -207,7 +203,7 @@ function getStraightMovables(cell: Cell, position: Position, color: string, dir)
 
 function isSelfPiece(cell: Cell, position: Position, color: string): boolean {
     const piece = position.getPiece(cell)
-    return piece && (piece.toLowerCase() == piece) == (color == "w")
+    return !!piece && (piece.toLowerCase() == piece) == (color == "w")
 }
 
 function dir(color: string): number {

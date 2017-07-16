@@ -7,6 +7,8 @@ const Kifu_1 = require("./lib/Kifu");
 // injectHeaders()
 docReady(() => {
     const kifuElem = document.getElementById('kifu');
+    if (!kifuElem)
+        return;
     if ('kifu' in kifuElem.dataset) {
         const game = Kifu_1.parseText(kifuElem.dataset['kifu']);
         App_1.startGame(game, getTurn(), false);
@@ -24,7 +26,7 @@ function getTurn() {
         return 0;
 }
 function genSubscribeKifu(url) {
-    return callback => {
+    return (callback) => {
         const fetchGame = () => axios_1.default.get(url).then(res => callback(Kifu_1.parseText(res.data)));
         fetchGame();
         setInterval(fetchGame, 1 * 60 * 1000);

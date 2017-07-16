@@ -66,7 +66,7 @@ class Position {
         if (move.from) {
             cells[(move.from.y - 1) * 9 + 9 - move.from.x] = null;
         }
-        else {
+        if (!move.from && move.piece) {
             if (this.nextColor == "b") {
                 blackHand[move.piece.toUpperCase()] -= 1;
             }
@@ -76,11 +76,12 @@ class Position {
         }
         const moveToPiece = this.getPiece(move.to);
         if (moveToPiece) {
+            let piece = moveToPiece.toUpperCase().replace("+", "");
             if (this.nextColor == "b") {
-                blackHand[moveToPiece.toUpperCase()] += 1;
+                blackHand[piece] += 1;
             }
             else {
-                whiteHand[moveToPiece.toUpperCase()] += 1;
+                whiteHand[piece] += 1;
             }
         }
         let piece = move.from ? this.getPiece(move.from) : move.piece;
@@ -95,6 +96,9 @@ class Position {
             moveTo = "同";
         }
         const piece = move.from ? this.getPiece(move.from) : move.piece;
+        if (piece == null) {
+            throw "move-from cell cannot be null";
+        }
         const jpPiece = pieceToJp[piece.toLowerCase()];
         let promote = "";
         if (move.from && ShogiRule.canPromote(move.from, move.to, this)) {
@@ -112,6 +116,7 @@ exports.emptyCell = {
 exports.emptyMove = {
     from: exports.emptyCell,
     to: exports.emptyCell,
+    piece: null,
     promote: false
 };
 const pieceList = ["p", "l", "n", "s", "g", "b", "r", "k",
@@ -119,5 +124,4 @@ const pieceList = ["p", "l", "n", "s", "g", "b", "r", "k",
 const jpList = ["歩", "香", "桂", "銀", "金", "角", "飛", "玉",
     "と", "成香", "成桂", "成銀", "馬", "龍"];
 const pieceToJp = _.zipObject(pieceList, jpList);
-const jpToPiece = _.zipObject(jpList, pieceList);
 //# sourceMappingURL=Position.js.map

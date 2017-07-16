@@ -42,7 +42,7 @@ function calculatePosition(turn, player) {
 }
 function boardCellToPiece(b) {
     let piece = pieceKindMap[b.kind];
-    if (b.color)
+    if (b.color == 1)
         piece = piece.toLowerCase();
     return piece;
 }

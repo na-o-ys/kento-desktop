@@ -3,7 +3,6 @@ import { spawn } from "child_process"
 import split = require("split")
 import * as AiAction from "../actions/ai"
 import * as _ from "lodash"
-import { JsonKifuFormat } from "../types"
 import * as Kifu from "../lib/Kifu"
 
 export interface AiInfo {
@@ -14,6 +13,7 @@ export interface AiInfo {
     nps: number
     score_cp?: number
     score_mate?: number
+    [key: string]: number | undefined | string[]
 }
 
 export const emptyAiInfo: AiInfo = {
@@ -42,7 +42,7 @@ export class Ai {
         }
         this.aiProcess = spawn("./YaneuraOu-20170711-sse42", [], { cwd: "/Users/naoyoshi/projects/shogi-ai/relmo8-YaneuraOu-sse42" })
         this.aiProcess.stdin.write(this.generateCommand(Byoyomi, sfen))
-        this.aiProcess.stdout.pipe(split()).on('data', data => {
+        this.aiProcess.stdout.pipe(split()).on('data', (data: any) => {
             const line: string = data.toString()
             const [cmd, ...words] = line.split(" ")
             console.log(line)
@@ -69,7 +69,7 @@ export class Ai {
         })
     }
 
-    private generateCommand(byoyomi: number, position) {
+    private generateCommand(byoyomi: number, sfen: string) {
         return `usi
 setoption name USI_Ponder value false
 setoption name USI_Hash value 2048
@@ -77,23 +77,23 @@ setoption name ConsiderationMode value true
 setoption name Threads value 4
 isready
 usinewgame
-position ${position}
+position ${sfen}
 go btime 0 wtime 0 byoyomi ${byoyomi}
 `
     }
 
     private parseInfo(words: string[], position: Kifu.Position): AiInfo {
         let result = _.cloneDeep(emptyAiInfo)
-        let command = null
+        let command: string | null = null
         words.forEach(word => {
             switch(word) {
             case "score":
                 return
             case "lowerbound":
-                result["lowerbound"] = true
+                // result.lowerbound = true
                 return
             case "upperbound":
-                result["upperbound"] = true
+                // result.upperbound = true
                 return
             case "cp":
                 command = "score_cp"
@@ -146,15 +146,5 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
             piece,
             promote
         }
-    }
-
-    // TODO: ルールが散らばっている
-    canPromote(moveInput, color: string): boolean {
-        const { piece } = moveInput
-        const canPromotePiece = ["l", "n", "s", "b", "r", "p"]
-            .includes(moveInput.piece.toLowerCase())
-        if (moveInput.fromHand || !canPromotePiece) return false
-        const isPromoteArea = (y: number) => ((color == "b" && y <= 3) || (color == "w" && y >= 7))
-        return isPromoteArea(moveInput.from.y) || isPromoteArea(moveInput.to.y)
     }
 }

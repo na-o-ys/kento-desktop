@@ -26,11 +26,11 @@ exports.Board = ({ position, verticalHand = true, style = {}, scale = 1, onClick
             React.createElement(BlackHand, { hands: position.blackHand, scale: scale, onClick: onClickHand })));
 };
 exports.default = exports.Board;
-const boardStyle = scale => ({
+const boardStyle = (scale) => ({
     height: scale * 454,
     width: scale * 500
 });
-const vBoardStyle = scale => ({
+const vBoardStyle = (scale) => ({
     height: scale * 500,
     width: scale * 410
 });

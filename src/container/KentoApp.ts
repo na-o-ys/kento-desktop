@@ -4,6 +4,7 @@ import * as actions from "../actions"
 import { Dispatch } from "redux"
 import { Position, Cell } from "../lib/Kifu"
 import { AiInfo } from "../lib/Ai"
+import { AppProps } from "../App"
 import * as _ from "lodash"
 
 export interface State {
@@ -17,7 +18,7 @@ export interface State {
     aiInfo: AiInfo
 }
 
-function mapStateToProps(state: State, ownProps) {
+function mapStateToProps(state: State, ownProps: any) {
     return {
         position: state.game[state.turn],
         moveInput: state.moveInput,

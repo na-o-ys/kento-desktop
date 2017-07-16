@@ -13,7 +13,7 @@ function initWindows() {
         slashes: true
     }))
     window.on("closed", function () {
-        windows = null
+        windows.main = undefined
     })
     windows.main = window
 }
@@ -23,7 +23,7 @@ const app = Electron.app
 app.on("ready", initWindows)
 
 app.on('activate', function () {
-    if (windows.main === null) {
+    if (!windows.main) {
         initWindows()
     }
 })

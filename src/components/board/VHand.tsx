@@ -6,7 +6,7 @@ type Hands = { [key: string]: number }
 
 type VHandProps = {
     hand: Hands,
-    color: string,
+    color: "black" | "white",
     style?: Style,
     scale?: number,
     onClick?: Function

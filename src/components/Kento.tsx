@@ -9,7 +9,7 @@ import * as ShogiRule from "../lib/ShogiRule"
 export interface GameControl {
     setTurn(turn: number): void
     setMoveFrom(cell: Cell, piece: string): void
-    setMoveFromHand(piece: string)
+    setMoveFromHand(piece: string): void
     setMoveTo(cell: Cell): void
     setPromote(promote: boolean): void
     returnTheGame(): void
@@ -27,7 +27,7 @@ interface KentoProps {
 }
 
 export class Kento extends React.Component<KentoProps> {
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps: KentoProps) {
         if (isReady(nextProps.moveInput, nextProps.position)) {
             nextProps.control.doMove(nextProps.moveInput, nextProps.position)
             return null
@@ -44,6 +44,7 @@ export class Kento extends React.Component<KentoProps> {
             ai
         } = this.props
         console.log(position)
+        console.log(moveInput)
         const onClickCell = (x: number, y: number) => {
             const piece = position.getPiece({ x, y })
             // 自駒
@@ -69,9 +70,9 @@ export class Kento extends React.Component<KentoProps> {
         if (positionChanged) {
             ai.start(position)
         }
-        const askPromote = moveInput.to &&
+        const askPromote = !!moveInput.to &&
             moveInput.promote == null &&
-            moveInput.from && ShogiRule.canPromote(moveInput.from, moveInput.to, position)
+            !!moveInput.from && ShogiRule.canPromote(moveInput.from, moveInput.to, position)
 
         return (
             <div className="main" style={mainStyle}>
@@ -173,4 +174,4 @@ export interface MoveInput {
     promote?: boolean
 }
 
-export const emptyMoveInput: MoveInput = { promote: null }
+export const emptyMoveInput: MoveInput = { promote: undefined }

@@ -29,7 +29,7 @@ class Ai {
         }
         this.aiProcess = child_process_1.spawn("./YaneuraOu-20170711-sse42", [], { cwd: "/Users/naoyoshi/projects/shogi-ai/relmo8-YaneuraOu-sse42" });
         this.aiProcess.stdin.write(this.generateCommand(Byoyomi, sfen));
-        this.aiProcess.stdout.pipe(split()).on('data', data => {
+        this.aiProcess.stdout.pipe(split()).on('data', (data) => {
             const line = data.toString();
             const [cmd, ...words] = line.split(" ");
             console.log(line);
@@ -52,7 +52,7 @@ class Ai {
             }
         });
     }
-    generateCommand(byoyomi, position) {
+    generateCommand(byoyomi, sfen) {
         return `usi
 setoption name USI_Ponder value false
 setoption name USI_Hash value 2048
@@ -60,7 +60,7 @@ setoption name ConsiderationMode value true
 setoption name Threads value 4
 isready
 usinewgame
-position ${position}
+position ${sfen}
 go btime 0 wtime 0 byoyomi ${byoyomi}
 `;
     }
@@ -72,10 +72,10 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
                 case "score":
                     return;
                 case "lowerbound":
-                    result["lowerbound"] = true;
+                    // result.lowerbound = true
                     return;
                 case "upperbound":
-                    result["upperbound"] = true;
+                    // result.upperbound = true
                     return;
                 case "cp":
                     command = "score_cp";
@@ -126,16 +126,6 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
             piece,
             promote
         };
-    }
-    // TODO: ルールが散らばっている
-    canPromote(moveInput, color) {
-        const { piece } = moveInput;
-        const canPromotePiece = ["l", "n", "s", "b", "r", "p"]
-            .includes(moveInput.piece.toLowerCase());
-        if (moveInput.fromHand || !canPromotePiece)
-            return false;
-        const isPromoteArea = (y) => ((color == "b" && y <= 3) || (color == "w" && y >= 7));
-        return isPromoteArea(moveInput.from.y) || isPromoteArea(moveInput.to.y);
     }
 }
 exports.Ai = Ai;

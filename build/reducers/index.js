@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require("lodash");
+const Kifu_1 = require("../lib/Kifu");
 const Kento_1 = require("../components/Kento");
 const Ai_1 = require("../lib/Ai");
 function game(state, theGame, action) {
@@ -98,10 +99,12 @@ function positionChanged(state = false, currentTurn, action) {
     }
 }
 function reducers(state, action) {
+    const latestPosition = _.last(state.game);
+    const maxTurn = latestPosition ? latestPosition.turn : 0;
     return {
         game: game(state.game, state.theGame, action),
         theGame: theGame(state.theGame, action),
-        turn: turn(state.turn, _.last(state.game).turn, state.branchFrom, action),
+        turn: turn(state.turn, maxTurn, state.branchFrom, action),
         turnsRead: turnsRead(state.turnsRead, action),
         moveInput: moveInput(state.moveInput, action),
         branchFrom: branchFrom(state.branchFrom, action),
@@ -111,16 +114,13 @@ function reducers(state, action) {
 }
 exports.reducers = reducers;
 function doMove(game, position, moveInput) {
-    // TODO: 実装
-    // if (isCurrentGameMove(game, moveInput)) {
-    //     return game
-    // }
     const newGame = _.cloneDeep(game.slice(0, position.turn + 1));
+    // TODO: 例外
     newGame.push(position.move({
-        from: moveInput.from,
-        to: moveInput.to,
-        piece: moveInput.piece,
-        promote: moveInput.promote
+        from: moveInput.from || null,
+        to: moveInput.to || Kifu_1.emptyCell,
+        piece: moveInput.piece || null,
+        promote: !!moveInput.promote
     }));
     return newGame;
 }

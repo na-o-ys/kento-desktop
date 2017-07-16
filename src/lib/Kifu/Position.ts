@@ -3,10 +3,7 @@ import * as ShogiRule from "../ShogiRule"
 
 export type Color = "b" | "w"
 
-export type Piece = "K" | "R" | "B" | "G" | "S" | "N" | "L" | "P" |
-    "+R" | "+B" | "+S" | "+N" | "+L" | "+P" |
-    "k" | "r" | "b" | "g" | "s" | "n" | "l" | "p" |
-    "+r" | "+b" | "+s" | "+n" | "+l" | "+p"
+export type Piece = string
 
 export interface Cell {
     x: number
@@ -14,9 +11,9 @@ export interface Cell {
 }
 
 export interface Move {
-    from?: Cell
+    from: Cell | null
     to: Cell
-    piece?: Piece
+    piece: Piece | null
     promote: boolean
 }
 
@@ -86,7 +83,8 @@ export class Position {
         let whiteHand = _.cloneDeep(this.whiteHand)
         if (move.from) {
             cells[(move.from.y - 1) * 9 + 9 - move.from.x] = null
-        } else {
+        }
+        if (!move.from && move.piece) {
             if (this.nextColor == "b") {
                 blackHand[move.piece.toUpperCase()] -= 1
             } else {
@@ -96,13 +94,14 @@ export class Position {
 
         const moveToPiece = this.getPiece(move.to)
         if (moveToPiece) {
+            let piece = moveToPiece.toUpperCase().replace("+", "")
             if (this.nextColor == "b") {
-                blackHand[moveToPiece.toUpperCase()] += 1
+                blackHand[piece] += 1
             } else {
-                whiteHand[moveToPiece.toUpperCase()] += 1
+                whiteHand[piece] += 1
             }
         }
-        let piece = move.from ? this.getPiece(move.from) : move.piece
+        let piece = move.from ? this.getPiece(move.from) : move.piece as Piece
         if (move.promote) piece = "+" + piece as Piece
         cells[(move.to.y - 1) * 9 + 9 - move.to.x] = piece
 
@@ -122,7 +121,10 @@ export class Position {
             moveTo = "同"
         }
 
-        const piece = move.from ? this.getPiece(move.from) : move.piece
+        const piece = move.from ? this.getPiece(move.from) : move.piece as Piece
+        if (piece == null) {
+            throw "move-from cell cannot be null"
+        }
         const jpPiece = pieceToJp[piece.toLowerCase()]
 
         let promote = ""
@@ -148,6 +150,7 @@ export const emptyCell: Cell = {
 export const emptyMove: Move = {
     from: emptyCell,
     to: emptyCell,
+    piece: null,
     promote: false
 }
 
@@ -155,5 +158,4 @@ const pieceList = ["p", "l", "n", "s", "g", "b", "r", "k",
     "+p", "+l", "+n", "+s", "+b", "+r"]
 const jpList = ["歩", "香", "桂", "銀", "金", "角", "飛", "玉",
     "と", "成香", "成桂", "成銀", "馬", "龍"]
-const pieceToJp = _.zipObject(pieceList, jpList)
-const jpToPiece = _.zipObject(jpList, pieceList)
+const pieceToJp: { [key: string]: string } = _.zipObject(pieceList, jpList)

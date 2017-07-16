@@ -63,6 +63,8 @@ function getMovablesFromHand(piece, position) {
 exports.getMovablesFromHand = getMovablesFromHand;
 function canPromote(from, to, position) {
     const piece = position.getPiece(from);
+    if (!piece)
+        return false;
     const canPromotePiece = ["l", "n", "s", "b", "r", "p"]
         .includes(piece.toLowerCase());
     if (!canPromotePiece)
@@ -188,7 +190,7 @@ function getStraightMovables(cell, position, color, dir) {
 }
 function isSelfPiece(cell, position, color) {
     const piece = position.getPiece(cell);
-    return piece && (piece.toLowerCase() == piece) == (color == "w");
+    return !!piece && (piece.toLowerCase() == piece) == (color == "w");
 }
 function dir(color) {
     return color == "b" ? -1 : 1;

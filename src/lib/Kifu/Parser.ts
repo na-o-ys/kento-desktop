@@ -1,5 +1,5 @@
 import JKFPlayer = require("json-kifu-format")
-import { Position, emptyMove, Piece, Hand } from "./Position"
+import { Position, emptyMove, Move, Piece, Hand, Cell } from "./Position"
 
 export function parseText(text: string): Position[] {
     const player = JKFPlayer.parse(text)
@@ -8,13 +8,13 @@ export function parseText(text: string): Position[] {
         .map(turn => calculatePosition(turn, player))
 }
 
-function calculatePosition(turn: number, player): Position {
+function calculatePosition(turn: number, player: JKFPlayer): Position {
     player.goto(turn)
     const state = player.getState()
     const move = player.getMove()
-    const lastMove = move ? {
-        from: move.from,
-        to: move.to,
+    const lastMove: Move = move ? {
+        from: move.from as Cell,
+        to: move.to as Cell,
         piece: move.piece,
         promote: !!move.promote
     } : emptyMove
@@ -37,9 +37,9 @@ function calculatePosition(turn: number, player): Position {
     return new Position(lastMove, cells, blackHand, whiteHand, nextColor, turn)
 }
 
-function boardCellToPiece(b: { color: boolean, kind: string }): Piece {
+function boardCellToPiece(b: { color: number, kind: string }): Piece {
     let piece = pieceKindMap[b.kind]
-    if (b.color) piece = piece.toLowerCase() as Piece
+    if (b.color == 1) piece = piece.toLowerCase() as Piece
     return piece
 }
 

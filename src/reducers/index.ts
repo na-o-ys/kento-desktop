@@ -1,6 +1,6 @@
 import { combineReducers } from "redux"
 import * as _ from "lodash"
-import { Position, Piece } from "../lib/Kifu"
+import { Position, Piece, emptyCell } from "../lib/Kifu"
 import { Action } from "../actions"
 import { MoveInput, emptyMoveInput } from "../components/Kento"
 import { State } from "../container/KentoApp"
@@ -38,7 +38,7 @@ function branchFrom(state: number = -1, action: Action): number {
     }
 }
 
-function turn(state: number = 0, maxTurn: number, branchFrom, action: Action): number {
+function turn(state: number = 0, maxTurn: number, branchFrom: number, action: Action): number {
     switch (action.type) {
         case "set_turn":
             const nextTurn = Math.max(Math.min(action.turn, maxTurn), 0)
@@ -124,10 +124,12 @@ function positionChanged(state: boolean = false, currentTurn: number, action: Ac
 }
 
 export function reducers(state: State, action: Action) {
+    const latestPosition = _.last(state.game)
+    const maxTurn = latestPosition ? latestPosition.turn : 0
     return {
         game: game(state.game, state.theGame, action),
         theGame: theGame(state.theGame, action),
-        turn: turn(state.turn, _.last(state.game).turn, state.branchFrom, action),
+        turn: turn(state.turn, maxTurn, state.branchFrom, action),
         turnsRead: turnsRead(state.turnsRead, action),
         moveInput: moveInput(state.moveInput, action),
         branchFrom: branchFrom(state.branchFrom, action),
@@ -137,21 +139,13 @@ export function reducers(state: State, action: Action) {
 }
 
 function doMove(game: Position[], position: Position, moveInput: MoveInput): Position[] {
-    // TODO: 実装
-    // if (isCurrentGameMove(game, moveInput)) {
-    //     return game
-    // }
     const newGame = _.cloneDeep(game.slice(0, position.turn + 1))
+    // TODO: 例外
     newGame.push(position.move({
-        from: moveInput.from,
-        to: moveInput.to,
-        piece: moveInput.piece as Piece,
-        promote: moveInput.promote
+        from: moveInput.from || null,
+        to: moveInput.to || emptyCell,
+        piece: moveInput.piece || null,
+        promote: !!moveInput.promote
     }))
     return newGame
-}
-
-interface Cell {
-    x: number
-    y: number
 }

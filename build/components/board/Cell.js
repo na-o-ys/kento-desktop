@@ -26,7 +26,7 @@ function getCellStyle({ piece, highlight, scale }) {
         cellStyle["backgroundColor"] = "rgba(255, 255, 255, 0.7)";
     return Object.assign({}, cellStyle, cellSize(scale));
 }
-const cellSize = scale => ({
+const cellSize = (scale) => ({
     width: scale * 43,
     height: scale * 48,
 });

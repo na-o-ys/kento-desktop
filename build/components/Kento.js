@@ -15,6 +15,7 @@ class Kento extends React.Component {
     render() {
         const { position, control, moveInput, branchFrom, aiInfo, positionChanged, ai } = this.props;
         console.log(position);
+        console.log(moveInput);
         const onClickCell = (x, y) => {
             const piece = position.getPiece({ x, y });
             // 自駒
@@ -40,9 +41,9 @@ class Kento extends React.Component {
         if (positionChanged) {
             ai.start(position);
         }
-        const askPromote = moveInput.to &&
+        const askPromote = !!moveInput.to &&
             moveInput.promote == null &&
-            moveInput.from && ShogiRule.canPromote(moveInput.from, moveInput.to, position);
+            !!moveInput.from && ShogiRule.canPromote(moveInput.from, moveInput.to, position);
         return (React.createElement("div", { className: "main", style: mainStyle },
             React.createElement(react_modal_1.default, { isOpen: askPromote, contentLabel: "promote", style: promoteModalStyle },
                 React.createElement("button", { onClick: () => control.setPromote(true) }, "\u6210"),
@@ -106,5 +107,5 @@ const controlStyle = {
     height: 30,
     "-webkit-app-region": "no-drag"
 };
-exports.emptyMoveInput = { promote: null };
+exports.emptyMoveInput = { promote: undefined };
 //# sourceMappingURL=Kento.js.map

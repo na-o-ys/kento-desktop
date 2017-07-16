@@ -13,8 +13,11 @@ import { emptyMoveInput } from "./components/Kento"
 import { Position } from "./lib/Kifu"
 
 export type StoreType = Store<State>
-
-const App = ({ store, ai }) => (
+export interface AppProps {
+    store: StoreType
+    ai: Ai
+}
+const App = ({ store, ai }: AppProps) => (
     <Provider store={store}>
         <KentoApp ai={ai} />
     </Provider>
@@ -42,7 +45,7 @@ function initializeRender(game: Position[], turn: number, useAi: boolean = true)
         {
             game,
             turn,
-            turnsRead: _.last(game).turn,
+            turnsRead: (_.last(game) as Position).turn,
             moveInput: emptyMoveInput,
             theGame: game,
             branchFrom: -1,

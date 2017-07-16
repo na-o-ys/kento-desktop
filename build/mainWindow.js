@@ -7,7 +7,8 @@ const Kifu_1 = require("./lib/Kifu");
 const { BrowserWindow, clipboard } = electron_1.remote;
 const kifu = clipboard.readText();
 const game = Kifu_1.parseText(kifu);
-App_1.startGame(game, _.last(game).turn);
+const latestPosition = _.last(game);
+App_1.startGame(game, latestPosition ? latestPosition.turn : 0);
 // const url = clipboard.readText()
 // registerGame(genSubscribeKifu(url), 0)
 // function genSubscribeKifu(url) {

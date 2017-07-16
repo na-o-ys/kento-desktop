@@ -11,7 +11,9 @@
         "outDir": "build",
         "sourceMap": true,
         "jsx": "react",
-        "allowJs": true
+        "allowJs": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true
     },
     "include": [
         "src/**/*"

@@ -9,7 +9,8 @@ const { BrowserWindow, clipboard } = remote
 
 const kifu = clipboard.readText()
 const game = parseText(kifu)
-startGame(game, _.last(game).turn)
+const latestPosition = _.last(game)
+startGame(game, latestPosition ? latestPosition.turn : 0)
 
 // const url = clipboard.readText()
 

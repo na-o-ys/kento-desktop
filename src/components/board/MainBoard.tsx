@@ -40,9 +40,9 @@ const getMainBoardStyle = (scale: number) => ({
     padding: scale * 11,
 })
 
-const Rank = ({ cells, rankIdx, scale, highlightIdx, onClick }) => (
+const Rank = ({ cells, rankIdx, scale, highlightIdx, onClick }: any) => (
     <div style={rankStyle}>
-        {cells.map((piece, idx) => (
+        {cells.map((piece: string, idx: number) => (
             <Cell key={idx} piece={piece} highlight={idx == highlightIdx} style={{ float: "left" }} scale={scale} onClick={() => onClick(9 - idx, rankIdx + 1)} />
         ))}
     </div>
