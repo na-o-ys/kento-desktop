@@ -2,7 +2,7 @@ import { Position, Cell } from "../lib/Kifu"
 import { MoveInput } from "../components/Kento"
 
 export type MoveInputActionType = SetMoveFromAction | SetMoveToAction |
-    SetPromoteAction | SetMoveFromHandAction | DoMoveAction
+    SetPromoteAction | SetMoveFromHandAction | DoMoveAction | ClearMoveInputAction
 
 interface SetMoveFromAction {
     type: "set_move_from"
@@ -27,6 +27,13 @@ interface SetMoveToAction {
 }
 export function setMoveTo(cell: Cell): SetMoveToAction {
     return { type: "set_move_to", cell }
+}
+
+interface ClearMoveInputAction {
+    type: "clear_move_input"
+}
+export function clearMoveInput(): ClearMoveInputAction {
+    return { type: "clear_move_input" }
 }
 
 interface SetPromoteAction {

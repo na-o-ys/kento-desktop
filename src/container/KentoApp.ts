@@ -45,6 +45,9 @@ function mapDispatchToProps(dispatch: Dispatch<0>): { control: GameControl } {
             setMoveTo(cell: Cell) {
                 dispatch(actions.setMoveTo(cell))
             },
+            clearMoveInput() {
+                dispatch(actions.clearMoveInput())
+            },
             setPromote(promote: boolean) {
                 dispatch(actions.setPromote(promote))
             },

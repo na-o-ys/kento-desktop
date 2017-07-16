@@ -11,6 +11,7 @@ export interface GameControl {
     setMoveFrom(cell: Cell, piece: string): void
     setMoveFromHand(piece: string): void
     setMoveTo(cell: Cell): void
+    clearMoveInput(): void
     setPromote(promote: boolean): void
     returnTheGame(): void
     doMove(moveInput: MoveInput, position: Position): void
@@ -59,6 +60,8 @@ export class Kento extends React.Component<KentoProps> {
                     ShogiRule.getMovablesFromHand(moveInput.piece, position)
                 if (movables.includes({ x, y })) {
                     control.setMoveTo({ x, y })
+                } else {
+                    control.clearMoveInput()
                 }
             }
         }

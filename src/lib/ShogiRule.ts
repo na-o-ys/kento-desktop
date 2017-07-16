@@ -36,14 +36,14 @@ export function getMovablesFromCell(cell: Cell, position: Position): Movables {
     return new Movables([])
 }
 
-// TODO: 二歩の解消
 export function getMovablesFromHand(piece: string, position: Position): Movables {
     switch (piece.toLowerCase()) {
         case "n":
             return new Movables(getCanPutHandCells(2, position))
         case "l":
-        case "p":
             return new Movables(getCanPutHandCells(1, position))
+        case "p":
+            return new Movables(getCanPutHandPawn(position))
         case "s":
         case "g":
         case "k":
@@ -182,6 +182,26 @@ function getCanPutHandCells(rankBound: number, position: Position): Cell[] {
         }
     }
     return movables
+}
+
+function getCanPutHandPawn(position: Position): Cell[] {
+    const yLow = position.nextColor == "b" ? 2 : 1
+    const yHigh = position.nextColor == "b" ? 9 : 8
+    const selfPawn = position.nextColor == "b" ? "P" : "p"
+    let cells: Cell[] = []
+    for (const x of _.range(1, 9)) {
+        const fileCells: Cell[] = []
+        let cantPut = false
+        for (const y of _.range(yLow, yHigh + 1)) {
+            const piece = position.getPiece({ x, y })
+            if (piece == selfPawn) cantPut = true
+            if (piece == null) {
+                fileCells.push({ x, y })
+            }
+        }
+        if (!cantPut) cells = cells.concat(fileCells)
+    }
+    return cells
 }
 
 function getStraightMovables(cell: Cell, position: Position, color: string, dir: Cell): Cell[] {
