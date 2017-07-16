@@ -1,7 +1,6 @@
-import { Position, Cell } from "./Kifu"
+import { Position, Cell, Move } from "./Kifu"
 import * as _ from "lodash"
 
-// TODO: 王手考慮
 export function getMovablesFromCell(cell: Cell, position: Position): Movables {
     const piece = position.getPiece(cell)
     if (!piece) throw "pieceがnull"
@@ -68,6 +67,32 @@ export function canPromote(from: Cell, to: Cell, position: Position): boolean {
     if (!canPromotePiece) return false
     const isPromoteArea = (y: number) => ((position.nextColor == "b" && y <= 3) || (position.nextColor == "w" && y >= 7))
     return isPromoteArea(from.y) || isPromoteArea(to.y)
+}
+
+export function canMoveWithoutChecked(position: Position, move: Move): boolean {
+    const color = position.nextColor
+    const nextPosition = position.move(move)
+    let kingCell = { x: 0, y: 0 }
+    for (const x of _.range(1, 10)) {
+        for (const y of _.range(1, 10)) {
+            if (nextPosition.getPiece({ x, y }) == (color == "b" ? "K" : "k")) {
+                kingCell = { x, y }
+            }
+        }
+    }
+    for (const x of _.range(1, 10)) {
+        for (const y of _.range(1, 10)) {
+            const piece = nextPosition.getPiece({ x, y })
+            if (!piece) continue
+            if ((color == "w") == (piece == piece.toUpperCase())) {
+                const movables = getMovablesFromCell({ x, y }, nextPosition)
+                if (movables.includes(kingCell)) {
+                    return false
+                }
+            }
+        }
+    }
+    return true
 }
 
 function getMovablesL(cell: Cell, position: Position, color: string): Movables {
@@ -189,7 +214,7 @@ function getCanPutHandPawn(position: Position): Cell[] {
     const yHigh = position.nextColor == "b" ? 9 : 8
     const selfPawn = position.nextColor == "b" ? "P" : "p"
     let cells: Cell[] = []
-    for (const x of _.range(1, 9)) {
+    for (const x of _.range(1, 10)) {
         const fileCells: Cell[] = []
         let cantPut = false
         for (const y of _.range(yLow, yHigh + 1)) {
@@ -253,7 +278,15 @@ export class Movables {
         return this.movables.includes(this.encode(cell))
     }
 
+    toArray(): Cell[] {
+        return this.movables.map(encoded => this.decode(encoded))
+    }
+
     private encode(cell: Cell): number {
         return (cell.y - 1) * 9 + 9 - cell.x
+    }
+
+    private decode(encoded: number): Cell {
+        return { x: 9 - (encoded % 9), y: (encoded / 9) + 1 }
     }
 }

@@ -59,10 +59,17 @@ export class Kento extends React.Component<KentoProps> {
                     ShogiRule.getMovablesFromCell(moveInput.from, position) :
                     ShogiRule.getMovablesFromHand(moveInput.piece, position)
                 if (movables.includes({ x, y })) {
-                    control.setMoveTo({ x, y })
-                } else {
-                    control.clearMoveInput()
+                    if (ShogiRule.canMoveWithoutChecked(position, {
+                        from: moveInput.from || null,
+                        to: { x, y },
+                        piece: moveInput.piece || null,
+                        promote: !!moveInput.promote
+                    })) {
+                        control.setMoveTo({ x, y })
+                        return
+                    }
                 }
+                control.clearMoveInput()
             }
         }
         const onClickHand = (piece: string) => {
