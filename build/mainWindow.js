@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
+const _ = require("lodash");
 const App_1 = require("./App");
-const game_1 = require("./lib/game");
+const Kifu_1 = require("./lib/Kifu");
 const { BrowserWindow, clipboard } = electron_1.remote;
 const kifu = clipboard.readText();
-const game = game_1.default.parseText(kifu);
-App_1.startGame(game, game.maxTurn);
+const game = Kifu_1.parseText(kifu);
+App_1.startGame(game, _.last(game).turn);
 // const url = clipboard.readText()
 // registerGame(genSubscribeKifu(url), 0)
 // function genSubscribeKifu(url) {

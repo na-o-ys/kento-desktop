@@ -1,7 +1,6 @@
 import * as React from "react"
 import Modal from "react-modal"
 import Board from "./Board"
-import { Game } from "../lib/game"
 import { Position, Cell } from "../lib/Kifu"
 import { AiResult } from "./Ai"
 import { AiInfo, Ai } from "../lib/Ai"
@@ -45,7 +44,6 @@ export class Kento extends React.Component<KentoProps> {
             ai
         } = this.props
         console.log(position)
-        console.log(position.getSfen())
         const onClickCell = (x: number, y: number) => {
             const piece = position.getPiece({ x, y })
             // 自駒

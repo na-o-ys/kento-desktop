@@ -102,7 +102,8 @@ export class Position {
                 whiteHand[moveToPiece.toUpperCase()] += 1
             }
         }
-        const piece = move.from ? this.getPiece(move.from) : move.piece
+        let piece = move.from ? this.getPiece(move.from) : move.piece
+        if (move.promote) piece = "+" + piece as Piece
         cells[(move.to.y - 1) * 9 + 9 - move.to.x] = piece
 
         return new Position(

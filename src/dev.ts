@@ -1,14 +1,14 @@
 import docReady = require("doc-ready")
 import axios from "axios"
 import { startGame, registerGame } from "./App"
-import Game from "./lib/game"
+import { parseText } from "./lib/Kifu"
 
 // injectHeaders()
 
 docReady(() => {
     const kifuElem = document.getElementById('kifu')
     if ('kifu' in kifuElem.dataset) {
-        const game = Game.parseText(kifuElem.dataset['kifu'])
+        const game = parseText(kifuElem.dataset['kifu'])
         startGame(game, getTurn(), false)
     }
     if ('url' in kifuElem.dataset) {
@@ -26,7 +26,7 @@ function getTurn() {
 function genSubscribeKifu(url) {
     return callback => {
         const fetchGame = () =>
-            axios.get(url).then(res => callback(Game.parseText(res.data)))
+            axios.get(url).then(res => callback(parseText(res.data)))
         fetchGame()
         setInterval(fetchGame, 1 * 60 * 1000)
     }

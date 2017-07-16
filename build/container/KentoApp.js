@@ -5,7 +5,7 @@ const Kento_1 = require("../components/Kento");
 const actions = require("../actions");
 function mapStateToProps(state, ownProps) {
     return {
-        position: state.game.getPosition(state.turn),
+        position: state.game[state.turn],
         moveInput: state.moveInput,
         theGame: state.theGame,
         branchFrom: state.branchFrom,

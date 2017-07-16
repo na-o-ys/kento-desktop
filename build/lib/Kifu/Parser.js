@@ -4,8 +4,8 @@ const JKFPlayer = require("json-kifu-format");
 const Position_1 = require("./Position");
 function parseText(text) {
     const player = JKFPlayer.parse(text);
-    const maxTurn = this.player.getMaxTesuu();
-    return Array.from(Array(this.maxTurn + 1).keys())
+    const maxTurn = player.getMaxTesuu();
+    return Array.from(Array(maxTurn + 1).keys())
         .map(turn => calculatePosition(turn, player));
 }
 exports.parseText = parseText;

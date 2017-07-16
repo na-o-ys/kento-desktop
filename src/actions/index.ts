@@ -1,4 +1,3 @@
-import { Game } from "../lib/game"
 import { Position } from "../lib/Kifu"
 import { MoveInput } from "../components/Kento"
 import * as AiAction from "./ai"
@@ -8,8 +7,8 @@ export * from "./MoveInput"
 export type Action = SetGameAction | SetTurnAction | ReturnTheGame |
     AiAction.UpdateInfoAction | MoveInputActionType
 
-type SetGameAction = { type: "set_game", game: Game }
-export function setGame(game: Game): Action {
+type SetGameAction = { type: "set_game", game: Position[] }
+export function setGame(game: Position[]): Action {
     return { type: "set_game", game }
 }
 

@@ -3,12 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const docReady = require("doc-ready");
 const axios_1 = require("axios");
 const App_1 = require("./App");
-const game_1 = require("./lib/game");
+const Kifu_1 = require("./lib/Kifu");
 // injectHeaders()
 docReady(() => {
     const kifuElem = document.getElementById('kifu');
     if ('kifu' in kifuElem.dataset) {
-        const game = game_1.default.parseText(kifuElem.dataset['kifu']);
+        const game = Kifu_1.parseText(kifuElem.dataset['kifu']);
         App_1.startGame(game, getTurn(), false);
     }
     if ('url' in kifuElem.dataset) {
@@ -25,7 +25,7 @@ function getTurn() {
 }
 function genSubscribeKifu(url) {
     return callback => {
-        const fetchGame = () => axios_1.default.get(url).then(res => callback(game_1.default.parseText(res.data)));
+        const fetchGame = () => axios_1.default.get(url).then(res => callback(Kifu_1.parseText(res.data)));
         fetchGame();
         setInterval(fetchGame, 1 * 60 * 1000);
     };

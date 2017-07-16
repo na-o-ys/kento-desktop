@@ -99,12 +99,14 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
         let currPosition = position;
         for (const sfen of result.pv) {
             const move = this.parseSfen(sfen);
-            result.pvJp.push(currPosition.generateMoveJp(move));
+            result.pvJp.push(currPosition.getMoveJp(move));
             currPosition = currPosition.move(move);
         }
         return result;
     }
     parseSfen(sfen) {
+        // TODO: rep_inf 等への対応
+        // http://yaneuraou.yaneu.com/2017/06/16/%E6%8B%A1%E5%BC%B5usi%E3%83%97%E3%83%AD%E3%83%88%E3%82%B3%E3%83%AB-%E8%AA%AD%E3%81%BF%E7%AD%8B%E5%87%BA%E5%8A%9B%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6/
         const fromHand = sfen[1] == "*";
         const from = fromHand ? null : {
             x: sfen.charCodeAt(0) - "0".charCodeAt(0),

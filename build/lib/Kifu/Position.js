@@ -58,17 +58,6 @@ class Position {
         if (hand == "")
             hand = "-";
         return `sfen ${board} ${this.nextColor} ${hand} 1`;
-        // let fromTxt = ""
-        // if (this.lastMove.from) {
-        //     const { x, y } = this.lastMove.from
-        //     fromTxt = `${x}${String.fromCharCode(96 + y)}`
-        // } else {
-        //     fromTxt = this.lastMove.piece.toUpperCase() + "*"
-        // }
-        // const { x, y } = this.lastMove.to
-        // let toTxt = `${x}${String.fromCharCode(96 + y)}`
-        // if (this.lastMove.promote) toTxt += "+"
-        // return fromTxt + toTxt
     }
     move(move) {
         let cells = _.cloneDeep(this.cells);
@@ -94,11 +83,13 @@ class Position {
                 whiteHand[moveToPiece.toUpperCase()] += 1;
             }
         }
-        const piece = move.from ? this.getPiece(move.from) : move.piece;
+        let piece = move.from ? this.getPiece(move.from) : move.piece;
+        if (move.promote)
+            piece = "+" + piece;
         cells[(move.to.y - 1) * 9 + 9 - move.to.x] = piece;
         return new Position(move, cells, blackHand, whiteHand, this.nextColor == "b" ? "w" : "b", this.turn + 1);
     }
-    generateMoveJp(move) {
+    getMoveJp(move) {
         let moveTo = `${move.to.x}${move.to.y}`;
         if (_.isEqual(this.lastMove.to, move.to)) {
             moveTo = "同";

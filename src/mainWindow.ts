@@ -1,14 +1,15 @@
 import { remote } from "electron"
 import * as path from "path"
+import * as _ from "lodash"
 import { startGame, registerGame } from "./App"
-import Game from "./lib/game"
+import { parseText } from "./lib/Kifu"
 import axios from "axios"
 
 const { BrowserWindow, clipboard } = remote
 
 const kifu = clipboard.readText()
-const game = Game.parseText(kifu)
-startGame(game, game.maxTurn)
+const game = parseText(kifu)
+startGame(game, _.last(game).turn)
 
 // const url = clipboard.readText()
 

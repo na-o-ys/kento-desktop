@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const game_1 = require("../lib/game");
+const _ = require("lodash");
 const Kento_1 = require("../components/Kento");
 const Ai_1 = require("../lib/Ai");
-function game(state = game_1.emptyGame, theGame, action) {
+function game(state, theGame, action) {
     switch (action.type) {
         case "set_game":
             return action.game;
@@ -15,7 +15,7 @@ function game(state = game_1.emptyGame, theGame, action) {
             return state;
     }
 }
-function theGame(state = game_1.emptyGame, action) {
+function theGame(state, action) {
     return state;
 }
 function branchFrom(state = -1, action) {
@@ -101,7 +101,7 @@ function reducers(state, action) {
     return {
         game: game(state.game, state.theGame, action),
         theGame: theGame(state.theGame, action),
-        turn: turn(state.turn, state.game.maxTurn, state.branchFrom, action),
+        turn: turn(state.turn, _.last(state.game).turn, state.branchFrom, action),
         turnsRead: turnsRead(state.turnsRead, action),
         moveInput: moveInput(state.moveInput, action),
         branchFrom: branchFrom(state.branchFrom, action),
@@ -115,15 +115,13 @@ function doMove(game, position, moveInput) {
     // if (isCurrentGameMove(game, moveInput)) {
     //     return game
     // }
-    const { kifu } = game;
-    const newGame = game.branch(position.turn);
-    newGame.appendMove({
-        color: position.nextColor == "b" ? 0 : 1,
+    const newGame = _.cloneDeep(game.slice(0, position.turn + 1));
+    newGame.push(position.move({
         from: moveInput.from,
         to: moveInput.to,
         piece: moveInput.piece,
         promote: moveInput.promote
-    });
+    }));
     return newGame;
 }
 //# sourceMappingURL=index.js.map

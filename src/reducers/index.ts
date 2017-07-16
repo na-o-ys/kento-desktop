@@ -1,13 +1,13 @@
 import { combineReducers } from "redux"
-import { Game, emptyGame } from "../lib/game"
-import { Position } from "../lib/Kifu"
+import * as _ from "lodash"
+import { Position, Piece } from "../lib/Kifu"
 import { Action } from "../actions"
 import { MoveInput, emptyMoveInput } from "../components/Kento"
 import { State } from "../container/KentoApp"
 import { AiInfo, emptyAiInfo } from "../lib/Ai"
 import * as ShogiRule from "../lib/ShogiRule"
 
-function game(state: Game = emptyGame, theGame: Game, action: Action): Game {
+function game(state: Position[], theGame: Position[], action: Action): Position[] {
     switch (action.type) {
         case "set_game":
             return action.game
@@ -20,7 +20,7 @@ function game(state: Game = emptyGame, theGame: Game, action: Action): Game {
     }
 }
 
-function theGame(state: Game = emptyGame, action: Action): Game {
+function theGame(state: Position[], action: Action): Position[] {
     return state
 }
 
@@ -127,7 +127,7 @@ export function reducers(state: State, action: Action) {
     return {
         game: game(state.game, state.theGame, action),
         theGame: theGame(state.theGame, action),
-        turn: turn(state.turn, state.game.maxTurn, state.branchFrom, action),
+        turn: turn(state.turn, _.last(state.game).turn, state.branchFrom, action),
         turnsRead: turnsRead(state.turnsRead, action),
         moveInput: moveInput(state.moveInput, action),
         branchFrom: branchFrom(state.branchFrom, action),
@@ -136,20 +136,18 @@ export function reducers(state: State, action: Action) {
     }
 }
 
-function doMove(game: Game, position: Position, moveInput: MoveInput): Game {
+function doMove(game: Position[], position: Position, moveInput: MoveInput): Position[] {
     // TODO: 実装
     // if (isCurrentGameMove(game, moveInput)) {
     //     return game
     // }
-    const { kifu } = game
-    const newGame = game.branch(position.turn)
-    newGame.appendMove({
-        color: position.nextColor == "b" ? 0 : 1,
+    const newGame = _.cloneDeep(game.slice(0, position.turn + 1))
+    newGame.push(position.move({
         from: moveInput.from,
         to: moveInput.to,
-        piece: moveInput.piece,
+        piece: moveInput.piece as Piece,
         promote: moveInput.promote
-    })
+    }))
     return newGame
 }
 

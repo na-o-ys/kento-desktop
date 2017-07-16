@@ -3,8 +3,8 @@ import { Position, emptyMove, Piece, Hand } from "./Position"
 
 export function parseText(text: string): Position[] {
     const player = JKFPlayer.parse(text)
-    const maxTurn = this.player.getMaxTesuu()
-    return Array.from(Array(this.maxTurn + 1).keys())
+    const maxTurn = player.getMaxTesuu()
+    return Array.from(Array(maxTurn + 1).keys())
         .map(turn => calculatePosition(turn, player))
 }
 

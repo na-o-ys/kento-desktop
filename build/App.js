@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const ReactDOM = require("react-dom");
+const _ = require("lodash");
 const redux_1 = require("redux");
 const react_redux_1 = require("react-redux");
 const KentoApp_1 = require("./container/KentoApp");
@@ -32,7 +33,7 @@ function initializeRender(game, turn, useAi = true) {
     {
         game,
         turn,
-        turnsRead: game.maxTurn,
+        turnsRead: _.last(game).turn,
         moveInput: Kento_1.emptyMoveInput,
         theGame: game,
         branchFrom: -1,
