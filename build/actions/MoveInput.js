@@ -12,6 +12,10 @@ function setMoveTo(cell) {
     return { type: "set_move_to", cell };
 }
 exports.setMoveTo = setMoveTo;
+function clearMoveInput() {
+    return { type: "clear_move_input" };
+}
+exports.clearMoveInput = clearMoveInput;
 function setPromote(promote) {
     return { type: "set_promote", promote };
 }

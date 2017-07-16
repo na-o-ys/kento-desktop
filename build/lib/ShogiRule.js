@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const _ = require("lodash");
-// TODO: 王手考慮
 function getMovablesFromCell(cell, position) {
     const piece = position.getPiece(cell);
     if (!piece)
@@ -37,14 +36,14 @@ function getMovablesFromCell(cell, position) {
     return new Movables([]);
 }
 exports.getMovablesFromCell = getMovablesFromCell;
-// TODO: 二歩の解消
 function getMovablesFromHand(piece, position) {
     switch (piece.toLowerCase()) {
         case "n":
             return new Movables(getCanPutHandCells(2, position));
         case "l":
-        case "p":
             return new Movables(getCanPutHandCells(1, position));
+        case "p":
+            return new Movables(getCanPutHandPawn(position));
         case "s":
         case "g":
         case "k":
@@ -73,6 +72,33 @@ function canPromote(from, to, position) {
     return isPromoteArea(from.y) || isPromoteArea(to.y);
 }
 exports.canPromote = canPromote;
+function canMoveWithoutChecked(position, move) {
+    const color = position.nextColor;
+    const nextPosition = position.move(move);
+    let kingCell = { x: 0, y: 0 };
+    for (const x of _.range(1, 10)) {
+        for (const y of _.range(1, 10)) {
+            if (nextPosition.getPiece({ x, y }) == (color == "b" ? "K" : "k")) {
+                kingCell = { x, y };
+            }
+        }
+    }
+    for (const x of _.range(1, 10)) {
+        for (const y of _.range(1, 10)) {
+            const piece = nextPosition.getPiece({ x, y });
+            if (!piece)
+                continue;
+            if ((color == "w") == (piece == piece.toUpperCase())) {
+                const movables = getMovablesFromCell({ x, y }, nextPosition);
+                if (movables.includes(kingCell)) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+exports.canMoveWithoutChecked = canMoveWithoutChecked;
 function getMovablesL(cell, position, color) {
     const movables = getStraightMovables(cell, position, color, { x: 0, y: dir(color) });
     return new Movables(movables);
@@ -172,6 +198,27 @@ function getCanPutHandCells(rankBound, position) {
     }
     return movables;
 }
+function getCanPutHandPawn(position) {
+    const yLow = position.nextColor == "b" ? 2 : 1;
+    const yHigh = position.nextColor == "b" ? 9 : 8;
+    const selfPawn = position.nextColor == "b" ? "P" : "p";
+    let cells = [];
+    for (const x of _.range(1, 10)) {
+        const fileCells = [];
+        let cantPut = false;
+        for (const y of _.range(yLow, yHigh + 1)) {
+            const piece = position.getPiece({ x, y });
+            if (piece == selfPawn)
+                cantPut = true;
+            if (piece == null) {
+                fileCells.push({ x, y });
+            }
+        }
+        if (!cantPut)
+            cells = cells.concat(fileCells);
+    }
+    return cells;
+}
 function getStraightMovables(cell, position, color, dir) {
     let movables = [];
     let i = 1;
@@ -212,8 +259,14 @@ class Movables {
     includes(cell) {
         return this.movables.includes(this.encode(cell));
     }
+    toArray() {
+        return this.movables.map(encoded => this.decode(encoded));
+    }
     encode(cell) {
         return (cell.y - 1) * 9 + 9 - cell.x;
+    }
+    decode(encoded) {
+        return { x: 9 - (encoded % 9), y: (encoded / 9) + 1 };
     }
 }
 exports.Movables = Movables;

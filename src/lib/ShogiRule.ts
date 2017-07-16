@@ -1,7 +1,6 @@
-import { Position, Cell } from "./Kifu"
+import { Position, Cell, Move } from "./Kifu"
 import * as _ from "lodash"
 
-// TODO: 王手考慮
 export function getMovablesFromCell(cell: Cell, position: Position): Movables {
     const piece = position.getPiece(cell)
     if (!piece) throw "pieceがnull"
@@ -36,14 +35,14 @@ export function getMovablesFromCell(cell: Cell, position: Position): Movables {
     return new Movables([])
 }
 
-// TODO: 二歩の解消
 export function getMovablesFromHand(piece: string, position: Position): Movables {
     switch (piece.toLowerCase()) {
         case "n":
             return new Movables(getCanPutHandCells(2, position))
         case "l":
-        case "p":
             return new Movables(getCanPutHandCells(1, position))
+        case "p":
+            return new Movables(getCanPutHandPawn(position))
         case "s":
         case "g":
         case "k":
@@ -68,6 +67,32 @@ export function canPromote(from: Cell, to: Cell, position: Position): boolean {
     if (!canPromotePiece) return false
     const isPromoteArea = (y: number) => ((position.nextColor == "b" && y <= 3) || (position.nextColor == "w" && y >= 7))
     return isPromoteArea(from.y) || isPromoteArea(to.y)
+}
+
+export function canMoveWithoutChecked(position: Position, move: Move): boolean {
+    const color = position.nextColor
+    const nextPosition = position.move(move)
+    let kingCell = { x: 0, y: 0 }
+    for (const x of _.range(1, 10)) {
+        for (const y of _.range(1, 10)) {
+            if (nextPosition.getPiece({ x, y }) == (color == "b" ? "K" : "k")) {
+                kingCell = { x, y }
+            }
+        }
+    }
+    for (const x of _.range(1, 10)) {
+        for (const y of _.range(1, 10)) {
+            const piece = nextPosition.getPiece({ x, y })
+            if (!piece) continue
+            if ((color == "w") == (piece == piece.toUpperCase())) {
+                const movables = getMovablesFromCell({ x, y }, nextPosition)
+                if (movables.includes(kingCell)) {
+                    return false
+                }
+            }
+        }
+    }
+    return true
 }
 
 function getMovablesL(cell: Cell, position: Position, color: string): Movables {
@@ -184,6 +209,26 @@ function getCanPutHandCells(rankBound: number, position: Position): Cell[] {
     return movables
 }
 
+function getCanPutHandPawn(position: Position): Cell[] {
+    const yLow = position.nextColor == "b" ? 2 : 1
+    const yHigh = position.nextColor == "b" ? 9 : 8
+    const selfPawn = position.nextColor == "b" ? "P" : "p"
+    let cells: Cell[] = []
+    for (const x of _.range(1, 10)) {
+        const fileCells: Cell[] = []
+        let cantPut = false
+        for (const y of _.range(yLow, yHigh + 1)) {
+            const piece = position.getPiece({ x, y })
+            if (piece == selfPawn) cantPut = true
+            if (piece == null) {
+                fileCells.push({ x, y })
+            }
+        }
+        if (!cantPut) cells = cells.concat(fileCells)
+    }
+    return cells
+}
+
 function getStraightMovables(cell: Cell, position: Position, color: string, dir: Cell): Cell[] {
     let movables: Cell[] = []
     let i = 1
@@ -233,7 +278,15 @@ export class Movables {
         return this.movables.includes(this.encode(cell))
     }
 
+    toArray(): Cell[] {
+        return this.movables.map(encoded => this.decode(encoded))
+    }
+
     private encode(cell: Cell): number {
         return (cell.y - 1) * 9 + 9 - cell.x
+    }
+
+    private decode(encoded: number): Cell {
+        return { x: 9 - (encoded % 9), y: (encoded / 9) + 1 }
     }
 }

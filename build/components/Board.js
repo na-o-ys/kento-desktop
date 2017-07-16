@@ -13,17 +13,31 @@ const React = require("react");
 const MainBoard_1 = require("./board/MainBoard");
 const Hand_1 = require("./board/Hand");
 const VHand_1 = require("./board/VHand");
-exports.Board = ({ position, verticalHand = true, style = {}, scale = 1, onClickBoard = () => { }, onClickHand = () => { } }) => {
+exports.Board = ({ position, verticalHand = true, style = {}, scale = 1, onClickBoard = () => { }, onClickHand = () => { }, highlightCell = undefined, highlightHand = undefined }) => {
+    let blackHighlightHand = undefined;
+    let whiteHighlightHand = undefined;
+    if (highlightHand) {
+        highlightCell = undefined;
+        if (highlightHand == highlightHand.toUpperCase()) {
+            blackHighlightHand = highlightHand;
+        }
+        else {
+            whiteHighlightHand = highlightHand.toLowerCase();
+        }
+    }
+    else {
+        highlightCell = highlightCell || position.lastMove.to;
+    }
     if (verticalHand)
         return (React.createElement("div", { id: "board", style: Object.assign({}, vBoardStyle(scale), style) },
-            React.createElement(VHand_1.default, { color: "white", hand: position.whiteHand, scale: scale, onClick: onClickHand }),
-            React.createElement(MainBoard_1.default, { cells: position.cells, highlightCell: position.lastMove.to, scale: scale, onClick: onClickBoard }),
-            React.createElement(VHand_1.default, { color: "black", hand: position.blackHand, scale: scale, onClick: onClickHand })));
+            React.createElement(VHand_1.default, { color: "white", hand: position.whiteHand, scale: scale, onClick: onClickHand, highlight: whiteHighlightHand }),
+            React.createElement(MainBoard_1.default, { cells: position.cells, highlightCell: highlightCell, scale: scale, onClick: onClickBoard }),
+            React.createElement(VHand_1.default, { color: "black", hand: position.blackHand, scale: scale, onClick: onClickHand, highlight: blackHighlightHand })));
     else
         return (React.createElement("div", { id: "board", style: Object.assign({}, boardStyle(scale), style) },
-            React.createElement(WhiteHand, { hands: position.whiteHand, scale: scale, onClick: onClickHand }),
-            React.createElement(MainBoard_1.default, { cells: position.cells, highlightCell: position.lastMove.to, scale: scale, style: mainBoardStyle, onClick: onClickBoard }),
-            React.createElement(BlackHand, { hands: position.blackHand, scale: scale, onClick: onClickHand })));
+            React.createElement(WhiteHand, { hands: position.whiteHand, scale: scale, onClick: onClickHand, highlight: whiteHighlightHand }),
+            React.createElement(MainBoard_1.default, { cells: position.cells, highlightCell: highlightCell, scale: scale, style: mainBoardStyle, onClick: onClickBoard }),
+            React.createElement(BlackHand, { hands: position.blackHand, scale: scale, onClick: onClickHand, highlight: blackHighlightHand })));
 };
 exports.default = exports.Board;
 const boardStyle = (scale) => ({

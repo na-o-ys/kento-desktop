@@ -86,6 +86,7 @@ function moveInput(state: MoveInput = emptyMoveInput, action: Action): MoveInput
                 ...state,
                 promote: action.promote
             }
+        case "clear_move_input":
         case "set_turn":
         case "return_the_game":
         case "do_move":

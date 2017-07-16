@@ -11,6 +11,7 @@ export interface GameControl {
     setMoveFrom(cell: Cell, piece: string): void
     setMoveFromHand(piece: string): void
     setMoveTo(cell: Cell): void
+    clearMoveInput(): void
     setPromote(promote: boolean): void
     returnTheGame(): void
     doMove(moveInput: MoveInput, position: Position): void
@@ -58,8 +59,17 @@ export class Kento extends React.Component<KentoProps> {
                     ShogiRule.getMovablesFromCell(moveInput.from, position) :
                     ShogiRule.getMovablesFromHand(moveInput.piece, position)
                 if (movables.includes({ x, y })) {
-                    control.setMoveTo({ x, y })
+                    if (ShogiRule.canMoveWithoutChecked(position, {
+                        from: moveInput.from || null,
+                        to: { x, y },
+                        piece: moveInput.piece || null,
+                        promote: !!moveInput.promote
+                    })) {
+                        control.setMoveTo({ x, y })
+                        return
+                    }
                 }
+                control.clearMoveInput()
             }
         }
         const onClickHand = (piece: string) => {
@@ -82,7 +92,9 @@ export class Kento extends React.Component<KentoProps> {
                 </Modal>
                 <div style={{float: "left"}}>
                     <Board position={position} verticalHand={false} style={boardStyle}
-                        onClickBoard={onClickCell} onClickHand={onClickHand} />
+                        onClickBoard={onClickCell} onClickHand={onClickHand}
+                        highlightCell={moveInput.from}
+                        highlightHand={moveInput.fromHand ? moveInput.piece : undefined}/>
                     <Control style={controlStyle} turn={position.turn}
                         showReturnTheGame={branchFrom != -1} returnTheGame={control.returnTheGame}
                         control={control}/>
