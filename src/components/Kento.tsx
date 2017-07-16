@@ -44,6 +44,8 @@ export class Kento extends React.Component<KentoProps> {
             positionChanged,
             ai
         } = this.props
+        console.log(position)
+        console.log(position.getSfen())
         const onClickCell = (x: number, y: number) => {
             const piece = position.getPiece({ x, y })
             // 自駒

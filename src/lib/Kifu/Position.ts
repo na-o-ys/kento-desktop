@@ -1,5 +1,5 @@
 import * as _ from "lodash"
-import * as ShogiRule from "./ShogiRule"
+import * as ShogiRule from "../ShogiRule"
 
 export type Color = "b" | "w"
 
@@ -27,12 +27,57 @@ export class Position {
         readonly blackHand: Hand,
         readonly whiteHand: Hand,
         readonly nextColor: Color,
-        readonly turn: number,
-        readonly sfen: string
+        readonly turn: number
     ) {}
 
     getPiece(cell: Cell): Piece | null {
         return this.cells[(cell.y - 1) * 9 + 9 - cell.x]
+    }
+
+    getSfen(): string {
+        let lines: string[] = []
+        for (const y of _.range(9)) {
+            let spaces = 0
+            let line = ""
+            const applySpaces = () => {
+                if (spaces > 0) {
+                    line += spaces.toString()
+                    spaces = 0
+                }
+            }
+            for (const x of _.range(9)) {
+                const piece = this.cells[y * 9 + x]
+                if (piece) {
+                    applySpaces()
+                    line += piece
+                } else {
+                    spaces += 1
+                }
+            }
+            applySpaces()
+            lines.push(line)
+        }
+        const board = lines.join("/")
+
+        let hand = ["P", "L", "N", "S", "G", "B", "R"]
+            .map(kind => {
+                let txt = ""
+                const bCount = this.blackHand[kind]
+                if (bCount > 0) {
+                    txt += bCount > 1 ? bCount.toString() : ""
+                    txt += kind.toUpperCase()
+                }
+                const wCount = this.whiteHand[kind]
+                if (wCount > 0) {
+                    txt += wCount > 1 ? wCount.toString() : ""
+                    txt += kind.toLowerCase()
+                }
+                return txt
+            })
+            .join("")
+        if (hand == "") hand = "-"
+
+        return `sfen ${board} ${this.nextColor} ${hand} 1`
     }
 
     move(move: Move): Position {
@@ -66,12 +111,11 @@ export class Position {
             blackHand,
             whiteHand,
             this.nextColor == "b" ? "w" : "b",
-            this.turn + 1,
-            "TODO"
+            this.turn + 1
         )
     }
 
-    generateMoveJp(move: Move): string {
+    getMoveJp(move: Move): string {
         let moveTo = `${move.to.x}${move.to.y}`
         if (_.isEqual(this.lastMove.to, move.to)) {
             moveTo = "同"

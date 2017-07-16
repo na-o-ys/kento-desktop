@@ -36,13 +36,13 @@ export class Ai {
     constructor(readonly store: StoreType) {}
     start(position: Kifu.Position) {
         const color = position.nextColor
-        const sfen = position.sfen
+        const sfen = position.getSfen()
         console.log(`ai started: ${sfen}`)
         if (this.aiProcess) {
             this.aiProcess.kill("SIGKILL")
         }
         this.aiProcess = spawn("./YaneuraOu-20170711-sse42", [], { cwd: "/Users/naoyoshi/projects/shogi-ai/relmo8-YaneuraOu-sse42" })
-        this.aiProcess.stdin.write(this.generateCommand(Byoyomi, `startpos moves ${sfen}`))
+        this.aiProcess.stdin.write(this.generateCommand(Byoyomi, sfen))
         this.aiProcess.stdout.pipe(split()).on('data', data => {
             const line: string = data.toString()
             const [cmd, ...words] = line.split(" ")
@@ -119,7 +119,7 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
         let currPosition = position
         for (const sfen of result.pv) {
             const move = this.parseSfen(sfen)
-            result.pvJp.push(currPosition.generateMoveJp(move))
+            result.pvJp.push(currPosition.getMoveJp(move))
             currPosition = currPosition.move(move)
         }
         return result

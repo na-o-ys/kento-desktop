@@ -7,7 +7,6 @@ import axios from "axios"
 const { BrowserWindow, clipboard } = remote
 
 const kifu = clipboard.readText()
-console.log(kifu)
 const game = Game.parseText(kifu)
 startGame(game, game.maxTurn)
 

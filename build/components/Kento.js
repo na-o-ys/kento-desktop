@@ -14,6 +14,8 @@ class Kento extends React.Component {
     }
     render() {
         const { position, control, moveInput, branchFrom, aiInfo, positionChanged, ai } = this.props;
+        console.log(position);
+        console.log(position.getSfen());
         const onClickCell = (x, y) => {
             const piece = position.getPiece({ x, y });
             // 自駒

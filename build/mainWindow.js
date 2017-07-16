@@ -5,7 +5,6 @@ const App_1 = require("./App");
 const game_1 = require("./lib/game");
 const { BrowserWindow, clipboard } = electron_1.remote;
 const kifu = clipboard.readText();
-console.log(kifu);
 const game = game_1.default.parseText(kifu);
 App_1.startGame(game, game.maxTurn);
 // const url = clipboard.readText()

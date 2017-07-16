@@ -116,8 +116,7 @@ class Game {
             whiteHand[pieceKindMap[kind]] = state.hands[1][kind];
         }
         const nextColor = state.color == 0 ? "b" : "w";
-        const sfen = this.getSfen(turn);
-        return new Kifu.Position(lastMove, cells, blackHand, whiteHand, nextColor, turn, sfen);
+        return new Kifu.Position(lastMove, cells, blackHand, whiteHand, nextColor, turn);
     }
 }
 exports.Game = Game;
