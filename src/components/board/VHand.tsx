@@ -5,19 +5,19 @@ import { Style } from "../../types"
 type Hands = { [key: string]: number }
 
 type VHandProps = {
-    hands: Hands,
+    hand: Hands,
     color: string,
     style?: Style,
     scale?: number,
     onClick?: Function
 }
 
-export const VHand = ({ hands, color, style = {}, scale = 1, onClick = () => {} }: VHandProps) => {
+export const VHand = ({ hand, color, style = {}, scale = 1, onClick = () => {} }: VHandProps) => {
     const pieces = pieceDisplayOrder[color]
-        .filter(piece => hands[piece] > 0)
+        .filter(piece => hand[piece] > 0)
         .map(piece => ({
             piece: color == "black" ? piece : piece.toLowerCase(),
-            count: hands[piece]
+            count: hand[piece]
         }))
     return (
         <div style={{ ...getHandStyle(scale), ...style }}>

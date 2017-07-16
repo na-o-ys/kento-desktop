@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const JKFPlayer = require("json-kifu-format");
 const _ = require("lodash");
+const Kifu = require("./Kifu");
 const pieceKindMap = {
     "OU": "K",
     "HI": "R",
@@ -34,20 +35,6 @@ const revPieceKindMap = {
     "+L": "NY",
     "+P": "TO"
 };
-class Position {
-    constructor(cells, black_hand, white_hand, movedCell, nextColor, turn) {
-        this.cells = cells;
-        this.black_hand = black_hand;
-        this.white_hand = white_hand;
-        this.movedCell = movedCell;
-        this.nextColor = nextColor;
-        this.turn = turn;
-    }
-    getPiece(cell) {
-        return this.cells[(cell.y - 1) * 9 + 9 - cell.x];
-    }
-}
-exports.Position = Position;
 class Game {
     constructor(player) {
         this.player = player;
@@ -104,6 +91,12 @@ class Game {
         this.player.goto(turn);
         const state = this.player.getState();
         const move = this.player.getMove();
+        const lastMove = move ? {
+            from: move.from,
+            to: move.to,
+            piece: move.piece,
+            promote: !!move.promote
+        } : Kifu.emptyMove;
         const movedCell = (move && move.to) ? 9 * (move.to.y - 1) + 9 - move.to.x : -1;
         let cells = [];
         for (let r = 0; r < 9; r++)
@@ -115,15 +108,16 @@ class Game {
                 else
                     cells.push(null);
             }
-        let black_hand = zeroHand(), white_hand = zeroHand();
+        let blackHand = zeroHand(), whiteHand = zeroHand();
         for (let kind in state.hands[0]) {
-            black_hand[pieceKindMap[kind]] = state.hands[0][kind];
+            blackHand[pieceKindMap[kind]] = state.hands[0][kind];
         }
         for (let kind in state.hands[1]) {
-            white_hand[pieceKindMap[kind]] = state.hands[1][kind];
+            whiteHand[pieceKindMap[kind]] = state.hands[1][kind];
         }
         const nextColor = state.color == 0 ? "b" : "w";
-        return new Position(cells, black_hand, white_hand, movedCell, nextColor, turn);
+        const sfen = this.getSfen(turn);
+        return new Kifu.Position(lastMove, cells, blackHand, whiteHand, nextColor, turn, sfen);
     }
 }
 exports.Game = Game;

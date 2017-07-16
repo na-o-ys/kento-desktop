@@ -2,7 +2,7 @@ import * as React from "react"
 import MainBoard, { OnClickMainBoard } from "./board/MainBoard"
 import Hand from "./board/Hand"
 import VHand from "./board/VHand"
-import { Position } from "../lib/game"
+import { Position } from "../lib/Kifu"
 import { Style } from "../types"
 
 type BoardProps = {
@@ -17,16 +17,16 @@ type BoardProps = {
 export const Board = ({ position, verticalHand = true, style = {}, scale = 1, onClickBoard = () => {}, onClickHand = () => {} }: BoardProps) => {
     if (verticalHand) return (
         <div id="board" style={{ ...vBoardStyle(scale), ...style }}>
-            <VHand color="white" hands={position.white_hand} scale={scale} onClick={onClickHand} />
-            <MainBoard cells={position.cells} highlightCell={position.movedCell} scale={scale} onClick={onClickBoard} />
-            <VHand color="black" hands={position.black_hand} scale={scale} onClick={onClickHand} />
+            <VHand color="white" hand={position.whiteHand} scale={scale} onClick={onClickHand} />
+            <MainBoard cells={position.cells} highlightCell={position.lastMove.to} scale={scale} onClick={onClickBoard} />
+            <VHand color="black" hand={position.blackHand} scale={scale} onClick={onClickHand} />
         </div>
     )
     else return (
         <div id="board" style={{ ...boardStyle(scale), ...style }}>
-            <WhiteHand hands={position.white_hand} scale={scale} onClick={onClickHand} />
-            <MainBoard cells={position.cells} highlightCell={position.movedCell} scale={scale} style={mainBoardStyle} onClick={onClickBoard} />
-            <BlackHand hands={position.black_hand} scale={scale} onClick={onClickHand} />
+            <WhiteHand hands={position.whiteHand} scale={scale} onClick={onClickHand} />
+            <MainBoard cells={position.cells} highlightCell={position.lastMove.to} scale={scale} style={mainBoardStyle} onClick={onClickBoard} />
+            <BlackHand hands={position.blackHand} scale={scale} onClick={onClickHand} />
         </div>
     )
 }

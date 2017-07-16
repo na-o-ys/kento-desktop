@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const Cell_1 = require("./Cell");
-exports.MainBoard = ({ cells, highlightCell = -1, style = {}, scale = 1, onClick = () => { } }) => {
+exports.MainBoard = ({ cells, highlightCell = { x: 0, y: 0 }, style = {}, scale = 1, onClick = () => { } }) => {
     const rankCells = (rankIdx) => cells.slice(rankIdx * 9, (rankIdx + 1) * 9);
-    const highlightIdx = (rankIdx) => highlightCell - rankIdx * 9;
+    const highlightIdx = (rankIdx) => (highlightCell.y == rankIdx + 1) ? 9 - highlightCell.x : -1;
     return (React.createElement("div", { style: Object.assign({}, getMainBoardStyle(scale), style) }, [0, 1, 2, 3, 4, 5, 6, 7, 8].map(rankIdx => (React.createElement(Rank, { key: rankIdx, cells: rankCells(rankIdx), rankIdx: rankIdx, scale: scale, highlightIdx: highlightIdx(rankIdx), onClick: onClick })))));
 };
 exports.default = exports.MainBoard;

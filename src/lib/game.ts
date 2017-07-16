@@ -1,6 +1,7 @@
 import JKFPlayer = require("json-kifu-format")
 import { JsonKifuFormat } from "../types"
 import * as _ from "lodash"
+import * as Kifu from "./Kifu"
 
 const pieceKindMap: { [id: string]: Piece } = {
     "OU": "K",
@@ -52,25 +53,9 @@ export interface Cell {
     y: number
 }
 
-export class Position {
-    constructor(
-        readonly cells: Array<Piece | null>,
-        readonly black_hand: Hand,
-        readonly white_hand: Hand,
-        readonly movedCell: number,
-        readonly nextColor: string,
-        readonly turn: number,
-        readonly sfen: string
-    ) {}
-
-    getPiece(cell: Cell): string | null {
-        return this.cells[(cell.y - 1) * 9 + 9 - cell.x]
-    }
-}
-
 export class Game {
     player: JKFPlayer
-    positions: Position[]
+    positions: Kifu.Position[]
     _jpKifu: string[]
     constructor(player: JKFPlayer) {
         this.player = player
@@ -101,7 +86,7 @@ export class Game {
         return this.player.kifu
     }
 
-    getPosition(turn: number): Position {
+    getPosition(turn: number): Kifu.Position {
         return this.positions[turn]
     }
 
@@ -136,28 +121,34 @@ export class Game {
         this.positions.push(this.calculatePosition(this.maxTurn))
     }
 
-    private calculatePosition(turn: number): Position {
+    private calculatePosition(turn: number): Kifu.Position {
         this.player.goto(turn)
         const state = this.player.getState()
         const move = this.player.getMove()
+        const lastMove = move ? {
+            from: move.from,
+            to: move.to,
+            piece: move.piece,
+            promote: !!move.promote
+        } : Kifu.emptyMove
         const movedCell = (move && move.to) ? 9 * (move.to.y - 1) + 9 - move.to.x : -1
-        let cells: Array<Piece | null> = []
+        let cells: Array<Kifu.Piece | null> = []
         for (let r = 0; r < 9; r++) for (let f = 0; f < 9; f++) {
             let { color, kind } = state.board[8 - f][r]
             if (color !== null && color !== undefined && kind) {
-                cells.push(boardCellToPiece({ color, kind }))
+                cells.push(boardCellToPiece({ color, kind }) as Kifu.Piece)
             } else cells.push(null)
         }
-        let black_hand = zeroHand(), white_hand = zeroHand()
+        let blackHand = zeroHand(), whiteHand = zeroHand()
         for (let kind in state.hands[0]) {
-            black_hand[pieceKindMap[kind]] = state.hands[0][kind]
+            blackHand[pieceKindMap[kind]] = state.hands[0][kind]
         }
         for (let kind in state.hands[1]) {
-            white_hand[pieceKindMap[kind]] = state.hands[1][kind]
+            whiteHand[pieceKindMap[kind]] = state.hands[1][kind]
         }
         const nextColor = state.color == 0 ? "b" : "w"
         const sfen = this.getSfen(turn)
-        return new Position(cells, black_hand, white_hand, movedCell, nextColor, turn, sfen)
+        return new Kifu.Position(lastMove, cells, blackHand, whiteHand, nextColor, turn, sfen)
     }
 }
 

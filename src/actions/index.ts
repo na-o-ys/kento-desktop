@@ -1,4 +1,5 @@
-import { Game, Position } from "../lib/game"
+import { Game } from "../lib/game"
+import { Position } from "../lib/Kifu"
 import { MoveInput } from "../components/Kento"
 import * as AiAction from "./ai"
 import { MoveInputActionType } from "./MoveInput"

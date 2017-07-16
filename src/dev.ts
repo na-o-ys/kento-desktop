@@ -9,10 +9,10 @@ docReady(() => {
     const kifuElem = document.getElementById('kifu')
     if ('kifu' in kifuElem.dataset) {
         const game = Game.parseText(kifuElem.dataset['kifu'])
-        startGame(game, getTurn())
+        startGame(game, getTurn(), false)
     }
     if ('url' in kifuElem.dataset) {
-        registerGame(genSubscribeKifu(kifuElem.dataset['url']), getTurn())
+        registerGame(genSubscribeKifu(kifuElem.dataset['url']), getTurn(), false)
     }
     // const url = "https://jsaserver.herokuapp.com/games/6381.kif"
     // registerGame(genSubscribeKifu(url), 0)

@@ -2,7 +2,8 @@ import { connect } from "react-redux"
 import { Kento, MoveInput, GameControl } from "../components/Kento"
 import * as actions from "../actions"
 import { Dispatch } from "redux"
-import { Game, Position, Cell } from "../lib/game"
+import { Game } from "../lib/game"
+import { Position, Cell } from "../lib/Kifu"
 import { AiInfo } from "../lib/Ai"
 
 export interface State {

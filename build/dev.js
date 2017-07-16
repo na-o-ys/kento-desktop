@@ -9,10 +9,10 @@ docReady(() => {
     const kifuElem = document.getElementById('kifu');
     if ('kifu' in kifuElem.dataset) {
         const game = game_1.default.parseText(kifuElem.dataset['kifu']);
-        App_1.startGame(game, getTurn());
+        App_1.startGame(game, getTurn(), false);
     }
     if ('url' in kifuElem.dataset) {
-        App_1.registerGame(genSubscribeKifu(kifuElem.dataset['url']), getTurn());
+        App_1.registerGame(genSubscribeKifu(kifuElem.dataset['url']), getTurn(), false);
     }
     // const url = "https://jsaserver.herokuapp.com/games/6381.kif"
     // registerGame(genSubscribeKifu(url), 0)

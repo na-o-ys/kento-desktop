@@ -16,14 +16,14 @@ const VHand_1 = require("./board/VHand");
 exports.Board = ({ position, verticalHand = true, style = {}, scale = 1, onClickBoard = () => { }, onClickHand = () => { } }) => {
     if (verticalHand)
         return (React.createElement("div", { id: "board", style: Object.assign({}, vBoardStyle(scale), style) },
-            React.createElement(VHand_1.default, { color: "white", hands: position.white_hand, scale: scale, onClick: onClickHand }),
-            React.createElement(MainBoard_1.default, { cells: position.cells, highlightCell: position.movedCell, scale: scale, onClick: onClickBoard }),
-            React.createElement(VHand_1.default, { color: "black", hands: position.black_hand, scale: scale, onClick: onClickHand })));
+            React.createElement(VHand_1.default, { color: "white", hand: position.whiteHand, scale: scale, onClick: onClickHand }),
+            React.createElement(MainBoard_1.default, { cells: position.cells, highlightCell: position.lastMove.to, scale: scale, onClick: onClickBoard }),
+            React.createElement(VHand_1.default, { color: "black", hand: position.blackHand, scale: scale, onClick: onClickHand })));
     else
         return (React.createElement("div", { id: "board", style: Object.assign({}, boardStyle(scale), style) },
-            React.createElement(WhiteHand, { hands: position.white_hand, scale: scale, onClick: onClickHand }),
-            React.createElement(MainBoard_1.default, { cells: position.cells, highlightCell: position.movedCell, scale: scale, style: mainBoardStyle, onClick: onClickBoard }),
-            React.createElement(BlackHand, { hands: position.black_hand, scale: scale, onClick: onClickHand })));
+            React.createElement(WhiteHand, { hands: position.whiteHand, scale: scale, onClick: onClickHand }),
+            React.createElement(MainBoard_1.default, { cells: position.cells, highlightCell: position.lastMove.to, scale: scale, style: mainBoardStyle, onClick: onClickBoard }),
+            React.createElement(BlackHand, { hands: position.blackHand, scale: scale, onClick: onClickHand })));
 };
 exports.default = exports.Board;
 const boardStyle = scale => ({

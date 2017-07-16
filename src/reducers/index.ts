@@ -1,5 +1,6 @@
 import { combineReducers } from "redux"
-import { Game, emptyGame, Position } from "../lib/game"
+import { Game, emptyGame } from "../lib/game"
+import { Position } from "../lib/Kifu"
 import { Action } from "../actions"
 import { MoveInput, emptyMoveInput } from "../components/Kento"
 import { State } from "../container/KentoApp"

@@ -11,15 +11,15 @@ const Ai_1 = require("./lib/Ai");
 const Kento_1 = require("./components/Kento");
 const App = ({ store, ai }) => (React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(KentoApp_1.default, { ai: ai })));
-function startGame(game, turn) {
-    return initializeRender(game, turn);
+function startGame(game, turn, useAi = true) {
+    return initializeRender(game, turn, useAi);
 }
 exports.startGame = startGame;
-function registerGame(subscribe, turn) {
+function registerGame(subscribe, turn, useAi = true) {
     let store;
     subscribe(game => {
         if (!store) {
-            store = initializeRender(game, turn);
+            store = initializeRender(game, turn, useAi);
         }
         else {
             store.dispatch(actions_1.setGame(game));
@@ -27,7 +27,7 @@ function registerGame(subscribe, turn) {
     });
 }
 exports.registerGame = registerGame;
-function initializeRender(game, turn) {
+function initializeRender(game, turn, useAi = true) {
     let store = redux_1.createStore(reducers_1.reducers, // Redux の型バグ
     {
         game,
@@ -39,7 +39,7 @@ function initializeRender(game, turn) {
         aiInfo: Ai_1.emptyAiInfo,
         positionChanged: true
     });
-    const ai = new Ai_1.Ai(store);
+    const ai = useAi ? new Ai_1.Ai(store) : Ai_1.emptyAi;
     ReactDOM.render(React.createElement(App, { store: store, ai: ai }), document.getElementById("main-board"));
     return store;
 }

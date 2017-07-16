@@ -1,7 +1,8 @@
 import * as React from "react"
 import Modal from "react-modal"
 import Board from "./Board"
-import { Game, Position, Cell } from "../lib/game"
+import { Game } from "../lib/game"
+import { Position, Cell } from "../lib/Kifu"
 import { AiResult } from "./Ai"
 import { AiInfo, Ai } from "../lib/Ai"
 import * as ShogiRule from "../lib/ShogiRule"
@@ -43,10 +44,6 @@ export class Kento extends React.Component<KentoProps> {
             positionChanged,
             ai
         } = this.props
-        // console.log(moveInput)
-        // console.log(game)
-        // console.log(branchFrom)
-        // console.log(positionChanged)
         const onClickCell = (x: number, y: number) => {
             const piece = position.getPiece({ x, y })
             // 自駒

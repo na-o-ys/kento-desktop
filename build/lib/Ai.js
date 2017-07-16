@@ -11,6 +11,10 @@ exports.emptyAiInfo = {
     nodes: 0,
     nps: 0
 };
+exports.emptyAi = {
+    aiProcess: null,
+    start(position) { }
+};
 const Byoyomi = 30000;
 class Ai {
     constructor(store) {
@@ -30,7 +34,7 @@ class Ai {
             const [cmd, ...words] = line.split(" ");
             console.log(line);
             if (cmd == "info") {
-                const info = this.parseInfo(words, game, turn);
+                const info = this.parseInfo(words, position);
                 if (color == "w") {
                     if (info.score_cp) {
                         info.score_cp *= -1;
@@ -60,7 +64,7 @@ position ${position}
 go btime 0 wtime 0 byoyomi ${byoyomi}
 `;
     }
-    parseInfo(words, game, turn) {
+    parseInfo(words, position) {
         let result = _.cloneDeep(exports.emptyAiInfo);
         let command = null;
         words.forEach(word => {
@@ -92,25 +96,15 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
                     command = null;
             }
         });
-        const newGame = game.branch(turn);
+        let currPosition = position;
         for (const sfen of result.pv) {
-            const crrTurn = newGame.maxTurn;
-            const crrPosition = newGame.getPosition(crrTurn);
-            const crrColor = crrPosition.nextColor;
-            const move = this.parseSfen(sfen, crrPosition);
-            // console.log(crrPosition.getPiece(move.from))
-            newGame.appendMove({
-                color: crrColor == "b" ? 0 : 1,
-                from: move.from,
-                to: move.to,
-                piece: move.piece || crrPosition.getPiece(move.from),
-                promote: move.promote
-            });
+            const move = this.parseSfen(sfen);
+            result.pvJp.push(currPosition.generateMoveJp(move));
+            currPosition = currPosition.move(move);
         }
-        result.pvJp = newGame.jpKifu.slice(turn + 1);
         return result;
     }
-    parseSfen(sfen, position) {
+    parseSfen(sfen) {
         const fromHand = sfen[1] == "*";
         const from = fromHand ? null : {
             x: sfen.charCodeAt(0) - "0".charCodeAt(0),
@@ -120,18 +114,16 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
             x: sfen.charCodeAt(2) - "0".charCodeAt(0),
             y: sfen.charCodeAt(3) - "a".charCodeAt(0) + 1
         };
-        const piece = fromHand ? sfen[0] : position.getPiece(from);
-        const moveInput = {
+        const piece = fromHand ?
+            sfen[0].toLowerCase() :
+            null;
+        const promote = sfen[4] == "+";
+        return {
             from,
             to,
-            fromHand,
             piece,
-            promote: null
+            promote
         };
-        if (!fromHand && this.canPromote(moveInput, position.nextColor)) {
-            moveInput.promote = sfen[4] == "+";
-        }
-        return moveInput;
     }
     // TODO: ルールが散らばっている
     canPromote(moveInput, color) {

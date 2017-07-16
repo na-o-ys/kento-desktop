@@ -1,6 +1,7 @@
 import * as React from "react"
 import Cell from "./Cell"
 import { Style } from "../../types"
+import * as Kifu from "../../lib/Kifu"
 
 export interface OnClickMainBoard {
     (x: number, y: number): void
@@ -8,15 +9,17 @@ export interface OnClickMainBoard {
 
 type MainBoardProps = {
     cells: Array<string | null>,
-    highlightCell?: number,
+    highlightCell?: Kifu.Cell,
     style?: Style,
     scale?: number,
     onClick?: OnClickMainBoard
 }
 
-export const MainBoard = ({ cells, highlightCell = -1, style = {}, scale = 1, onClick = () => {} }: MainBoardProps) => {
-    const rankCells = (rankIdx: number) => cells.slice(rankIdx * 9, (rankIdx + 1) * 9)
-    const highlightIdx = (rankIdx: number) => highlightCell - rankIdx * 9
+export const MainBoard = ({ cells, highlightCell = { x: 0, y: 0 }, style = {}, scale = 1, onClick = () => {} }: MainBoardProps) => {
+    const rankCells = (rankIdx: number) =>
+        cells.slice(rankIdx * 9, (rankIdx + 1) * 9)
+    const highlightIdx = (rankIdx: number) =>
+        (highlightCell.y == rankIdx + 1) ? 9 - highlightCell.x : -1
     return (
         <div style={{ ...getMainBoardStyle(scale), ...style }}>
             {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(rankIdx => (

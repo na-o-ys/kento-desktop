@@ -1,4 +1,4 @@
-import { Position } from "./game"
+import { Position } from "./Kifu"
 import * as _ from "lodash"
 
 interface Cell {

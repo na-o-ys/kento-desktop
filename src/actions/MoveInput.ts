@@ -1,4 +1,4 @@
-import { Position, Cell } from "../lib/game"
+import { Position, Cell } from "../lib/Kifu"
 import { MoveInput } from "../components/Kento"
 
 export type MoveInputActionType = SetMoveFromAction | SetMoveToAction |
