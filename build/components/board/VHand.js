@@ -2,14 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const Cell_1 = require("./Cell");
-exports.VHand = ({ hands, color, style = {}, scale = 1 }) => {
+exports.VHand = ({ hand, color, style = {}, scale = 1, onClick = () => { } }) => {
     const pieces = pieceDisplayOrder[color]
-        .filter(piece => hands[piece] > 0)
+        .filter(piece => hand[piece] > 0)
         .map(piece => ({
         piece: color == "black" ? piece : piece.toLowerCase(),
-        count: hands[piece]
+        count: hand[piece]
     }));
-    return (React.createElement("div", { style: Object.assign({}, getHandStyle(scale), style) }, pieces.map(hand => (React.createElement(Cell_1.default, { key: hand.piece, piece: hand.piece, count: hand.count, scale: scale, style: getCellStyle(color) })))));
+    return (React.createElement("div", { style: Object.assign({}, getHandStyle(scale), style) }, pieces.map(hand => (React.createElement(Cell_1.default, { key: hand.piece, piece: hand.piece, count: hand.count, scale: scale, style: getCellStyle(color), onClick: () => onClick(hand.piece) })))));
 };
 exports.default = exports.VHand;
 const getHandStyle = (scale) => ({

@@ -2,17 +2,42 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_redux_1 = require("react-redux");
 const Kento_1 = require("../components/Kento");
-const actions_1 = require("../actions");
-function mapStateToProps(state) {
+const actions = require("../actions");
+function mapStateToProps(state, ownProps) {
     return {
-        game: state.game,
-        turn: state.turn
+        position: state.game[state.turn],
+        moveInput: state.moveInput,
+        theGame: state.theGame,
+        branchFrom: state.branchFrom,
+        positionChanged: state.positionChanged,
+        aiInfo: state.aiInfo,
+        ai: ownProps.ai
     };
 }
 function mapDispatchToProps(dispatch) {
     return {
         control: {
-            setTurn(turn) { dispatch(actions_1.setTurn(turn)); }
+            setTurn(turn) {
+                dispatch(actions.setTurn(turn));
+            },
+            setMoveFrom(cell, piece) {
+                dispatch(actions.setMoveFrom(cell, piece));
+            },
+            setMoveFromHand(piece) {
+                dispatch(actions.setMoveFromHand(piece));
+            },
+            setMoveTo(cell) {
+                dispatch(actions.setMoveTo(cell));
+            },
+            setPromote(promote) {
+                dispatch(actions.setPromote(promote));
+            },
+            returnTheGame() {
+                dispatch(actions.returnTheGame());
+            },
+            doMove(moveInput, position) {
+                dispatch(actions.doMove(moveInput, position));
+            }
         }
     };
 }

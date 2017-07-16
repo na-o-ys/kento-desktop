@@ -6,21 +6,21 @@ const path = require("path");
 const url = require("url");
 let windows = {};
 function initWindows() {
-    const window = new electron_1.BrowserWindow({ width: 800, height: 600 });
+    const window = new electron_1.BrowserWindow({ width: 730, height: 575, frame: false });
     window.loadURL(url.format({
         pathname: path.join(__dirname, "../index.html"),
         protocol: "file:",
         slashes: true
     }));
     window.on("closed", function () {
-        windows = null;
+        windows.main = undefined;
     });
     windows.main = window;
 }
 const app = Electron.app;
 app.on("ready", initWindows);
 app.on('activate', function () {
-    if (windows.main === null) {
+    if (!windows.main) {
         initWindows();
     }
 });

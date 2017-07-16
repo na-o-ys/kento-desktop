@@ -6,12 +6,13 @@ type Hands = { [key: string]: number }
 
 type HandProps = {
     hands: Hands,
-    color: string,
+    color: "black" | "white",
     style?: Style,
-    scale?: number
+    scale?: number,
+    onClick?: Function
 }
 
-export const Hand = ({ hands, color, style = {}, scale = 1 }: HandProps) => {
+export const Hand = ({ hands, color, style = {}, scale = 1, onClick = () => {} }: HandProps) => {
     const pieces = pieceDisplayOrder[color]
         .filter(piece => hands[piece] > 0)
         .map(piece => ({
@@ -21,7 +22,7 @@ export const Hand = ({ hands, color, style = {}, scale = 1 }: HandProps) => {
     return (
         <div style={{ ...getHandStyle(scale), ...style }}>
             {pieces.map(hand => (
-                <Cell key={hand.piece} piece={hand.piece} count={hand.count} scale={scale} />
+                <Cell key={hand.piece} piece={hand.piece} count={hand.count} scale={scale} onClick={() => onClick(hand.piece)} />
             ))}
         </div>
     )

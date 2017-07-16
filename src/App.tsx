@@ -1,54 +1,62 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
+import * as _ from "lodash"
 import { createStore } from "redux"
 import { Provider } from "react-redux"
 import KentoApp from "./container/KentoApp"
 import { reducers } from "./reducers"
 import { setGame } from "./actions"
-import { Game } from "./lib/game"
 import { Store } from "redux"
 import { State } from "./container/KentoApp"
+import { emptyAiInfo, Ai, emptyAi } from "./lib/Ai"
+import { emptyMoveInput } from "./components/Kento"
+import { Position } from "./lib/Kifu"
 
-const App = ({ store }) => (
+export type StoreType = Store<State>
+export interface AppProps {
+    store: StoreType
+    ai: Ai
+}
+const App = ({ store, ai }: AppProps) => (
     <Provider store={store}>
-        <KentoApp />
+        <KentoApp ai={ai} />
     </Provider>
 )
 
-export function startGame(game: Game, turn: number) {
-    return initializeRender(game, turn)
+export function startGame(game: Position[], turn: number, useAi: boolean = true) {
+    return initializeRender(game, turn, useAi)
 }
 
-type GameListener = (game: Game) => void
-export function registerGame(subscribe: (x: GameListener) => void, turn: number) {
+type GameListener = (game: Position[]) => void
+export function registerGame(subscribe: (x: GameListener) => void, turn: number, useAi: boolean = true) {
     let store: Store<State>
     subscribe(game => {
         if (!store) {
-            store = initializeRender(game, turn)
+            store = initializeRender(game, turn, useAi)
         } else {
             store.dispatch(setGame(game))
         }
     })
 }
 
-function initializeRender(game: Game, turn: number) {
+function initializeRender(game: Position[], turn: number, useAi: boolean = true) {
     let store = createStore<State>(
-        reducers,
-        { game, turn, turnsRead: game.maxTurn }
+        reducers as any, // Redux の型バグ
+        {
+            game,
+            turn,
+            turnsRead: (_.last(game) as Position).turn,
+            moveInput: emptyMoveInput,
+            theGame: game,
+            branchFrom: -1,
+            aiInfo: emptyAiInfo,
+            positionChanged: true
+        }
     )
+    const ai = useAi ? new Ai(store) : emptyAi
     ReactDOM.render(
-        <App store={store} />,
+        <App store={store} ai={ai}/>,
         document.getElementById("main-board")
     )
     return store
 }
-// const style = {
-//   height: 100,
-//   width: 100,
-//   margin: 20,
-//   textAlign: 'center',
-//   display: 'inline-block',
-// }
-// const Board = () => (
-//   <Paper style={style} zDepth={1} />
-// )

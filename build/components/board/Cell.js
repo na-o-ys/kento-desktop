@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
-exports.Cell = ({ piece, highlight = false, count = 1, style = {}, scale = 1 }) => (React.createElement("div", { style: Object.assign({}, getOuterStyle(scale), style) },
+exports.Cell = ({ piece, highlight = false, count = 1, style = {}, scale = 1, onClick = () => { } }) => (React.createElement("div", { style: Object.assign({}, getOuterStyle(scale), style), onClick: onClick },
     React.createElement("span", { style: getCellStyle({ piece, highlight, scale }) }),
     count > 1 ? React.createElement(Count, Object.assign({}, { count, scale })) : null));
 exports.default = exports.Cell;
@@ -26,7 +26,7 @@ function getCellStyle({ piece, highlight, scale }) {
         cellStyle["backgroundColor"] = "rgba(255, 255, 255, 0.7)";
     return Object.assign({}, cellStyle, cellSize(scale));
 }
-const cellSize = scale => ({
+const cellSize = (scale) => ({
     width: scale * 43,
     height: scale * 48,
 });

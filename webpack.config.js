@@ -7,10 +7,6 @@ const javascripts_root = project_root + "/src"
 module.exports = {
   context: javascripts_root,
   entry: ["./dev.ts"],
-//   output: {
-//     path: project_root + "/dist",
-//     filename: "./kento.js"
-//   },
   resolve: {
     extensions: [".ts", ".tsx", ".js"]
   },
@@ -32,5 +28,8 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-  ]
+  ],
+  node: {
+    child_process: "empty"
+  }
 }

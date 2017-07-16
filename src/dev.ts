@@ -1,18 +1,19 @@
 import docReady = require("doc-ready")
 import axios from "axios"
 import { startGame, registerGame } from "./App"
-import Game from "./lib/game"
+import { parseText } from "./lib/Kifu"
 
-injectHeaders()
+// injectHeaders()
 
 docReady(() => {
     const kifuElem = document.getElementById('kifu')
+    if (!kifuElem) return
     if ('kifu' in kifuElem.dataset) {
-        const game = Game.parseText(kifuElem.dataset['kifu'])
-        startGame(game, getTurn())
+        const game = parseText(kifuElem.dataset['kifu'] as string)
+        startGame(game, getTurn(), false)
     }
     if ('url' in kifuElem.dataset) {
-        registerGame(genSubscribeKifu(kifuElem.dataset['url']), getTurn())
+        registerGame(genSubscribeKifu(kifuElem.dataset['url'] as string), getTurn(), false)
     }
     // const url = "https://jsaserver.herokuapp.com/games/6381.kif"
     // registerGame(genSubscribeKifu(url), 0)
@@ -23,10 +24,10 @@ function getTurn() {
     else return 0
 }
 
-function genSubscribeKifu(url) {
-    return callback => {
+function genSubscribeKifu(url: string) {
+    return (callback: any) => {
         const fetchGame = () =>
-            axios.get(url).then(res => callback(Game.parseText(res.data)))
+            axios.get(url).then(res => callback(parseText(res.data)))
         fetchGame()
         setInterval(fetchGame, 1 * 60 * 1000)
     }

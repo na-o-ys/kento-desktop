@@ -6,11 +6,12 @@ type CellProps = {
     highlight?: boolean,
     count?: number,
     style?: Style,
-    scale?: number
+    scale?: number,
+    onClick?: () => void
 }
 
-export const Cell = ({ piece, highlight = false, count = 1, style = {}, scale = 1 }: CellProps) => (
-    <div style={{ ...getOuterStyle(scale), ...style }}>
+export const Cell = ({ piece, highlight = false, count = 1, style = {}, scale = 1, onClick = () => {} }: CellProps) => (
+    <div style={{ ...getOuterStyle(scale), ...style }} onClick={onClick} >
         <span style={getCellStyle({ piece, highlight, scale })}></span>
         {count > 1 ? <Count {...{ count, scale }} /> : null}
     </div>
@@ -18,16 +19,16 @@ export const Cell = ({ piece, highlight = false, count = 1, style = {}, scale = 
 
 export default Cell
 
-const getOuterStyle: (number) => React.CSSProperties = scale => ({
+const getOuterStyle: (scale: number) => React.CSSProperties = scale => ({
     position: "relative",
     ...cellSize(scale)
 })
 
-const Count = ({ count, scale }) => (
+const Count = ({ count, scale }: { count: number, scale: number }) => (
     <span style={getCountStyle(scale)}>{count}</span>
 )
 
-const getCountStyle: (number) => React.CSSProperties = scale => ({
+const getCountStyle: (scale: number) => React.CSSProperties = scale => ({
     position: "absolute",
     top: 0,
     right: scale * 43 / 16,
@@ -36,7 +37,7 @@ const getCountStyle: (number) => React.CSSProperties = scale => ({
     textShadow: ".5px .5px black, .5px -.5px black, -.5px .5px black, -.5px -.5px black"
 })
 
-function getCellStyle({ piece, highlight, scale }) {
+function getCellStyle({ piece, highlight, scale }: any) {
     let cellStyle: Style = {
         backgroundSize: "100%",
         display: "block"
@@ -46,12 +47,12 @@ function getCellStyle({ piece, highlight, scale }) {
     return { ...cellStyle, ...cellSize(scale) }
 }
 
-const cellSize = scale => ({
+const cellSize = (scale: number) => ({
     width: scale * 43,
     height: scale * 48,
 })
 
-const pieceImages = {
+const pieceImages: { [key: string]: string } = {
     "K": "Sou.png",
     "R": "Shi.png",
     "B": "Skaku.png",

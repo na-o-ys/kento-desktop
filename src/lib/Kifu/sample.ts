@@ -1,4 +1,4 @@
-import Game from "../game"
+import { parseText } from "./Parser"
 
 const kifu = `開始日時：2016/11/01 10:00
 終了日時：2016/11/01 17:07
@@ -237,6 +237,4 @@ const kifu = `開始日時：2016/11/01 10:00
 *投了以下△７五玉に▲８四角までの即詰み。
  102 投了          ( 0:00/03:56:00)`
 
-export const sample = Game.parseText(kifu)
-
-export default sample
+export const sample = parseText(kifu)

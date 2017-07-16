@@ -1,13 +1,19 @@
 "use strict";
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SET_GAME = 'set_game';
+__export(require("./MoveInput"));
 function setGame(game) {
-    return { type: exports.SET_GAME, game };
+    return { type: "set_game", game };
 }
 exports.setGame = setGame;
-exports.SET_TURN = 'set_turn';
 function setTurn(turn) {
-    return { type: exports.SET_TURN, turn };
+    return { type: "set_turn", turn };
 }
 exports.setTurn = setTurn;
+function returnTheGame() {
+    return { type: "return_the_game" };
+}
+exports.returnTheGame = returnTheGame;
 //# sourceMappingURL=index.js.map

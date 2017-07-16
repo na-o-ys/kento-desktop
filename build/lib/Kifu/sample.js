@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const game_1 = require("../game");
+const Parser_1 = require("./Parser");
 const kifu = `開始日時：2016/11/01 10:00
 終了日時：2016/11/01 17:07
 棋戦：第66期王将戦挑戦者決定リーグ戦/角換わり腰掛銀
@@ -237,6 +237,5 @@ const kifu = `開始日時：2016/11/01 10:00
 *勝った糸谷はリーグ成績２勝１敗、敗れた深浦は１勝３敗になった。
 *投了以下△７五玉に▲８四角までの即詰み。
  102 投了          ( 0:00/03:56:00)`;
-exports.sample = game_1.default.parseText(kifu);
-exports.default = exports.sample;
+exports.sample = Parser_1.parseText(kifu);
 //# sourceMappingURL=sample.js.map
