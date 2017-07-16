@@ -29,6 +29,9 @@ function mapDispatchToProps(dispatch) {
             setMoveTo(cell) {
                 dispatch(actions.setMoveTo(cell));
             },
+            clearMoveInput() {
+                dispatch(actions.clearMoveInput());
+            },
             setPromote(promote) {
                 dispatch(actions.setPromote(promote));
             },

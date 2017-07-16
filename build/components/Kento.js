@@ -29,8 +29,17 @@ class Kento extends React.Component {
                     ShogiRule.getMovablesFromCell(moveInput.from, position) :
                     ShogiRule.getMovablesFromHand(moveInput.piece, position);
                 if (movables.includes({ x, y })) {
-                    control.setMoveTo({ x, y });
+                    if (ShogiRule.canMoveWithoutChecked(position, {
+                        from: moveInput.from || null,
+                        to: { x, y },
+                        piece: moveInput.piece || null,
+                        promote: !!moveInput.promote
+                    })) {
+                        control.setMoveTo({ x, y });
+                        return;
+                    }
                 }
+                control.clearMoveInput();
             }
         };
         const onClickHand = (piece) => {
@@ -49,7 +58,7 @@ class Kento extends React.Component {
                 React.createElement("button", { onClick: () => control.setPromote(true) }, "\u6210"),
                 React.createElement("button", { onClick: () => control.setPromote(false) }, "\u4E0D\u6210")),
             React.createElement("div", { style: { float: "left" } },
-                React.createElement(Board_1.default, { position: position, verticalHand: false, style: boardStyle, onClickBoard: onClickCell, onClickHand: onClickHand }),
+                React.createElement(Board_1.default, { position: position, verticalHand: false, style: boardStyle, onClickBoard: onClickCell, onClickHand: onClickHand, highlightCell: moveInput.from, highlightHand: moveInput.fromHand ? moveInput.piece : undefined }),
                 React.createElement(Control, { style: controlStyle, turn: position.turn, showReturnTheGame: branchFrom != -1, returnTheGame: control.returnTheGame, control: control })),
             React.createElement("div", { style: { float: "left" } },
                 React.createElement(Ai_1.AiResult, { aiInfo: aiInfo, style: { width: aiWidth } }))));

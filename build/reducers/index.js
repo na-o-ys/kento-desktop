@@ -64,6 +64,7 @@ function moveInput(state = Kento_1.emptyMoveInput, action) {
             return Object.assign({}, state, { to: action.cell });
         case "set_promote":
             return Object.assign({}, state, { promote: action.promote });
+        case "clear_move_input":
         case "set_turn":
         case "return_the_game":
         case "do_move":
