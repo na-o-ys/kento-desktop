@@ -1,6 +1,6 @@
 import docReady = require("doc-ready")
 import axios from "axios"
-import { startGame, registerGame } from "./App"
+import { startGame, registerGame } from "./BuiltinApp"
 import { parseText } from "./lib/Kifu"
 
 // injectHeaders()
