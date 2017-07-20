@@ -7,20 +7,20 @@ import { State } from "../container/KentoApp"
 import { AiInfo, emptyAiInfo } from "../lib/Ai"
 import * as ShogiRule from "../lib/ShogiRule"
 
-function game(state: Position[], theGame: Position[], action: Action): Position[] {
+function game(state: Position[], theGame: Position[] | undefined, action: Action): Position[] {
     switch (action.type) {
         case "set_game":
             return action.game
         case "do_move":
             return doMove(state, action.position, action.moveInput )
         case "return_the_game":
-            return theGame
+            if (theGame) return theGame
         default:
             return state
     }
 }
 
-function theGame(state: Position[], action: Action): Position[] {
+function theGame(state: Position[] | undefined, action: Action): Position[] | undefined {
     return state
 }
 
@@ -135,7 +135,7 @@ export function reducers(state: State, action: Action) {
         moveInput: moveInput(state.moveInput, action),
         branchFrom: branchFrom(state.branchFrom, action),
         positionChanged: positionChanged(state.positionChanged, state.turn, action),
-        aiInfo: aiInfo(state.aiInfo, state.turn, action),
+        aiInfo: aiInfo(state.aiInfo, state.turn, action)
     }
 }
 

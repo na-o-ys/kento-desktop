@@ -1,7 +1,7 @@
 import { remote } from "electron"
 import * as path from "path"
 import * as _ from "lodash"
-import { startGame, registerGame } from "./BuiltinApp"
+import { startGame, registerGame } from "./App"
 import { parseText } from "./lib/Kifu"
 import axios from "axios"
 

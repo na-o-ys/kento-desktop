@@ -47,7 +47,7 @@ function initializeRender(game: Position[], turn: number, useAi: boolean = true)
             turn,
             turnsRead: (_.last(game) as Position).turn,
             moveInput: emptyMoveInput,
-            theGame: game,
+            // theGame: game,
             branchFrom: -1,
             aiInfo: emptyAiInfo,
             positionChanged: true

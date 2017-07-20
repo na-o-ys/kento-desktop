@@ -1,5 +1,6 @@
 import { connect } from "react-redux"
 import { Kento, MoveInput, GameControl } from "../components/Kento"
+import { Main } from "../components/Main"
 import * as actions from "../actions"
 import { Dispatch } from "redux"
 import { Position, Cell } from "../lib/Kifu"
@@ -12,10 +13,10 @@ export interface State {
     turn: number
     turnsRead: number
     moveInput: MoveInput
-    theGame: Position[]
+    theGame?: Position[]
     branchFrom: number
-    positionChanged: boolean
     aiInfo: AiInfo
+    positionChanged: boolean
 }
 
 function mapStateToProps(state: State, ownProps: any) {
@@ -26,7 +27,8 @@ function mapStateToProps(state: State, ownProps: any) {
         branchFrom: state.branchFrom,
         positionChanged: state.positionChanged,
         aiInfo: state.aiInfo,
-        ai: ownProps.ai
+        ai: ownProps.ai,
+        isGameEmpty: !state.theGame
     }
 }
 
@@ -61,6 +63,6 @@ function mapDispatchToProps(dispatch: Dispatch<0>): { control: GameControl } {
     }
 }
 
-const KentoApp = connect(mapStateToProps, mapDispatchToProps)(Kento)
+const KentoApp = connect(mapStateToProps, mapDispatchToProps)(Main)
 
 export default KentoApp

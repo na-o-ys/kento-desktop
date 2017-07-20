@@ -17,7 +17,7 @@ export interface GameControl {
     doMove(moveInput: MoveInput, position: Position): void
 }
 
-interface KentoProps {
+export interface KentoProps {
     position: Position
     moveInput: MoveInput
     branchFrom: number
