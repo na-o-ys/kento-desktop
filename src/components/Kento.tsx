@@ -1,5 +1,5 @@
 import * as React from "react"
-import Modal from "react-modal"
+import * as Modal from "react-modal"
 import Board from "./Board"
 import { Position, Cell } from "../lib/Kifu"
 import { AiResult } from "./Ai"

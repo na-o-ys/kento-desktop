@@ -4,7 +4,6 @@ import * as path from "path"
 import * as url from "url"
 
 let windows: { main?: Electron.BrowserWindow } = {}
-
 function initWindows() {
     const window = new BrowserWindow({ width: 730, height: 575, frame: false })
     window.loadURL(url.format({
