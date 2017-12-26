@@ -4,6 +4,7 @@ import split = require("split")
 import * as AiAction from "../actions/ai"
 import * as _ from "lodash"
 import * as Kifu from "../lib/Kifu"
+import { AiConfig } from "../config"
 
 export interface AiInfo {
     pv: string[]
@@ -32,7 +33,7 @@ export const emptyAi: Ai = {
 const Byoyomi = 30000
 export class Ai {
     aiProcess: any
-    constructor(readonly store: StoreType) {}
+    constructor(readonly store: StoreType, readonly config: AiConfig) {}
     start(position: Kifu.Position) {
         const color = position.nextColor
         const sfen = position.getSfen()
@@ -40,7 +41,7 @@ export class Ai {
         if (this.aiProcess) {
             this.aiProcess.kill("SIGKILL")
         }
-        this.aiProcess = spawn("./YaneuraOu-20170711-sse42", [], { cwd: "/Users/naoyoshi/projects/shogi-ai/relmo8-YaneuraOu-sse42" })
+        this.aiProcess = spawn(this.config.cmd, [], { cwd: this.config.cwd })
         this.aiProcess.stdin.write(this.generateCommand(Byoyomi, sfen))
         this.aiProcess.stdout.pipe(split()).on('data', (data: any) => {
             const line: string = data.toString()

@@ -11,6 +11,7 @@ import { State } from "./container/KentoApp"
 import { emptyAiInfo, Ai, emptyAi } from "./lib/Ai"
 import { emptyMoveInput } from "./components/Kento"
 import { Position } from "./lib/Kifu"
+import { Config } from "./config"
 
 export type StoreType = Store<State>
 export interface AppProps {
@@ -23,23 +24,29 @@ const App = ({ store, ai }: AppProps) => (
     </Provider>
 )
 
-export function startGame(game: Position[], turn: number, useAi: boolean = true) {
-    return initializeRender(game, turn, useAi)
+export function startGame(
+    game: Position[],
+    turn: number,
+    config: Config) {
+    return initializeRender(game, turn, config)
 }
 
 type GameListener = (game: Position[]) => void
-export function registerGame(subscribe: (x: GameListener) => void, turn: number, useAi: boolean = true) {
+export function registerGame(
+    subscribe: (x: GameListener) => void,
+    turn: number,
+    config: Config) {
     let store: Store<State>
     subscribe(game => {
         if (!store) {
-            store = initializeRender(game, turn, useAi)
+            store = initializeRender(game, turn, config)
         } else {
             store.dispatch(setGame(game))
         }
     })
 }
 
-function initializeRender(game: Position[], turn: number, useAi: boolean = true) {
+function initializeRender(game: Position[], turn: number, config: Config) {
     let store = createStore<State>(
         reducers as any, // Redux の型バグ
         {
@@ -53,7 +60,7 @@ function initializeRender(game: Position[], turn: number, useAi: boolean = true)
             positionChanged: true
         }
     )
-    const ai = useAi ? new Ai(store) : emptyAi
+    const ai = config.ai ? new Ai(store, config.ai) : emptyAi
     ReactDOM.render(
         <App store={store} ai={ai}/>,
         document.getElementById("main-board")
