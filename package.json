@@ -1,6 +1,5 @@
 {
   "name": "kento-desktop",
-  "productName": "Kento",
   "version": "0.0.1",
   "description": "Kento Shogi Desktop",
   "main": "build/main.js",
@@ -8,10 +7,28 @@
     "start": "electron build/main",
     "build": "tsc",
     "watch": "tsc -w",
-    "package": "tsc && cp -r node_modules build/ && electron-packager . Kento --platform=darwin --arch=x64 --out=release --overwrite && rm -rf build/node_modules"
+    "package": "tsc && CSC_IDENTITY_AUTO_DISCOVERY=false build --mac --x64",
+    "release": "tsc && CSC_IDENTITY_AUTO_DISCOVERY=false build --mac --x64"
   },
   "author": "na-o-ys",
   "license": "ISC",
+  "build": {
+    "appId": "io.na-o-ys.kento-desktop",
+    "productName": "Kento",
+    "files": [
+      "build/",
+      "index.html",
+      "img/"
+    ],
+    "mac": {
+      "target": "dmg",
+      "publish": ["github"]
+    },
+    "directories": {
+      "buildResources": "resources",
+      "output": "release"
+    }
+  },
   "dependencies": {
     "axios": "^0.16.2",
     "electron-json-storage": "^4.0.2",
@@ -33,7 +50,7 @@
     "@types/react-redux": "^5.0.14",
     "@types/split": "^0.3.28",
     "electron": "^1.7.10",
-    "electron-packager": "^10.1.0",
+    "electron-builder": "^19.49.2",
     "typescript": "^2.6.2"
   }
 }
