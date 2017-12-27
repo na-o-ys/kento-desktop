@@ -2,6 +2,7 @@ import * as Electron from "electron"
 import { BrowserWindow } from "electron"
 import * as path from "path"
 import * as url from "url"
+import { initializeAutoUpdater } from "./autoUpdate"
 
 let windows: { main?: Electron.BrowserWindow } = {}
 function initWindows() {
@@ -14,7 +15,16 @@ function initWindows() {
     window.on("closed", function () {
         windows.main = undefined
     })
+    // window.webContents.openDevTools()
     windows.main = window
+
+    initializeAutoUpdater(sendStatusToWindow)
+        .checkForUpdatesAndNotify()
+}
+
+function sendStatusToWindow(text: string) {
+    if (!windows.main) return
+    windows.main.webContents.send("message", text)
 }
 
 const app = Electron.app

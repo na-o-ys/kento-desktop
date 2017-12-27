@@ -1,6 +1,6 @@
 require("module").globalPaths.push(__dirname)
 import * as path from "path"
-import { remote } from "electron"
+import { remote, ipcRenderer } from "electron"
 import axios from "axios"
 import * as _ from "lodash"
 import { render } from "App"
@@ -21,6 +21,13 @@ async function start() {
 }
 
 start()
+
+ipcRenderer.on("message", (event: any, text: string) => {
+    const container = document.getElementById("messages")
+    const message = document.createElement("div")
+    message.innerHTML = text
+    if (container) container.appendChild(message)
+})
 
 // const url = clipboard.readText()
 
