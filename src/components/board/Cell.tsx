@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Style } from "../../types"
+import { Style } from "types"
 
 type CellProps = {
     piece?: string,

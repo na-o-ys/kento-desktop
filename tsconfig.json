@@ -11,8 +11,8 @@
         "outDir": "build",
         "inlineSourceMap": true,
         "jsx": "react",
+        "baseUrl": "./src",
         "allowJs": true,
-        "noImplicitAny": true,
         "strict": true
     },
     "include": [

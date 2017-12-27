@@ -1,10 +1,11 @@
-import { StoreType } from "../App"
+import { Store } from "redux"
+import { State } from "container/KentoApp"
 import { spawn } from "child_process"
 import split = require("split")
-import * as AiAction from "../actions/ai"
+import * as AiAction from "actions/ai"
 import * as _ from "lodash"
-import * as Kifu from "../lib/Kifu"
-import { AiConfig } from "../config"
+import * as Kifu from "lib/Kifu"
+import { AiConfig } from "config"
 
 export interface AiInfo {
     pv: string[]
@@ -17,7 +18,7 @@ export interface AiInfo {
     [key: string]: number | undefined | string[]
 }
 
-export const emptyAiInfo: AiInfo = {
+export const EmptyAiInfo: AiInfo = {
     pv: [],
     pvJp: [],
     depth: 0,
@@ -25,7 +26,7 @@ export const emptyAiInfo: AiInfo = {
     nps: 0
 }
 
-export const emptyAi: Ai = {
+export const EmptyAi: Ai = {
     aiProcess: null,
     start(position: Kifu.Position) {}
 } as Ai
@@ -33,7 +34,7 @@ export const emptyAi: Ai = {
 const Byoyomi = 30000
 export class Ai {
     aiProcess: any
-    constructor(readonly store: StoreType, readonly config: AiConfig) {}
+    constructor(readonly store: Store<State>, readonly config: AiConfig) {}
     start(position: Kifu.Position) {
         const color = position.nextColor
         const sfen = position.getSfen()
@@ -84,7 +85,7 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
     }
 
     private parseInfo(words: string[], position: Kifu.Position): AiInfo {
-        let result = _.cloneDeep(emptyAiInfo)
+        let result = _.cloneDeep(EmptyAiInfo)
         let command: string | null = null
         words.forEach(word => {
             switch(word) {

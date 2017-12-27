@@ -1,5 +1,5 @@
-import { Position, Cell } from "../lib/Kifu"
-import { MoveInput } from "../components/Kento"
+import { Position, Cell } from "lib/Kifu"
+import { MoveInput } from "components/Kento"
 
 export type MoveInputActionType = SetMoveFromAction | SetMoveToAction |
     SetPromoteAction | SetMoveFromHandAction | DoMoveAction | ClearMoveInputAction

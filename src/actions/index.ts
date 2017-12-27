@@ -1,8 +1,8 @@
-import { Position } from "../lib/Kifu"
-import { MoveInput } from "../components/Kento"
-import * as AiAction from "./ai"
-import { MoveInputActionType } from "./MoveInput"
-export * from "./MoveInput"
+import { Position } from "lib/Kifu"
+import { MoveInput } from "components/Kento"
+import * as AiAction from "actions/ai"
+import { MoveInputActionType } from "actions/MoveInput"
+export * from "actions/MoveInput"
 
 export type Action = SetGameAction | SetTurnAction | ReturnTheGame |
     AiAction.UpdateInfoAction | MoveInputActionType

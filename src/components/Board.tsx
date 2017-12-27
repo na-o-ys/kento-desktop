@@ -1,9 +1,9 @@
 import * as React from "react"
-import MainBoard, { OnClickMainBoard } from "./board/MainBoard"
-import Hand from "./board/Hand"
-import VHand from "./board/VHand"
-import { Position, Cell } from "../lib/Kifu"
-import { Style } from "../types"
+import { Position, Cell } from "lib/Kifu"
+import { Style } from "types"
+import MainBoard, { OnClickMainBoard } from "components/board/MainBoard"
+import Hand from "components/board/Hand"
+import VHand from "components/board/VHand"
 
 interface BoardProps {
     position: Position

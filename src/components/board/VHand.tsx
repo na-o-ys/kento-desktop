@@ -1,6 +1,6 @@
 import * as React from "react"
-import Cell from "./Cell"
-import { Style } from "../../types"
+import { Style } from "types"
+import Cell from "components/board/Cell"
 
 type Hands = { [key: string]: number }
 

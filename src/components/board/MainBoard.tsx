@@ -1,7 +1,7 @@
 import * as React from "react"
-import Cell from "./Cell"
-import { Style } from "../../types"
-import * as Kifu from "../../lib/Kifu"
+import { Style } from "types"
+import * as Kifu from "lib/Kifu"
+import Cell from "components/board/Cell"
 
 export interface OnClickMainBoard {
     (x: number, y: number): void

@@ -1,4 +1,4 @@
-import { parseText } from "./Parser"
+import { parseText } from "lib/Kifu/Parser"
 
 const kifu = `開始日時：2016/11/01 10:00
 終了日時：2016/11/01 17:07

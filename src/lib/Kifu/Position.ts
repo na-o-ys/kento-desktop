@@ -1,5 +1,5 @@
 import * as _ from "lodash"
-import * as ShogiRule from "../ShogiRule"
+import * as ShogiRule from "lib/ShogiRule"
 
 export type Color = "b" | "w"
 

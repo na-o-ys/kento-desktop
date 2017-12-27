@@ -1,10 +1,10 @@
 import * as React from "react"
 import * as Modal from "react-modal"
-import Board from "./Board"
-import { Position, Cell } from "../lib/Kifu"
-import { AiResult } from "./Ai"
-import { AiInfo, Ai } from "../lib/Ai"
-import * as ShogiRule from "../lib/ShogiRule"
+import Board from "components/Board"
+import { AiResult } from "components/Ai"
+import { Position, Cell } from "lib/Kifu"
+import { AiInfo, Ai } from "lib/Ai"
+import * as ShogiRule from "lib/ShogiRule"
 
 export interface GameControl {
     setTurn(turn: number): void
@@ -17,10 +17,10 @@ export interface GameControl {
     doMove(moveInput: MoveInput, position: Position): void
 }
 
-interface KentoProps {
+export interface KentoProps {
     position: Position
     moveInput: MoveInput
-    branchFrom: number
+    branched: boolean
     control: GameControl
     aiInfo: AiInfo
     positionChanged: boolean
@@ -39,13 +39,11 @@ export class Kento extends React.Component<KentoProps> {
             position,
             control,
             moveInput,
-            branchFrom,
+            branched,
             aiInfo,
             positionChanged,
             ai
         } = this.props
-        console.log(position)
-        console.log(moveInput)
         const onClickCell = (x: number, y: number) => {
             const piece = position.getPiece({ x, y })
             // 自駒
@@ -96,7 +94,7 @@ export class Kento extends React.Component<KentoProps> {
                         highlightCell={moveInput.from}
                         highlightHand={moveInput.fromHand ? moveInput.piece : undefined}/>
                     <Control style={controlStyle} turn={position.turn}
-                        showReturnTheGame={branchFrom != -1} returnTheGame={control.returnTheGame}
+                        showReturnTheGame={branched} returnTheGame={control.returnTheGame}
                         control={control}/>
                 </div>
                 <div style={{float: "left"}}>
@@ -186,4 +184,4 @@ export interface MoveInput {
     promote?: boolean
 }
 
-export const emptyMoveInput: MoveInput = { promote: undefined }
+export const EmptyMoveInput: MoveInput = { promote: undefined }
