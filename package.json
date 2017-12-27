@@ -1,6 +1,6 @@
 {
   "name": "kento-desktop",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Kento Shogi Desktop",
   "main": "build/main.js",
   "scripts": {
