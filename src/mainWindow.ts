@@ -1,11 +1,12 @@
+require("module").globalPaths.push(__dirname)
 import * as path from "path"
-import { remote } from "electron"
+import { remote, ipcRenderer } from "electron"
 import axios from "axios"
 import * as _ from "lodash"
-import { startGame, registerGame } from "./App"
-import { parseText } from "./lib/Kifu"
-import { initializeConfig } from "./config"
-import { sample } from "./lib/Kifu/sample"
+import { render } from "App"
+import { parseText } from "lib/Kifu"
+import { initializeConfig } from "config"
+import { sample } from "lib/Kifu/sample"
 
 async function start() {
     const { BrowserWindow, clipboard } = remote
@@ -16,10 +17,17 @@ async function start() {
         parseText(clipboard.readText())
 
     const latestPosition = _.last(game)
-    startGame(game, latestPosition ? latestPosition.turn : 0, config)
+    render(game, latestPosition ? latestPosition.turn : 0, config)
 }
 
 start()
+
+ipcRenderer.on("message", (event: any, text: string) => {
+    const container = document.getElementById("messages")
+    const message = document.createElement("div")
+    message.innerHTML = text
+    if (container) container.appendChild(message)
+})
 
 // const url = clipboard.readText()
 

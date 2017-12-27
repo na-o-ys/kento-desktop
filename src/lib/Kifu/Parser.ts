@@ -1,5 +1,5 @@
 import JKFPlayer = require("json-kifu-format")
-import { Position, emptyMove, Move, Piece, Hand, Cell } from "./Position"
+import { Position, emptyMove, Move, Piece, Hand, Cell } from "lib/Kifu/Position"
 
 export function parseText(text: string): Position[] {
     const player = JKFPlayer.parse(text)

@@ -1,18 +1,17 @@
-import { connect } from "react-redux"
-import { Kento, MoveInput, GameControl } from "../components/Kento"
-import * as actions from "../actions"
-import { Dispatch } from "redux"
-import { Position, Cell } from "../lib/Kifu"
-import { AiInfo } from "../lib/Ai"
-import { AppProps } from "../App"
 import * as _ from "lodash"
+import { Dispatch } from "redux"
+import { connect } from "react-redux"
+import { Kento, MoveInput, GameControl } from "components/Kento"
+import { AppProps } from "App"
+import * as actions from "actions"
+import { Position, Cell } from "lib/Kifu"
+import { AiInfo } from "lib/Ai"
 
 export interface State {
     game: Position[]
-    turn: number
-    turnsRead: number
-    moveInput: MoveInput
     theGame: Position[]
+    turn: number
+    moveInput: MoveInput
     branchFrom: number
     positionChanged: boolean
     aiInfo: AiInfo
@@ -23,7 +22,7 @@ function mapStateToProps(state: State, ownProps: any) {
         position: state.game[state.turn],
         moveInput: state.moveInput,
         theGame: state.theGame,
-        branchFrom: state.branchFrom,
+        branched: state.branchFrom != -1,
         positionChanged: state.positionChanged,
         aiInfo: state.aiInfo,
         ai: ownProps.ai

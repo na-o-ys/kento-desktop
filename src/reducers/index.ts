@@ -1,11 +1,11 @@
 import { combineReducers } from "redux"
 import * as _ from "lodash"
-import { Position, Piece, emptyCell } from "../lib/Kifu"
-import { Action } from "../actions"
-import { MoveInput, emptyMoveInput } from "../components/Kento"
-import { State } from "../container/KentoApp"
-import { AiInfo, emptyAiInfo } from "../lib/Ai"
-import * as ShogiRule from "../lib/ShogiRule"
+import { Position, Piece, emptyCell } from "lib/Kifu"
+import { Action } from "actions"
+import { MoveInput, EmptyMoveInput } from "components/Kento"
+import { State } from "container/KentoApp"
+import { AiInfo, EmptyAiInfo } from "lib/Ai"
+import * as ShogiRule from "lib/ShogiRule"
 
 function game(state: Position[], theGame: Position[], action: Action): Position[] {
     switch (action.type) {
@@ -53,26 +53,17 @@ function turn(state: number = 0, maxTurn: number, branchFrom: number, action: Ac
     }
 }
 
-function turnsRead(state: number = 0, action: Action): number {
-    switch (action.type) {
-        case "set_turn":
-            return Math.max(state, action.turn)
-        default:
-            return state
-    }
-}
-
-function moveInput(state: MoveInput = emptyMoveInput, action: Action): MoveInput {
+function moveInput(state: MoveInput = EmptyMoveInput, action: Action): MoveInput {
     switch (action.type) {
         case "set_move_from":
             return {
-                ...emptyMoveInput,
+                ...EmptyMoveInput,
                 from: action.cell,
                 piece: action.piece
             }
         case "set_move_from_hand":
             return {
-                ...emptyMoveInput,
+                ...EmptyMoveInput,
                 fromHand: true,
                 piece: action.piece
             }
@@ -90,22 +81,22 @@ function moveInput(state: MoveInput = emptyMoveInput, action: Action): MoveInput
         case "set_turn":
         case "return_the_game":
         case "do_move":
-            return emptyMoveInput
+            return EmptyMoveInput
         default:
             return state
     }
 }
 
-function aiInfo(state: AiInfo = emptyAiInfo, currentTurn: number, action: Action) {
+function aiInfo(state: AiInfo = EmptyAiInfo, currentTurn: number, action: Action) {
     switch (action.type) {
         case "do_move":
-            return emptyAiInfo
+            return EmptyAiInfo
         case "return_the_game":
-            return emptyAiInfo
+            return EmptyAiInfo
         case "update_ai_info":
             return action.info
         case "set_turn":
-            return (action.turn != currentTurn) ? emptyAiInfo : state
+            return (action.turn != currentTurn) ? EmptyAiInfo : state
         default:
             return state
     }
@@ -124,14 +115,13 @@ function positionChanged(state: boolean = false, currentTurn: number, action: Ac
     }
 }
 
-export function reducers(state: State, action: Action) {
+export function reducers(state: State, action: Action): State {
     const latestPosition = _.last(state.game)
     const maxTurn = latestPosition ? latestPosition.turn : 0
     return {
         game: game(state.game, state.theGame, action),
         theGame: theGame(state.theGame, action),
         turn: turn(state.turn, maxTurn, state.branchFrom, action),
-        turnsRead: turnsRead(state.turnsRead, action),
         moveInput: moveInput(state.moveInput, action),
         branchFrom: branchFrom(state.branchFrom, action),
         positionChanged: positionChanged(state.positionChanged, state.turn, action),

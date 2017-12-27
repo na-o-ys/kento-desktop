@@ -1,4 +1,4 @@
-import { Position, Cell, Move } from "./Kifu"
+import { Position, Cell, Move } from "lib/Kifu"
 import * as _ from "lodash"
 
 export function getMovablesFromCell(cell: Cell, position: Position): Movables {
