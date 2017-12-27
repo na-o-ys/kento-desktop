@@ -8,7 +8,7 @@
     "start": "electron build/main",
     "build": "tsc",
     "watch": "tsc -w",
-    "package": "tsc && electron-packager . Kento --platform=darwin --arch=x64 --out=release --overwrite --asar=false"
+    "package": "tsc && cp -r node_modules build/ && electron-packager . Kento --platform=darwin --arch=x64 --out=release --overwrite && rm -rf build/node_modules"
   },
   "author": "na-o-ys",
   "license": "ISC",

@@ -14,7 +14,6 @@ function initWindows() {
     window.on("closed", function () {
         windows.main = undefined
     })
-    window.webContents.openDevTools()
     windows.main = window
 }
 
