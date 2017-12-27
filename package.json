@@ -1,24 +1,19 @@
 {
   "name": "kento-desktop",
+  "productName": "Kento",
   "version": "0.0.1",
   "description": "Kento Shogi Desktop",
-  "main": "main.js",
+  "main": "build/main.js",
   "scripts": {
     "start": "electron build/main",
-    "build": "tsc"
+    "build": "tsc",
+    "watch": "tsc -w",
+    "package": "tsc && electron-packager . Kento --platform=darwin --arch=x64 --out=release --overwrite --asar=false"
   },
   "author": "na-o-ys",
   "license": "ISC",
-  "devDependencies": {
-    "@types/electron-json-storage": "^4.0.0",
-    "@types/lodash": "^4.14.68",
-    "@types/node": "^8.0.6",
-    "@types/react-modal": "^3.1.0",
-    "@types/react-redux": "^5.0.14",
-    "@types/split": "^0.3.28",
+  "dependencies": {
     "axios": "^0.16.2",
-    "doc-ready": "^1.0.4",
-    "electron": "^1.7.10",
     "electron-json-storage": "^4.0.2",
     "json-kifu-format": "^1.1.0",
     "lodash": "^4.17.4",
@@ -28,7 +23,17 @@
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
-    "split": "^1.0.0",
+    "split": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/electron-json-storage": "^4.0.0",
+    "@types/lodash": "^4.14.68",
+    "@types/node": "^8.0.6",
+    "@types/react-modal": "^3.1.0",
+    "@types/react-redux": "^5.0.14",
+    "@types/split": "^0.3.28",
+    "electron": "^1.7.10",
+    "electron-packager": "^10.1.0",
     "typescript": "^2.6.2"
   }
 }
