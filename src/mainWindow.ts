@@ -1,16 +1,25 @@
-import { remote } from "electron"
 import * as path from "path"
+import { remote } from "electron"
+import axios from "axios"
 import * as _ from "lodash"
 import { startGame, registerGame } from "./App"
 import { parseText } from "./lib/Kifu"
-import axios from "axios"
+import { initializeConfig } from "./config"
+import { sample } from "./lib/Kifu/sample"
 
-const { BrowserWindow, clipboard } = remote
+async function start() {
+    const { BrowserWindow, clipboard } = remote
+    const config = await initializeConfig()
 
-const kifu = clipboard.readText()
-const game = parseText(kifu)
-const latestPosition = _.last(game)
-startGame(game, latestPosition ? latestPosition.turn : 0)
+    const game = config.debug.useSampleKifu ?
+        sample :
+        parseText(clipboard.readText())
+
+    const latestPosition = _.last(game)
+    startGame(game, latestPosition ? latestPosition.turn : 0, config)
+}
+
+start()
 
 // const url = clipboard.readText()
 

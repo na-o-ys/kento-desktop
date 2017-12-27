@@ -61,6 +61,6 @@ function mapDispatchToProps(dispatch: Dispatch<0>): { control: GameControl } {
     }
 }
 
-const KentoApp = connect(mapStateToProps, mapDispatchToProps)(Kento)
+const KentoApp = connect<any, any, any, State>(mapStateToProps, mapDispatchToProps)(Kento)
 
 export default KentoApp

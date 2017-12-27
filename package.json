@@ -1,36 +1,39 @@
 {
   "name": "kento-desktop",
-  "version": "1.0.0",
+  "productName": "Kento",
+  "version": "0.0.1",
   "description": "Kento Shogi Desktop",
-  "main": "main.js",
+  "main": "build/main.js",
   "scripts": {
     "start": "electron build/main",
     "build": "tsc",
-    "dev": "webpack-dev-server -d --progress --inline --colors"
+    "watch": "tsc -w",
+    "package": "tsc && cp -r node_modules build/ && electron-packager . Kento --platform=darwin --arch=x64 --out=release --overwrite && rm -rf build/node_modules"
   },
   "author": "na-o-ys",
   "license": "ISC",
-  "devDependencies": {
-    "@types/lodash": "^4.14.68",
-    "@types/node": "^8.0.6",
-    "@types/react-modal": "^1.6.7",
-    "@types/react-redux": "^4.4.46",
-    "@types/split": "^0.3.28",
+  "dependencies": {
     "axios": "^0.16.2",
-    "doc-ready": "^1.0.4",
-    "electron": "~1.6.2",
+    "electron-json-storage": "^4.0.2",
     "json-kifu-format": "^1.1.0",
     "lodash": "^4.17.4",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "react-modal": "^2.2.1",
-    "react-redux": "^5.0.5",
-    "redux": "^3.7.1",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-modal": "^3.1.10",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
-    "split": "^1.0.0",
-    "ts-loader": "^2.2.1",
-    "typescript": "^2.4.1",
-    "webpack": "^3.0.0",
-    "webpack-dev-server": "^2.5.0"
+    "split": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/electron-json-storage": "^4.0.0",
+    "@types/lodash": "^4.14.68",
+    "@types/node": "^8.0.6",
+    "@types/react-modal": "^3.1.0",
+    "@types/react-redux": "^5.0.14",
+    "@types/split": "^0.3.28",
+    "electron": "^1.7.10",
+    "electron-packager": "^10.1.0",
+    "typescript": "^2.6.2"
   }
 }
