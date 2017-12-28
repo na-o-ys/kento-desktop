@@ -1,9 +1,10 @@
+import * as _ from "lodash"
 import { Store } from "redux"
+import split = require("split")
+import * as log from "electron-log"
 import { State } from "container/KentoApp"
 import { spawn } from "child_process"
-import split = require("split")
 import * as AiAction from "actions/ai"
-import * as _ from "lodash"
 import * as Kifu from "lib/Kifu"
 import { AiConfig } from "config"
 
@@ -28,7 +29,7 @@ export const EmptyAiInfo: AiInfo = {
 
 export const EmptyAi: Ai = {
     aiProcess: null,
-    start(position: Kifu.Position) { console.log(position) }
+    start(position: Kifu.Position) { log.info(position) }
 } as Ai
 
 const Byoyomi = 30000
@@ -38,7 +39,7 @@ export class Ai {
     start(position: Kifu.Position) {
         const color = position.nextColor
         const sfen = position.getSfen()
-        console.log(`ai started: ${sfen}`)
+        log.info(`ai started: ${sfen}`)
         if (this.aiProcess) {
             this.aiProcess.kill("SIGKILL")
         }
@@ -47,7 +48,6 @@ export class Ai {
         this.aiProcess.stdout.pipe(split()).on("data", (data: any) => {
             const line: string = data.toString()
             const [cmd, ...words] = line.split(" ")
-            console.log(line)
 
             if (cmd === "info") {
                 const info = this.parseInfo(words, position)
@@ -62,10 +62,10 @@ export class Ai {
                 this.store.dispatch(AiAction.updateAiInfo(
                     info
                 ))
-                console.log(info)
+                log.verbose(info)
             }
             if (cmd === "bestmove") {
-                console.log(words[0])
+                log.info(words[0])
                 this.aiProcess.kill("SIGKILL")
             }
         })

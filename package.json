@@ -36,6 +36,7 @@
   "dependencies": {
     "axios": "^0.16.2",
     "electron-json-storage": "^4.0.2",
+    "electron-log": "^2.2.13",
     "electron-updater": "^2.17.6",
     "json-kifu-format": "^1.1.0",
     "lodash": "^4.17.4",

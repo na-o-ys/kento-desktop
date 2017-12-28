@@ -1,8 +1,12 @@
 import * as Electron from "electron"
 import { BrowserWindow } from "electron"
+import * as log from "electron-log"
 import * as path from "path"
 import * as url from "url"
 import { initializeAutoUpdater } from "./autoUpdate"
+
+log.transports.console.level = "info"
+log.transports.file.level = "info"
 
 const windows: { main?: Electron.BrowserWindow } = {}
 function initWindows() {

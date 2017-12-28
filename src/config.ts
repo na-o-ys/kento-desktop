@@ -42,7 +42,6 @@ async function saveConfig(config: Config): Promise<void> {
 }
 
 export async function initializeConfig(): Promise<Config> {
-    console.log(jsonStorage.getDefaultDataPath())
     const config = await getConfig()
     await saveConfig(config)
     return config
