@@ -7,7 +7,7 @@ import { State } from "container/KentoApp"
 import { AiInfo, EmptyAiInfo } from "lib/Ai"
 import * as ShogiRule from "lib/ShogiRule"
 
-function game(state: Position[], theGame: Position[], action: Action): Position[] {
+function gameReducer(state: Position[], theGame: Position[], action: Action): Position[] {
     switch (action.type) {
         case "set_game":
             return action.game
@@ -20,14 +20,14 @@ function game(state: Position[], theGame: Position[], action: Action): Position[
     }
 }
 
-function theGame(state: Position[], action: Action): Position[] {
+function theGameReducer(state: Position[], action: Action): Position[] {
     return state
 }
 
-function branchFrom(state: number = -1, action: Action): number {
+function branchFromReducer(state: number = -1, action: Action): number {
     switch (action.type) {
         case "do_move":
-            if (state == -1) {
+            if (state === -1) {
                 return action.position.turn
             }
             return state
@@ -38,7 +38,7 @@ function branchFrom(state: number = -1, action: Action): number {
     }
 }
 
-function turn(state: number = 0, maxTurn: number, branchFrom: number, action: Action): number {
+function turnReducer(state: number = 0, maxTurn: number, branchFrom: number, action: Action): number {
     switch (action.type) {
         case "set_turn":
             const nextTurn = Math.max(Math.min(action.turn, maxTurn), 0)
@@ -53,7 +53,7 @@ function turn(state: number = 0, maxTurn: number, branchFrom: number, action: Ac
     }
 }
 
-function moveInput(state: MoveInput = EmptyMoveInput, action: Action): MoveInput {
+function moveInputReducer(state: MoveInput = EmptyMoveInput, action: Action): MoveInput {
     switch (action.type) {
         case "set_move_from":
             return {
@@ -87,7 +87,7 @@ function moveInput(state: MoveInput = EmptyMoveInput, action: Action): MoveInput
     }
 }
 
-function aiInfo(state: AiInfo = EmptyAiInfo, currentTurn: number, action: Action) {
+function aiInfoReducer(state: AiInfo = EmptyAiInfo, currentTurn: number, action: Action) {
     switch (action.type) {
         case "do_move":
             return EmptyAiInfo
@@ -96,20 +96,20 @@ function aiInfo(state: AiInfo = EmptyAiInfo, currentTurn: number, action: Action
         case "update_ai_info":
             return action.info
         case "set_turn":
-            return (action.turn != currentTurn) ? EmptyAiInfo : state
+            return (action.turn !== currentTurn) ? EmptyAiInfo : state
         default:
             return state
     }
 }
 
-function positionChanged(state: boolean = false, currentTurn: number, action: Action) {
+function positionChangedReducer(state: boolean = false, currentTurn: number, action: Action) {
     switch (action.type) {
         case "do_move":
             return true
         case "return_the_game":
             return true
         case "set_turn":
-            return action.turn != currentTurn
+            return action.turn !== currentTurn
         default:
             return false
     }
@@ -119,13 +119,13 @@ export function reducers(state: State, action: Action): State {
     const latestPosition = _.last(state.game)
     const maxTurn = latestPosition ? latestPosition.turn : 0
     return {
-        game: game(state.game, state.theGame, action),
-        theGame: theGame(state.theGame, action),
-        turn: turn(state.turn, maxTurn, state.branchFrom, action),
-        moveInput: moveInput(state.moveInput, action),
-        branchFrom: branchFrom(state.branchFrom, action),
-        positionChanged: positionChanged(state.positionChanged, state.turn, action),
-        aiInfo: aiInfo(state.aiInfo, state.turn, action),
+        game: gameReducer(state.game, state.theGame, action),
+        theGame: theGameReducer(state.theGame, action),
+        turn: turnReducer(state.turn, maxTurn, state.branchFrom, action),
+        moveInput: moveInputReducer(state.moveInput, action),
+        branchFrom: branchFromReducer(state.branchFrom, action),
+        positionChanged: positionChangedReducer(state.positionChanged, state.turn, action),
+        aiInfo: aiInfoReducer(state.aiInfo, state.turn, action),
     }
 }
 

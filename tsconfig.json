@@ -13,9 +13,13 @@
         "jsx": "react",
         "baseUrl": "./src",
         "allowJs": true,
+        "skipLibCheck": true,
         "strict": true
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "node_modules/electron/electron.d.ts",
+        "node_modules/electron-updater/out/*.d.ts",
+        "node_modules/electron-builder-http/out/*.d.ts"
     ]
 }

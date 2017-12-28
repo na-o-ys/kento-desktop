@@ -28,7 +28,7 @@ export const EmptyAiInfo: AiInfo = {
 
 export const EmptyAi: Ai = {
     aiProcess: null,
-    start(position: Kifu.Position) {}
+    start(position: Kifu.Position) { console.log(position) }
 } as Ai
 
 const Byoyomi = 30000
@@ -44,14 +44,14 @@ export class Ai {
         }
         this.aiProcess = spawn(this.config.cmd, [], { cwd: this.config.cwd })
         this.aiProcess.stdin.write(this.generateCommand(Byoyomi, sfen))
-        this.aiProcess.stdout.pipe(split()).on('data', (data: any) => {
+        this.aiProcess.stdout.pipe(split()).on("data", (data: any) => {
             const line: string = data.toString()
             const [cmd, ...words] = line.split(" ")
             console.log(line)
 
-            if (cmd == "info") {
+            if (cmd === "info") {
                 const info = this.parseInfo(words, position)
-                if (color == "w") {
+                if (color === "w") {
                     if (info.score_cp) {
                         info.score_cp *= -1
                     }
@@ -64,7 +64,7 @@ export class Ai {
                 ))
                 console.log(info)
             }
-            if (cmd == "bestmove") {
+            if (cmd === "bestmove") {
                 console.log(words[0])
                 this.aiProcess.kill("SIGKILL")
             }
@@ -85,10 +85,10 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
     }
 
     private parseInfo(words: string[], position: Kifu.Position): AiInfo {
-        let result = _.cloneDeep(EmptyAiInfo)
+        const result = _.cloneDeep(EmptyAiInfo)
         let command: string | null = null
         words.forEach(word => {
-            switch(word) {
+            switch (word) {
             case "score":
                 return
             case "lowerbound":
@@ -104,7 +104,7 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
                 command = "score_mate"
                 return
             }
-            switch(command) {
+            switch (command) {
             case null:
                 command = word
                 return
@@ -112,7 +112,7 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
                 result.pv.push(word)
                 return
             default:
-                result[command] = parseInt(word)
+                result[command] = parseInt(word, 10)
                 command = null
             }
         })
@@ -128,8 +128,9 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
 
     private parseSfen(sfen: string): Kifu.Move {
         // TODO: rep_inf 等への対応
+        // tslint:disable-next-line
         // http://yaneuraou.yaneu.com/2017/06/16/%E6%8B%A1%E5%BC%B5usi%E3%83%97%E3%83%AD%E3%83%88%E3%82%B3%E3%83%AB-%E8%AA%AD%E3%81%BF%E7%AD%8B%E5%87%BA%E5%8A%9B%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6/
-        const fromHand = sfen[1] == "*"
+        const fromHand = sfen[1] === "*"
         const from = fromHand ? null : {
             x: sfen.charCodeAt(0) - "0".charCodeAt(0),
             y: sfen.charCodeAt(1) - "a".charCodeAt(0) + 1
@@ -141,7 +142,7 @@ go btime 0 wtime 0 byoyomi ${byoyomi}
         const piece = fromHand ?
             sfen[0].toLowerCase() as Kifu.Piece :
             null
-        const promote = sfen[4] == "+"
+        const promote = sfen[4] === "+"
         return {
             from,
             to,

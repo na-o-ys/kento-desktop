@@ -32,7 +32,7 @@ export class Position {
     }
 
     getSfen(): string {
-        let lines: string[] = []
+        const lines: string[] = []
         for (const y of _.range(9)) {
             let spaces = 0
             let line = ""
@@ -72,20 +72,20 @@ export class Position {
                 return txt
             })
             .join("")
-        if (hand == "") hand = "-"
+        if (hand === "") hand = "-"
 
         return `sfen ${board} ${this.nextColor} ${hand} 1`
     }
 
     move(move: Move): Position {
-        let cells = _.cloneDeep(this.cells)
-        let blackHand = _.cloneDeep(this.blackHand)
-        let whiteHand = _.cloneDeep(this.whiteHand)
+        const cells = _.cloneDeep(this.cells)
+        const blackHand = _.cloneDeep(this.blackHand)
+        const whiteHand = _.cloneDeep(this.whiteHand)
         if (move.from) {
             cells[(move.from.y - 1) * 9 + 9 - move.from.x] = null
         }
         if (!move.from && move.piece) {
-            if (this.nextColor == "b") {
+            if (this.nextColor === "b") {
                 blackHand[move.piece.toUpperCase()] -= 1
             } else {
                 whiteHand[move.piece.toUpperCase()] -= 1
@@ -94,11 +94,11 @@ export class Position {
 
         const moveToPiece = this.getPiece(move.to)
         if (moveToPiece) {
-            let piece = moveToPiece.toUpperCase().replace("+", "")
-            if (this.nextColor == "b") {
-                blackHand[piece] += 1
+            const p = moveToPiece.toUpperCase().replace("+", "")
+            if (this.nextColor === "b") {
+                blackHand[p] += 1
             } else {
-                whiteHand[piece] += 1
+                whiteHand[p] += 1
             }
         }
         let piece = move.from ? this.getPiece(move.from) : move.piece as Piece
@@ -110,7 +110,7 @@ export class Position {
             cells,
             blackHand,
             whiteHand,
-            this.nextColor == "b" ? "w" : "b",
+            this.nextColor === "b" ? "w" : "b",
             this.turn + 1
         )
     }
@@ -123,7 +123,7 @@ export class Position {
 
         const piece = move.from ? this.getPiece(move.from) : move.piece as Piece
         if (piece == null) {
-            throw "move-from cell cannot be null"
+            throw new Error("move-from cell cannot be null")
         }
         const jpPiece = pieceToJp[piece.toLowerCase()]
 
@@ -132,7 +132,7 @@ export class Position {
             promote = move.promote ? "成" : "不成"
         }
 
-        let moveFrom = move.from ? `(${move.from.x}${move.from.y})` : "打"
+        const moveFrom = move.from ? `(${move.from.x}${move.from.y})` : "打"
         return moveTo + jpPiece + promote + moveFrom
     }
 }
