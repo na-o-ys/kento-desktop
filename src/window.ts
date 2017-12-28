@@ -8,6 +8,7 @@ import { render } from "App"
 import { parseText } from "lib/Kifu"
 import { initializeConfig } from "config"
 import { sample } from "lib/Kifu/sample"
+import * as log from "electron-log"
 
 async function start() {
     const { BrowserWindow, clipboard } = remote
