@@ -1,1 +1,1 @@
-export type Style = { [key: string]: string | number }
+export interface Style { [key: string]: string | number }

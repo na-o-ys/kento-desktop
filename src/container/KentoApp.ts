@@ -22,7 +22,7 @@ function mapStateToProps(state: State, ownProps: any) {
         position: state.game[state.turn],
         moveInput: state.moveInput,
         theGame: state.theGame,
-        branched: state.branchFrom != -1,
+        branched: state.branchFrom !== -1,
         positionChanged: state.positionChanged,
         aiInfo: state.aiInfo,
         ai: ownProps.ai

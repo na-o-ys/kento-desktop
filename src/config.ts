@@ -33,7 +33,7 @@ function getConfig(): Promise<Config> {
 
 async function saveConfig(config: Config): Promise<void> {
     const set = (key: string, value: object) => new Promise((resolve, reject) => {
-        jsonStorage.set(key, value, (err) => {
+        jsonStorage.set(key, value, err => {
             if (err) reject(err)
             resolve()
         })

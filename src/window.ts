@@ -1,3 +1,4 @@
+// tslint:disable-next-line
 require("module").globalPaths.push(__dirname)
 import * as path from "path"
 import { remote, ipcRenderer } from "electron"

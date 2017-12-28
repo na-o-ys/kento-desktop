@@ -4,7 +4,7 @@ import * as path from "path"
 import * as url from "url"
 import { initializeAutoUpdater } from "./autoUpdate"
 
-let windows: { main?: Electron.BrowserWindow } = {}
+const windows: { main?: Electron.BrowserWindow } = {}
 function initWindows() {
     const window = new BrowserWindow({ width: 730, height: 575, frame: false })
     window.loadURL(url.format({
@@ -12,7 +12,7 @@ function initWindows() {
         protocol: "file:",
         slashes: true
     }))
-    window.on("closed", function () {
+    window.on("closed", () => {
         windows.main = undefined
     })
     // window.webContents.openDevTools()
@@ -31,14 +31,14 @@ const app = Electron.app
 
 app.on("ready", initWindows)
 
-app.on('activate', function () {
+app.on("activate", () => {
     if (!windows.main) {
         initWindows()
     }
 })
 
-app.on('window-all-closed', function () {
-    if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
         app.quit()
     }
 })

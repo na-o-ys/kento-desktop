@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { parseText } from "lib/Kifu/Parser"
 
 const kifu = `開始日時：2016/11/01 10:00
