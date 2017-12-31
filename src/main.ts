@@ -1,46 +1,36 @@
+// tslint:disable-next-line
+require("module").globalPaths.push(__dirname)
 import * as Electron from "electron"
-import { BrowserWindow } from "electron"
 import * as log from "electron-log"
 import * as path from "path"
 import * as url from "url"
-import { initializeAutoUpdater } from "./autoUpdate"
+import { initializeAutoUpdater } from "autoUpdate"
+import { initializeMenu } from "menu"
+import { Windows, initializeWindows } from "windows"
 
 log.transports.console.level = "info"
 log.transports.file.level = "info"
 
-const windows: { main?: Electron.BrowserWindow } = {}
-function initWindows() {
-    const window = new BrowserWindow({ width: 730, height: 575, frame: false })
-    window.loadURL(url.format({
-        pathname: path.join(__dirname, "../index.html"),
-        protocol: "file:",
-        slashes: true
-    }))
-    window.on("closed", () => {
-        windows.main = undefined
-    })
-    // window.webContents.openDevTools()
-    windows.main = window
+let windows: Windows
 
+function start() {
+    function sendStatusToWindow(text: string) {
+        if (!windows.main) return
+        windows.main.webContents.send("message", text)
+    }
     initializeAutoUpdater(sendStatusToWindow)
         .checkForUpdatesAndNotify()
-}
-
-function sendStatusToWindow(text: string) {
-    if (!windows.main) return
-    windows.main.webContents.send("message", text)
+    initializeMenu()
+    initializeWindows()
 }
 
 const app = Electron.app
-
-app.on("ready", initWindows)
-
+app.on("ready", start)
 app.on("activate", () => {
     if (!windows.main) {
-        initWindows()
+        start()
     }
 })
-
 app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
         app.quit()
