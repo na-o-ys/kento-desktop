@@ -15,6 +15,13 @@ let windows: Windows
 
 export type MenuAction = "start_new_game" | "start_clipboard_game"
 
+function start() {
+    initializeAutoUpdater(sendStatusToWindow)
+        .checkForUpdatesAndNotify()
+    initializeMenu(actions)
+    windows = initializeWindows()
+}
+
 function sendActionToWindow(action: MenuAction) {
     if (!windows.main) return
     windows.main.webContents.send("menu_action", action)
@@ -32,13 +39,6 @@ const actions = {
 function sendStatusToWindow(text: string) {
     if (!windows.main) return
     windows.main.webContents.send("message", text)
-}
-
-function start() {
-    initializeAutoUpdater(sendStatusToWindow)
-        .checkForUpdatesAndNotify()
-    initializeMenu(actions)
-    windows = initializeWindows()
 }
 
 const { app } = Electron
