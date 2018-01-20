@@ -1,7 +1,12 @@
 import * as Electron from "electron"
 import * as log from "electron-log"
 
-export function initializeMenu(): void {
+export interface MenuActions {
+    startNewGame(): void
+    startClipboardGame(): void
+}
+
+export function initializeMenu(actions: MenuActions): void {
     const menu = Electron.Menu.buildFromTemplate([
         {
             label: "Kento",
@@ -27,7 +32,8 @@ export function initializeMenu(): void {
                     label: "Open Kifu"
                 },
                 {
-                    label: "Open From Clipboard"
+                    label: "Open From Clipboard",
+                    click: actions.startClipboardGame
                 }
             ]
         }

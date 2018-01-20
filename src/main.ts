@@ -5,26 +5,43 @@ import * as log from "electron-log"
 import * as path from "path"
 import * as url from "url"
 import { initializeAutoUpdater } from "autoUpdate"
-import { initializeMenu } from "menu"
-import { Windows, initializeWindows } from "windows"
+import { initializeMenu, MenuActions } from "menu"
+import { initializeWindows, Windows } from "windows"
 
 log.transports.console.level = "info"
 log.transports.file.level = "info"
 
 let windows: Windows
 
-function start() {
-    function sendStatusToWindow(text: string) {
-        if (!windows.main) return
-        windows.main.webContents.send("message", text)
-    }
-    initializeAutoUpdater(sendStatusToWindow)
-        .checkForUpdatesAndNotify()
-    initializeMenu()
-    initializeWindows()
+export type MenuAction = "start_new_game" | "start_clipboard_game"
+
+function sendActionToWindow(action: MenuAction) {
+    if (!windows.main) return
+    windows.main.webContents.send("menu_action", action)
 }
 
-const app = Electron.app
+const actions = {
+    startNewGame() {
+        sendActionToWindow("start_new_game")
+    },
+    startClipboardGame() {
+        sendActionToWindow("start_clipboard_game")
+    }
+}
+
+function sendStatusToWindow(text: string) {
+    if (!windows.main) return
+    windows.main.webContents.send("message", text)
+}
+
+function start() {
+    initializeAutoUpdater(sendStatusToWindow)
+        .checkForUpdatesAndNotify()
+    initializeMenu(actions)
+    windows = initializeWindows()
+}
+
+const { app } = Electron
 app.on("ready", start)
 app.on("activate", () => {
     if (!windows.main) {
