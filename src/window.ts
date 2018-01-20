@@ -10,11 +10,15 @@ import { initializeConfig } from "config"
 import { sample } from "lib/Kifu/sample"
 import * as log from "electron-log"
 import { MenuAction } from "main"
+import { Store } from "redux"
 import { Position } from "lib/Kifu/Position"
 import { Config } from "config"
+import { State } from "container/KentoApp"
+import { setGameAndTurn } from "actions"
 
 const { BrowserWindow, clipboard, dialog } = remote
 let config: Config
+let store: Store<State>
 
 async function start() {
     config = await initializeConfig()
@@ -24,7 +28,7 @@ async function start() {
         parseClipboard()
 
     const latestPosition = _.last(game)
-    render(game, latestPosition ? latestPosition.turn : 0, config)
+    store = render(game, latestPosition ? latestPosition.turn : 0, config)
 }
 
 start()
@@ -44,8 +48,7 @@ ipcRenderer.on("menu_action", (event: any, text: MenuAction) => {
         case "start_clipboard_game":
             try {
                 const game = parseClipboard()
-                const latestPosition = _.last(game)
-                render(game, latestPosition ? latestPosition.turn : 0, config)
+                store.dispatch(setGameAndTurn(game, game.length - 1))
             } catch (e) {
                 log.info(e)
                 dialog.showErrorBox("Failed to load clipboard", e)

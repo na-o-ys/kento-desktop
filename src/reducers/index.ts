@@ -11,6 +11,8 @@ function gameReducer(state: Position[], theGame: Position[], action: Action): Po
     switch (action.type) {
         case "set_game":
             return action.game
+        case "set_game_and_turn":
+            return action.game
         case "do_move":
             return doMove(state, action.position, action.moveInput )
         case "return_the_game":
@@ -44,6 +46,8 @@ function turnReducer(state: number = 0, maxTurn: number, branchFrom: number, act
             const nextTurn = Math.max(Math.min(action.turn, maxTurn), 0)
             history.replaceState(null, "", `#${nextTurn}`)
             return nextTurn
+        case "set_game_and_turn":
+            return action.turn
         case "do_move":
             return state + 1
         case "return_the_game":
@@ -116,7 +120,11 @@ function positionChangedReducer(state: boolean = false, currentTurn: number, act
 }
 
 export function reducers(state: State, action: Action): State {
-    const latestPosition = _.last(state.game)
+    let game = state.game
+    if (action.type === "set_game" || action.type === "set_game_and_turn") {
+        game = action.game
+    }
+    const latestPosition = _.last(game)
     const maxTurn = latestPosition ? latestPosition.turn : 0
     return {
         game: gameReducer(state.game, state.theGame, action),
