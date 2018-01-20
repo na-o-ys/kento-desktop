@@ -20,17 +20,18 @@ export function initializeMenu(actions: MenuActions): void {
             label: "File",
             submenu: [
                 {
-                    label: "New"
+                    label: "New",
+                    click: actions.startNewGame
                 },
                 {
                     type: "separator"
                 },
-                {
-                    label: "Open URL"
-                },
-                {
-                    label: "Open Kifu"
-                },
+                // {
+                //     label: "Open URL"
+                // },
+                // {
+                //     label: "Open Kifu"
+                // },
                 {
                     label: "Open From Clipboard",
                     click: actions.startClipboardGame
