@@ -4,6 +4,7 @@ import * as log from "electron-log"
 export interface MenuActions {
     startNewGame(): void
     startClipboardGame(): void
+    exportKif(): void
 }
 
 export function initializeMenu(actions: MenuActions): void {
@@ -22,6 +23,10 @@ export function initializeMenu(actions: MenuActions): void {
                 {
                     label: "New",
                     click: actions.startNewGame
+                },
+                {
+                    label: "Export Kif",
+                    click: actions.exportKif
                 },
                 {
                     type: "separator"

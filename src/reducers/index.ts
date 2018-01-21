@@ -1,6 +1,7 @@
 import { combineReducers } from "redux"
 import * as _ from "lodash"
-import { Position, Piece, emptyCell } from "lib/Kifu"
+import * as log from "electron-log"
+import { Position, Piece, emptyCell, exportKif } from "lib/Kifu"
 import { Action } from "actions"
 import { MoveInput, EmptyMoveInput } from "components/Kento"
 import { State } from "container/KentoApp"

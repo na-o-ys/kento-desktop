@@ -6,7 +6,7 @@ import { remote, ipcRenderer } from "electron"
 import axios from "axios"
 import * as _ from "lodash"
 import { render } from "App"
-import { parseText } from "lib/Kifu"
+import { parseText, exportKif } from "lib/Kifu"
 import { initializeConfig } from "config"
 import { sample } from "lib/Kifu/sample"
 import * as log from "electron-log"
@@ -63,6 +63,11 @@ function initializeIpc(config: Config, store: Store<State>) {
                     dialog.showErrorBox("Failed to load clipboard", e)
                 }
                 break
+            case "export_kifu":
+                clipboard.writeText(exportKif(store.getState().game))
+                dialog.showMessageBox({
+                    message: "copied to clipboard"
+                })
         }
     })
 }

@@ -13,7 +13,7 @@ log.transports.file.level = "info"
 
 let windows: Windows
 
-export type MenuAction = "start_new_game" | "start_clipboard_game"
+export type MenuAction = "start_new_game" | "start_clipboard_game" | "export_kifu"
 
 function start() {
     initializeAutoUpdater(sendStatusToWindow)
@@ -33,6 +33,9 @@ const actions = {
     },
     startClipboardGame() {
         sendActionToWindow("start_clipboard_game")
+    },
+    exportKif() {
+        sendActionToWindow("export_kifu")
     }
 }
 
