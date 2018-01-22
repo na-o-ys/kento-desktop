@@ -45,7 +45,8 @@ function initializeStore(game: Position[], turn: number): Store<State> {
             moveInput: EmptyMoveInput,
             branchFrom: -1,
             aiInfo: EmptyAiInfo,
-            positionChanged: true
+            positionChanged: true,
+            reversed: false
         }
     )
 }

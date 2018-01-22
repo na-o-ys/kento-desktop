@@ -120,6 +120,13 @@ function positionChangedReducer(state: boolean = false, currentTurn: number, act
     }
 }
 
+function reversedReducer(state: boolean = false, action: Action) {
+    if (action.type === "reverse_board") {
+        return !state
+    }
+    return state
+}
+
 export function reducers(state: State, action: Action): State {
     let game = state.game
     if (action.type === "set_game" || action.type === "set_game_and_turn") {
@@ -135,6 +142,7 @@ export function reducers(state: State, action: Action): State {
         branchFrom: branchFromReducer(state.branchFrom, action),
         positionChanged: positionChangedReducer(state.positionChanged, state.turn, action),
         aiInfo: aiInfoReducer(state.aiInfo, state.turn, action),
+        reversed: reversedReducer(state.reversed, action)
     }
 }
 

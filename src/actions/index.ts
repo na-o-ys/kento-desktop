@@ -5,7 +5,7 @@ import { MoveInputActionType } from "actions/MoveInput"
 export * from "actions/MoveInput"
 
 export type Action = SetGameAction | SetTurnAction | ReturnTheGame |
-    SetGameAndTurnAction | AiAction.UpdateInfoAction | MoveInputActionType
+    SetGameAndTurnAction | AiAction.UpdateInfoAction | MoveInputActionType | ReverseBoardAction
 
 interface SetGameAction { type: "set_game", game: Position[] }
 export function setGame(game: Position[]): Action {
@@ -25,4 +25,9 @@ export function setGameAndTurn(game: Position[], turn: number): Action {
 interface ReturnTheGame { type: "return_the_game" }
 export function returnTheGame() {
     return { type: "return_the_game" }
+}
+
+interface ReverseBoardAction { type: "reverse_board" }
+export function reverseBoard() {
+    return { type: "reverse_board" }
 }

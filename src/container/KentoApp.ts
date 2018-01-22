@@ -15,6 +15,7 @@ export interface State {
     branchFrom: number
     positionChanged: boolean
     aiInfo: AiInfo
+    reversed: boolean
 }
 
 function mapStateToProps(state: State, ownProps: any) {
@@ -25,7 +26,8 @@ function mapStateToProps(state: State, ownProps: any) {
         branched: state.branchFrom !== -1,
         positionChanged: state.positionChanged,
         aiInfo: state.aiInfo,
-        ai: ownProps.ai
+        ai: ownProps.ai,
+        reversed: state.reversed
     }
 }
 
@@ -55,6 +57,9 @@ function mapDispatchToProps(dispatch: Dispatch<0>): { control: GameControl } {
             },
             doMove(moveInput: MoveInput, position: Position) {
                 dispatch(actions.doMove(moveInput, position))
+            },
+            reverseBoard() {
+                dispatch(actions.reverseBoard())
             }
         }
     }

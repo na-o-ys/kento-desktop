@@ -15,6 +15,7 @@ export interface GameControl {
     setPromote(promote: boolean): void
     returnTheGame(): void
     doMove(moveInput: MoveInput, position: Position): void
+    reverseBoard(): void
 }
 
 export interface KentoProps {
@@ -25,6 +26,7 @@ export interface KentoProps {
     aiInfo: AiInfo
     positionChanged: boolean
     ai: Ai
+    reversed: boolean
 }
 
 export class Kento extends React.Component<KentoProps> {
@@ -42,7 +44,8 @@ export class Kento extends React.Component<KentoProps> {
             branched,
             aiInfo,
             positionChanged,
-            ai
+            ai,
+            reversed
         } = this.props
         const onClickCell = (x: number, y: number) => {
             const piece = position.getPiece({ x, y })
@@ -92,10 +95,11 @@ export class Kento extends React.Component<KentoProps> {
                     <Board position={position} verticalHand={false} style={boardStyle}
                         onClickBoard={onClickCell} onClickHand={onClickHand}
                         highlightCell={moveInput.from}
-                        highlightHand={moveInput.fromHand ? moveInput.piece : undefined}/>
+                        highlightHand={moveInput.fromHand ? moveInput.piece : undefined}
+                        reversed={reversed}/>
                     <Control style={controlStyle} turn={position.turn}
                         showReturnTheGame={branched} returnTheGame={control.returnTheGame}
-                        control={control}/>
+                        reversed={reversed} control={control}/>
                 </div>
                 <div style={{float: "left"}}>
                     <AiResult aiInfo={aiInfo} style={{width: aiWidth}}/>
@@ -138,10 +142,12 @@ type ControlProps = {
     turn: number,
     style: any,
     showReturnTheGame: boolean,
-    returnTheGame: Function
+    returnTheGame: Function,
+    reversed: boolean
 }
-const Control = ({ control, turn, showReturnTheGame, returnTheGame, style = {} }: ControlProps) => (
+const Control = ({ control, turn, showReturnTheGame, returnTheGame, reversed, style = {} }: ControlProps) => (
     <div style={style}>
+        <div style={moveControlStyle} onClick={() => control.reverseBoard()}>{ reversed ? "逆" : "正" }</div>
         <div style={moveControlStyle} onClick={() => control.setTurn(turn - 1)}>&lt;</div>
         <div style={moveControlStyle} onClick={() => control.setTurn(turn + 1)}>&gt;</div>
         { showReturnTheGame ?
