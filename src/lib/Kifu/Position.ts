@@ -159,3 +159,40 @@ const pieceList = ["p", "l", "n", "s", "g", "b", "r", "k",
 const jpList = ["歩", "香", "桂", "銀", "金", "角", "飛", "玉",
     "と", "成香", "成桂", "成銀", "馬", "龍"]
 const pieceToJp: { [key: string]: string } = _.zipObject(pieceList, jpList)
+
+const Zero = {
+    blackHand: {
+        B: 0, G: 0, K: 0, L: 0, N: 0, P: 0, R: 0, S: 0
+    },
+    whiteHand: {
+        B: 0, G: 0, K: 0, L: 0, N: 0, P: 0, R: 0, S: 0
+    },
+    cells: [
+        "l", "n", "s", "g", "k", "g", "s", "n", "l",
+        null, "r", null, null, null, null, null, "b", null,
+        "p", "p", "p", "p", "p", "p", "p", "p", "p",
+        null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null,
+        "P", "P", "P", "P", "P", "P", "P", "P", "P",
+        null, "B", null, null, null, null, null, "R", null,
+        "L", "N", "S", "G", "K", "G", "S", "N", "L"
+    ],
+    lastMove: {
+        from: { x: 0, y: 0 },
+        piece: null,
+        promote: false,
+        to: { x: 0, y: 0 }
+    },
+    nextColor: "b" as Color,
+    turn: 0,
+}
+
+export const InitialPosition = new Position(
+    Zero.lastMove,
+    Zero.cells,
+    Zero.blackHand,
+    Zero.whiteHand,
+    Zero.nextColor,
+    Zero.turn
+)

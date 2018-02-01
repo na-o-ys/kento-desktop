@@ -15,7 +15,7 @@ function calculatePosition(turn: number, player: JKFPlayer): Position {
     const lastMove: Move = move ? {
         from: move.from as Cell,
         to: move.to as Cell,
-        piece: move.piece,
+        piece: PieceKindMap.get(move.piece) || null,
         promote: !!move.promote
     } : emptyMove
     const movedCell = (move && move.to) ? 9 * (move.to.y - 1) + 9 - move.to.x : -1

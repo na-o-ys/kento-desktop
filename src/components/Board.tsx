@@ -1,7 +1,9 @@
+import * as log from "electron-log"
 import * as React from "react"
 import { Position, Cell } from "lib/Kifu"
 import { Style } from "types"
 import MainBoard, { OnClickMainBoard } from "components/board/MainBoard"
+import MainBoardReversed from "components/board/MainBoardReversed"
 import Hand from "components/board/Hand"
 import VHand from "components/board/VHand"
 
@@ -14,6 +16,7 @@ interface BoardProps {
     onClickHand?: (piece: string) => void
     highlightCell?: Cell
     highlightHand?: string
+    reversed: boolean
 }
 
 export const Board = ({
@@ -24,8 +27,10 @@ export const Board = ({
     onClickBoard = () => {},
     onClickHand = () => {},
     highlightCell = undefined,
-    highlightHand = undefined
+    highlightHand = undefined,
+    reversed = false
 }: BoardProps) => {
+    log.info(position.cells)
     let blackHighlightHand = undefined
     let whiteHighlightHand = undefined
     if (highlightHand) {
@@ -39,22 +44,31 @@ export const Board = ({
         highlightCell = highlightCell || position.lastMove.to
     }
 
-    if (verticalHand) return (
-        <div id="board" style={{ ...vBoardStyle(scale), ...style }}>
-            <VHand color="white" hand={position.whiteHand} scale={scale} onClick={onClickHand}
-                highlight={whiteHighlightHand} />
-            <MainBoard cells={position.cells} highlightCell={highlightCell} scale={scale} onClick={onClickBoard} />
-            <VHand color="black" hand={position.blackHand} scale={scale} onClick={onClickHand}
-                highlight={blackHighlightHand} />
-        </div>
-    )
-    else return (
+    // if (verticalHand) return (
+    //     <div id="board" style={{ ...vBoardStyle(scale), ...style }}>
+    //         <VHand color="white" hand={position.whiteHand} scale={scale} onClick={onClickHand}
+    //             highlight={whiteHighlightHand} />
+    //         <MainBoard cells={position.cells} highlightCell={highlightCell} scale={scale} onClick={onClickBoard} />
+    //         <VHand color="black" hand={position.blackHand} scale={scale} onClick={onClickHand}
+    //             highlight={blackHighlightHand} />
+    //     </div>
+    // )
+    if (!reversed) return (
         <div id="board" style={{ ...boardStyle(scale), ...style }}>
             <WhiteHand hands={position.whiteHand} scale={scale} onClick={onClickHand}
                 highlight={whiteHighlightHand} />
             <MainBoard cells={position.cells} highlightCell={highlightCell} scale={scale} style={mainBoardStyle} onClick={onClickBoard} />
             <BlackHand hands={position.blackHand} scale={scale} onClick={onClickHand}
                 highlight={blackHighlightHand} />
+        </div>
+    )
+    return (
+        <div id="board" style={{ ...boardStyle(scale), ...style }}>
+            <BlackHand hands={position.blackHand} scale={scale} onClick={onClickHand}
+                highlight={blackHighlightHand} />
+            <MainBoardReversed cells={position.cells} highlightCell={highlightCell} scale={scale} style={mainBoardStyle} onClick={onClickBoard} />
+            <WhiteHand hands={position.whiteHand} scale={scale} onClick={onClickHand}
+                highlight={whiteHighlightHand} />
         </div>
     )
 }

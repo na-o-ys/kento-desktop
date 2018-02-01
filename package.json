@@ -2,9 +2,9 @@
   "name": "kento-desktop",
   "version": "0.0.2",
   "description": "Kento Shogi Desktop",
-  "main": "build/main.js",
+  "main": "build/runElectron.js",
   "scripts": {
-    "start": "electron build/main",
+    "start": "electron build/runElectron",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "npm-run-all test:*",
