@@ -1,7 +1,13 @@
 import * as Electron from "electron"
 import * as log from "electron-log"
 
-export function initializeMenu(): void {
+export interface MenuActions {
+    startNewGame(): void
+    startClipboardGame(): void
+    exportKif(): void
+}
+
+export function initializeMenu(actions: MenuActions): void {
     const menu = Electron.Menu.buildFromTemplate([
         {
             label: "Kento",
@@ -15,19 +21,25 @@ export function initializeMenu(): void {
             label: "File",
             submenu: [
                 {
-                    label: "New"
+                    label: "New",
+                    click: actions.startNewGame
+                },
+                {
+                    label: "Export Kif",
+                    click: actions.exportKif
                 },
                 {
                     type: "separator"
                 },
+                // {
+                //     label: "Open URL"
+                // },
+                // {
+                //     label: "Open Kifu"
+                // },
                 {
-                    label: "Open URL"
-                },
-                {
-                    label: "Open Kifu"
-                },
-                {
-                    label: "Open From Clipboard"
+                    label: "Open From Clipboard",
+                    click: actions.startClipboardGame
                 }
             ]
         }

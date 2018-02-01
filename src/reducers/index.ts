@@ -1,6 +1,7 @@
 import { combineReducers } from "redux"
 import * as _ from "lodash"
-import { Position, Piece, emptyCell } from "lib/Kifu"
+import * as log from "electron-log"
+import { Position, Piece, emptyCell, exportKif } from "lib/Kifu"
 import { Action } from "actions"
 import { MoveInput, EmptyMoveInput } from "components/Kento"
 import { State } from "container/KentoApp"
@@ -10,6 +11,8 @@ import * as ShogiRule from "lib/ShogiRule"
 function gameReducer(state: Position[], theGame: Position[], action: Action): Position[] {
     switch (action.type) {
         case "set_game":
+            return action.game
+        case "set_game_and_turn":
             return action.game
         case "do_move":
             return doMove(state, action.position, action.moveInput )
@@ -44,6 +47,8 @@ function turnReducer(state: number = 0, maxTurn: number, branchFrom: number, act
             const nextTurn = Math.max(Math.min(action.turn, maxTurn), 0)
             history.replaceState(null, "", `#${nextTurn}`)
             return nextTurn
+        case "set_game_and_turn":
+            return action.turn
         case "do_move":
             return state + 1
         case "return_the_game":
@@ -115,8 +120,19 @@ function positionChangedReducer(state: boolean = false, currentTurn: number, act
     }
 }
 
+function reversedReducer(state: boolean = false, action: Action) {
+    if (action.type === "reverse_board") {
+        return !state
+    }
+    return state
+}
+
 export function reducers(state: State, action: Action): State {
-    const latestPosition = _.last(state.game)
+    let game = state.game
+    if (action.type === "set_game" || action.type === "set_game_and_turn") {
+        game = action.game
+    }
+    const latestPosition = _.last(game)
     const maxTurn = latestPosition ? latestPosition.turn : 0
     return {
         game: gameReducer(state.game, state.theGame, action),
@@ -126,6 +142,7 @@ export function reducers(state: State, action: Action): State {
         branchFrom: branchFromReducer(state.branchFrom, action),
         positionChanged: positionChangedReducer(state.positionChanged, state.turn, action),
         aiInfo: aiInfoReducer(state.aiInfo, state.turn, action),
+        reversed: reversedReducer(state.reversed, action)
     }
 }
 
